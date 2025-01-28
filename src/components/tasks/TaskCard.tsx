@@ -8,8 +8,8 @@ interface TaskCardProps {
   name: string;
   responsible: string;
   dueDate: string;
-  group?: string;
-  description?: string;
+  group?: boolean;
+  description?: boolean;
 }
 
 export const TaskCard = ({
