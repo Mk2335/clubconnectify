@@ -1,4 +1,4 @@
-import { FileText, Gavel, Mail, Vote } from "lucide-react";
+import { FileText, Gavel, Mail, Vote, Database } from "lucide-react";
 import { MenuItem } from "./types";
 
 export const generalAssemblyMenuItems: MenuItem = {
@@ -20,6 +20,11 @@ export const generalAssemblyMenuItems: MenuItem = {
       icon: Mail,
       label: "Newsletter",
       href: "/general-assembly/newsletter",
+    },
+    {
+      icon: Database,
+      label: "Data Storage",
+      href: "/general-assembly/storage",
     },
   ],
 };

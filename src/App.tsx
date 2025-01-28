@@ -21,6 +21,7 @@ import TransferShares from "./pages/TransferShares";
 import Incorporation from "./pages/Incorporation";
 import BusinessPlan from "./pages/BusinessPlan";
 import StatutoryAudit from "./pages/StatutoryAudit";
+import DataStorage from "./pages/DataStorage";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +45,7 @@ const App = () => (
           <Route path="/general-assembly/voting" element={<Voting />} />
           <Route path="/general-assembly/minutes" element={<Minutes />} />
           <Route path="/general-assembly/newsletter" element={<Newsletter />} />
+          <Route path="/general-assembly/storage" element={<DataStorage />} />
           <Route path="/financing" element={<Financing />} />
           <Route path="/financing/business-plan" element={<BusinessPlan />} />
           <Route path="/settings" element={<Settings />} />
