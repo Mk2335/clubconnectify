@@ -24,6 +24,7 @@ import StatutoryAudit from "./pages/StatutoryAudit";
 import DataStorage from "./pages/DataStorage";
 import Invoice from "./pages/Invoice";
 import Account from "./pages/Account";
+import VirtualMeetingRoom from "./pages/VirtualMeetingRoom";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => (
           <Route path="/general-assembly/minutes" element={<Minutes />} />
           <Route path="/general-assembly/newsletter" element={<Newsletter />} />
           <Route path="/general-assembly/storage" element={<DataStorage />} />
+          <Route path="/general-assembly/virtual-meeting" element={<VirtualMeetingRoom />} />
           <Route path="/financing" element={<Financing />} />
           <Route path="/financing/account" element={<Account />} />
           <Route path="/financing/business-plan" element={<BusinessPlan />} />

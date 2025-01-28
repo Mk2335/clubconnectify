@@ -1,4 +1,4 @@
-import { FileText, Gavel, Mail, Vote, Database } from "lucide-react";
+import { FileText, Gavel, Mail, Vote, Database, Video } from "lucide-react";
 import { MenuItem } from "./types";
 
 export const generalAssemblyMenuItems: MenuItem = {
@@ -25,6 +25,11 @@ export const generalAssemblyMenuItems: MenuItem = {
       icon: Database,
       label: "Data Storage",
       href: "/general-assembly/storage",
+    },
+    {
+      icon: Video,
+      label: "Virtual Meeting Room",
+      href: "/general-assembly/virtual-meeting",
     },
   ],
 };
