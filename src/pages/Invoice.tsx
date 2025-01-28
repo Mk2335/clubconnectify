@@ -144,7 +144,7 @@ const Invoice = () => {
                         <TableCell>{invoice.recipient}</TableCell>
                         <TableCell>{invoice.type}</TableCell>
                         <TableCell>
-                          <Badge variant={invoice.status === "open" ? "warning" : "default"}>
+                          <Badge variant={invoice.status === "open" ? "secondary" : "default"}>
                             {invoice.status === "open" ? "Open" : "Partially posted"}
                           </Badge>
                         </TableCell>
