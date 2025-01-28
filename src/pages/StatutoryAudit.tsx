@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Form } from "@/components/ui/form";
 import AuditQuestionnaire from "./AuditQuestionnaire";
 import AccountingQuestionnaire from "@/components/audit/AccountingQuestionnaire";
 import { ListOfMembersSection } from "@/components/audit/ListOfMembersSection";
@@ -20,6 +21,30 @@ import { BodiesAndRulesSection } from "@/components/audit/BodiesAndRulesSection"
 import { useForm } from "react-hook-form";
 
 const StatutoryAudit = () => {
+  const form = useForm({
+    defaultValues: {
+      noSupervisoryBoard: "",
+      authorizedRepresentativeMember: "",
+      bodiesUnchanged: "",
+      managementBoard: {
+        chairman: "",
+        deputyChairman: "",
+        member: "",
+      },
+      authorisedRepresentative: {
+        representative: "",
+        deputy: "",
+      },
+      supervisoryBoard: {
+        chairman: "",
+        deputyChairman: "",
+        member1: "",
+        member2: "",
+        member3: "",
+      },
+    },
+  });
+
   const sections = [
     {
       title: "General Information",
@@ -67,30 +92,6 @@ const StatutoryAudit = () => {
     },
   ];
 
-  const form = useForm({
-    defaultValues: {
-      noSupervisoryBoard: "",
-      authorizedRepresentativeMember: "",
-      bodiesUnchanged: "",
-      managementBoard: {
-        chairman: "",
-        deputyChairman: "",
-        member: "",
-      },
-      authorisedRepresentative: {
-        representative: "",
-        deputy: "",
-      },
-      supervisoryBoard: {
-        chairman: "",
-        deputyChairman: "",
-        member1: "",
-        member2: "",
-        member3: "",
-      },
-    },
-  });
-
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -98,103 +99,107 @@ const StatutoryAudit = () => {
         <main className="flex-1 p-8">
           <div className="max-w-4xl mx-auto">
             <SidebarTrigger className="mb-4" />
-            <Tabs defaultValue="checklist" className="w-full">
-              <TabsList className="w-full mb-8 grid grid-cols-5 bg-muted p-1 rounded-lg">
-                <TabsTrigger 
-                  value="checklist" 
-                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
-                >
-                  Document Checklist
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="questionnaire" 
-                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
-                >
-                  Audit Questionnaire
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="accounting" 
-                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
-                >
-                  Accounting Questionnaire
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="members" 
-                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
-                >
-                  List of Members
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="bodies" 
-                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
-                >
-                  Bodies & Rules
-                </TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="checklist" className="mt-6 space-y-8">
-                <div className="space-y-8">
-                  {sections.map((section) => (
-                    <Card key={section.title} className="p-6">
-                      <div className="flex items-center gap-2 mb-4">
-                        <section.icon className="h-5 w-5 text-primary" />
-                        <h2 className="text-xl font-semibold">{section.title}</h2>
-                      </div>
-                      <div className="space-y-4">
-                        {section.items.map((item) => (
-                          <div key={item.id} className="flex items-start gap-4">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2">
-                                <Checkbox id={`checkbox-${item.id}`} />
-                                <Label htmlFor={item.id}>{item.label}</Label>
-                              </div>
-                              <div className="flex gap-4 mt-2">
-                                <Select>
-                                  <SelectTrigger className="w-[200px]">
-                                    <SelectValue placeholder="Select option" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="option1">Option 1</SelectItem>
-                                    <SelectItem value="option2">Option 2</SelectItem>
-                                    <SelectItem value="option3">Option 3</SelectItem>
-                                  </SelectContent>
-                                </Select>
+            <Form {...form}>
+              <form>
+                <Tabs defaultValue="checklist" className="w-full">
+                  <TabsList className="w-full mb-8 grid grid-cols-5 bg-muted p-1 rounded-lg">
+                    <TabsTrigger 
+                      value="checklist" 
+                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
+                    >
+                      Document Checklist
+                    </TabsTrigger>
+                    <TabsTrigger 
+                      value="questionnaire" 
+                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
+                    >
+                      Audit Questionnaire
+                    </TabsTrigger>
+                    <TabsTrigger 
+                      value="accounting" 
+                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
+                    >
+                      Accounting Questionnaire
+                    </TabsTrigger>
+                    <TabsTrigger 
+                      value="members" 
+                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
+                    >
+                      List of Members
+                    </TabsTrigger>
+                    <TabsTrigger 
+                      value="bodies" 
+                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
+                    >
+                      Bodies & Rules
+                    </TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="checklist" className="mt-6 space-y-8">
+                    <div className="space-y-8">
+                      {sections.map((section) => (
+                        <Card key={section.title} className="p-6">
+                          <div className="flex items-center gap-2 mb-4">
+                            <section.icon className="h-5 w-5 text-primary" />
+                            <h2 className="text-xl font-semibold">{section.title}</h2>
+                          </div>
+                          <div className="space-y-4">
+                            {section.items.map((item) => (
+                              <div key={item.id} className="flex items-start gap-4">
                                 <div className="flex-1">
-                                  <Input
-                                    id={item.id}
-                                    type="file"
-                                    className="cursor-pointer"
-                                  />
+                                  <div className="flex items-center gap-2">
+                                    <Checkbox id={`checkbox-${item.id}`} />
+                                    <Label htmlFor={item.id}>{item.label}</Label>
+                                  </div>
+                                  <div className="flex gap-4 mt-2">
+                                    <Select>
+                                      <SelectTrigger className="w-[200px]">
+                                        <SelectValue placeholder="Select option" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="option1">Option 1</SelectItem>
+                                        <SelectItem value="option2">Option 2</SelectItem>
+                                        <SelectItem value="option3">Option 3</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                    <div className="flex-1">
+                                      <Input
+                                        id={item.id}
+                                        type="file"
+                                        className="cursor-pointer"
+                                      />
+                                    </div>
+                                  </div>
+                                  <p className="text-sm text-muted-foreground mt-1">
+                                    {item.description}
+                                  </p>
                                 </div>
                               </div>
-                              <p className="text-sm text-muted-foreground mt-1">
-                                {item.description}
-                              </p>
-                            </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="questionnaire">
-                <AuditQuestionnaire />
-              </TabsContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="questionnaire">
+                    <AuditQuestionnaire />
+                  </TabsContent>
 
-              <TabsContent value="accounting">
-                <AccountingQuestionnaire />
-              </TabsContent>
+                  <TabsContent value="accounting">
+                    <AccountingQuestionnaire />
+                  </TabsContent>
 
-              <TabsContent value="members">
-                <ListOfMembersSection />
-              </TabsContent>
+                  <TabsContent value="members">
+                    <ListOfMembersSection />
+                  </TabsContent>
 
-              <TabsContent value="bodies">
-                <BodiesAndRulesSection form={form} />
-              </TabsContent>
-            </Tabs>
+                  <TabsContent value="bodies">
+                    <BodiesAndRulesSection form={form} />
+                  </TabsContent>
+                </Tabs>
+              </form>
+            </Form>
           </div>
         </main>
       </div>
