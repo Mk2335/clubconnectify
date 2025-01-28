@@ -3,7 +3,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Video, AlertTriangle, Mic, FileText, ListTodo } from "lucide-react";
+import { Video, AlertTriangle, Mic, FileText, ListTodo, Wand2 } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -12,29 +12,86 @@ import {
 } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { generateTranscript, generateAgendaSuggestions } from "@/utils/aiMeetingUtils";
 
 const VirtualMeetingRoom = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [simulcastEnabled, setSimulcastEnabled] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const { toast } = useToast();
 
-  const handleStartRecording = () => {
-    setIsRecording(!isRecording);
-    toast({
-      title: isRecording ? "Recording stopped" : "Recording started",
-      description: isRecording 
-        ? "The transcript will be generated shortly." 
-        : "Your meeting is being recorded for transcript generation.",
-    });
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      
+      recorder.ondataavailable = (event) => {
+        setAudioChunks(current => [...current, event.data]);
+      };
+
+      recorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        const transcript = await generateTranscript(audioBlob);
+        toast({
+          title: "Transcript Generated",
+          description: "Your meeting transcript is ready for review.",
+        });
+      };
+
+      setMediaRecorder(recorder);
+      recorder.start();
+      setIsRecording(true);
+      toast({
+        title: "Recording Started",
+        description: "Your meeting is being recorded for transcript generation.",
+      });
+    } catch (error) {
+      toast({
+        title: "Recording Error",
+        description: "Could not access microphone. Please check permissions.",
+        variant: "destructive",
+      });
+    }
   };
 
-  const generateAgendaGuidance = () => {
+  const stopRecording = () => {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+      mediaRecorder.stop();
+      mediaRecorder.stream.getTracks().forEach(track => track.stop());
+      setIsRecording(false);
+      setAudioChunks([]);
+    }
+  };
+
+  const handleRecordingToggle = () => {
+    if (isRecording) {
+      stopRecording();
+    } else {
+      startRecording();
+    }
+  };
+
+  const handleAgendaGuidance = async () => {
     toast({
-      title: "AI Agenda Assistant",
-      description: "Analyzing your meeting context and generating structured agenda suggestions...",
+      title: "Generating Agenda",
+      description: "AI is analyzing your meeting context...",
     });
-    // In a real implementation, this would connect to an AI service
+    
+    try {
+      const suggestions = await generateAgendaSuggestions("Meeting context");
+      toast({
+        title: "Agenda Suggestions Ready",
+        description: "Check the AI Assistant panel for suggestions.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Could not generate agenda suggestions.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -46,7 +103,7 @@ const VirtualMeetingRoom = () => {
             <SidebarTrigger className="mb-4" />
             
             <div className="flex items-center justify-between mb-6">
-              <h1 className="text-3xl font-bold">Your virtual meeting room</h1>
+              <h1 className="text-3xl font-bold">Virtual Meeting Room</h1>
               <Video className="h-12 w-12 text-primary" />
             </div>
 
@@ -58,7 +115,7 @@ const VirtualMeetingRoom = () => {
                 <CardContent className="space-y-4">
                   <div className="flex items-center gap-4">
                     <Button 
-                      onClick={handleStartRecording}
+                      onClick={handleRecordingToggle}
                       variant={isRecording ? "destructive" : "default"}
                       className="flex items-center gap-2"
                     >
@@ -66,12 +123,12 @@ const VirtualMeetingRoom = () => {
                       {isRecording ? "Stop Recording" : "Start Recording"}
                     </Button>
                     <Button 
-                      onClick={generateAgendaGuidance}
+                      onClick={handleAgendaGuidance}
                       variant="outline"
                       className="flex items-center gap-2"
                     >
-                      <ListTodo className="h-4 w-4" />
-                      Generate Agenda Suggestions
+                      <Wand2 className="h-4 w-4" />
+                      Generate Agenda
                     </Button>
                   </div>
                   {isRecording && (
