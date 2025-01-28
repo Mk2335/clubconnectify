@@ -10,7 +10,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Mail, Send, Calendar as CalendarIcon, Users, Eye, Template, Clock } from "lucide-react";
+import { Mail, Send, Calendar as CalendarIcon, Users, Eye, FileText, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -179,7 +179,7 @@ const Newsletter = () => {
 
                   <div className="flex justify-end mt-6 gap-4">
                     <Button variant="outline" className="flex items-center gap-2">
-                      <Template className="h-4 w-4" />
+                      <FileText className="h-4 w-4" />
                       Save as Template
                     </Button>
                     <Button onClick={handleSend} className="flex items-center gap-2">
