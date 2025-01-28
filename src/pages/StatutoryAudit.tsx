@@ -72,13 +72,13 @@ const StatutoryAudit = () => {
           <div className="max-w-4xl mx-auto">
             <SidebarTrigger className="mb-4" />
             <Tabs defaultValue="checklist" className="w-full">
-              <TabsList className="mb-8">
-                <TabsTrigger value="checklist">Document Checklist</TabsTrigger>
-                <TabsTrigger value="questionnaire">Audit Questionnaire</TabsTrigger>
-                <TabsTrigger value="accounting">Accounting Questionnaire</TabsTrigger>
+              <TabsList className="w-full mb-8 grid grid-cols-3">
+                <TabsTrigger value="checklist" className="flex-1">Document Checklist</TabsTrigger>
+                <TabsTrigger value="questionnaire" className="flex-1">Audit Questionnaire</TabsTrigger>
+                <TabsTrigger value="accounting" className="flex-1">Accounting Questionnaire</TabsTrigger>
               </TabsList>
               
-              <TabsContent value="checklist">
+              <TabsContent value="checklist" className="mt-6 space-y-8">
                 <div className="space-y-8">
                   {sections.map((section) => (
                     <Card key={section.title} className="p-6">
@@ -125,11 +125,13 @@ const StatutoryAudit = () => {
                 </div>
               </TabsContent>
               
-              <TabsContent value="questionnaire">
-                <AuditQuestionnaire />
+              <TabsContent value="questionnaire" className="mt-6">
+                <Card className="p-6">
+                  <AuditQuestionnaire />
+                </Card>
               </TabsContent>
 
-              <TabsContent value="accounting">
+              <TabsContent value="accounting" className="mt-6">
                 <AccountingQuestionnaire />
               </TabsContent>
             </Tabs>
