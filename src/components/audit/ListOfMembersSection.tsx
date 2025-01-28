@@ -103,6 +103,57 @@ export const ListOfMembersSection = () => {
             </RadioGroup>
           </div>
         </div>
+
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Form Overview of the executive bodies</h3>
+          <p className="text-sm text-muted-foreground">pursuant to §§ 53 ff GenG</p>
+          
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Surname, first name</TableHead>
+                  <TableHead>Address</TableHead>
+                  <TableHead>Profession practiced</TableHead>
+                  <TableHead>Date of birth</TableHead>
+                  <TableHead>Function</TableHead>
+                  <TableHead>Election date</TableHead>
+                  <TableHead>Cancelled/resigned</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow className="bg-sky-50">
+                  <TableCell colSpan={7} className="font-medium">Management Board</TableCell>
+                </TableRow>
+                {[...Array(7)].map((_, i) => (
+                  <TableRow key={`management-${i}`}>
+                    <TableCell><Input /></TableCell>
+                    <TableCell><Input /></TableCell>
+                    <TableCell><Input /></TableCell>
+                    <TableCell><Input type="date" /></TableCell>
+                    <TableCell><Input /></TableCell>
+                    <TableCell><Input type="date" /></TableCell>
+                    <TableCell><Input type="date" /></TableCell>
+                  </TableRow>
+                ))}
+                <TableRow className="bg-sky-50">
+                  <TableCell colSpan={7} className="font-medium">Supervisory Board / Authorised representative of the General Meeting</TableCell>
+                </TableRow>
+                {[...Array(7)].map((_, i) => (
+                  <TableRow key={`supervisory-${i}`}>
+                    <TableCell><Input /></TableCell>
+                    <TableCell><Input /></TableCell>
+                    <TableCell><Input /></TableCell>
+                    <TableCell><Input type="date" /></TableCell>
+                    <TableCell><Input /></TableCell>
+                    <TableCell><Input type="date" /></TableCell>
+                    <TableCell><Input type="date" /></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
       </div>
     </Card>
   );
