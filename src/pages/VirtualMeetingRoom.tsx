@@ -38,7 +38,7 @@ const VirtualMeetingRoom = () => {
             </p>
 
             <p className="text-muted-foreground mb-6">
-              By the way: Participation in the meeting is also possible directly from the easyVerein app for iOS and Android.
+              By the way: Participation in the meeting is also possible directly from our app for iOS and Android.
             </p>
 
             <div className="flex items-center space-x-2 mb-6">
