@@ -1,4 +1,4 @@
-import { Share2, UserPlus, Users } from "lucide-react";
+import { Share2, UserPlus, Users, Book } from "lucide-react";
 import { MenuItem } from "./types";
 
 export const membersMenuItems: MenuItem = {
@@ -15,6 +15,11 @@ export const membersMenuItems: MenuItem = {
       icon: Share2,
       label: "Transfer Shares",
       href: "/members/transfer",
+    },
+    {
+      icon: Book,
+      label: "Address Book",
+      href: "/members/address-book",
     },
   ],
 };

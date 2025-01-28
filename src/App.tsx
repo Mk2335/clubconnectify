@@ -28,6 +28,7 @@ import VirtualMeetingRoom from "./pages/VirtualMeetingRoom";
 import Appointments from "./pages/Appointments";
 import AssociationCalendar from "./pages/AssociationCalendar";
 import AppointmentMeetings from "./pages/AppointmentMeetings";
+import AddressBook from "./pages/AddressBook";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +46,7 @@ const App = () => (
           <Route path="/members" element={<Members />} />
           <Route path="/members/applications" element={<MemberApplications />} />
           <Route path="/members/transfer" element={<TransferShares />} />
+          <Route path="/members/address-book" element={<AddressBook />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/calendar/tasks" element={<Tasks />} />
           <Route path="/calendar/appointments" element={<Appointments />} />
