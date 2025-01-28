@@ -57,36 +57,45 @@
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
-  
-  /* Improved focus states */
+
+  /* Enhanced Typography */
+  h1 {
+    @apply text-4xl font-semibold tracking-tight lg:text-5xl;
+    letter-spacing: -0.02em;
+  }
+  h2 {
+    @apply text-2xl font-semibold tracking-tight lg:text-3xl;
+    letter-spacing: -0.01em;
+  }
+  h3 {
+    @apply text-xl font-semibold tracking-tight lg:text-2xl;
+  }
+  p {
+    @apply leading-relaxed text-base text-muted-foreground;
+  }
+
+  /* Improved Focus States */
   :focus-visible {
     @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
   }
 
-  /* Better form element spacing */
-  .form-group {
-    @apply space-y-2;
+  /* Enhanced Form Elements */
+  input, textarea, select {
+    @apply transition-colors duration-200;
   }
 
-  /* Enhanced typography */
-  h1 {
-    @apply text-4xl font-semibold tracking-tight;
-  }
-  h2 {
-    @apply text-2xl font-semibold tracking-tight;
-  }
-  h3 {
-    @apply text-xl font-semibold tracking-tight;
+  /* Better Button States */
+  button {
+    @apply transition-all duration-200 active:scale-95;
   }
 }
 
-/* Enhanced card styles */
+/* Enhanced Component Styles */
 @layer components {
   .card {
-    @apply rounded-lg border bg-card text-card-foreground shadow-sm transition-all duration-200;
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
   }
   
-  /* Button variations with clear hierarchy */
   .btn-primary {
     @apply bg-primary text-primary-foreground hover:bg-primary/90 inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
   }
@@ -95,18 +104,39 @@
     @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
   }
   
-  /* Improved form layouts */
+  /* Enhanced Form Layouts */
   .form-layout {
     @apply space-y-6 p-6;
   }
   
-  /* Better mobile responsiveness */
+  /* Improved Mobile Responsiveness */
   .responsive-grid {
     @apply grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3;
   }
   
-  /* Enhanced navigation */
+  /* Enhanced Navigation */
   .nav-item {
     @apply flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground;
+  }
+
+  /* Improved Card Layouts */
+  .card-container {
+    @apply grid gap-4 md:grid-cols-2 lg:grid-cols-3;
+  }
+
+  /* Enhanced Section Spacing */
+  .section-spacing {
+    @apply space-y-6 py-8 md:py-12;
+  }
+}
+
+/* Accessibility Improvements */
+@layer utilities {
+  .sr-only {
+    @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+  }
+
+  .focus-ring {
+    @apply focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
   }
 }
