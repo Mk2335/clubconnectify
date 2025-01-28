@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { toast } from "@/components/ui/use-toast";
+import { type CheckedState } from "@radix-ui/react-checkbox";
 
 interface ApplicationFormData {
   firstName: string;
@@ -294,8 +295,10 @@ const MemberApplications = () => {
                           <FormItem className="flex items-top space-x-2">
                             <FormControl>
                               <Checkbox
-                                checked={field.value}
-                                onCheckedChange={(checked) => field.onChange(checked)}
+                                checked={field.value as CheckedState}
+                                onCheckedChange={(checked: CheckedState) => {
+                                  field.onChange(checked);
+                                }}
                               />
                             </FormControl>
                             <FormLabel className="text-sm">
