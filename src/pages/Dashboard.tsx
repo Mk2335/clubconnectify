@@ -103,10 +103,10 @@ const Dashboard = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ChartContainer className="h-[300px]" config={{}}>
-                    <BarChart data={financialData}>
-                      <XAxis dataKey="month" />
-                      <YAxis />
+                  <ChartContainer className="h-[200px]" config={{}}>
+                    <BarChart data={financialData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+                      <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                      <YAxis tick={{ fontSize: 12 }} />
                       <ChartTooltip />
                       <Bar dataKey="income" fill="#22c55e" name="Income" />
                       <Bar dataKey="expenses" fill="#ef4444" name="Expenses" />
