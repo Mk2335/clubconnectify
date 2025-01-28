@@ -2,10 +2,30 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
-import { Clipboard, FileText, List, Check } from "lucide-react";
+import { Clipboard, FileText, List, Check, Upload } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const StatutoryAudit = () => {
   const sections = [
+    {
+      title: "General Part of the Audit",
+      icon: Upload,
+      items: [
+        { id: "statute", label: "Statute of Coop", description: "Upload or select the cooperative's statute" },
+        { id: "trade", label: "Trade registration", description: "Upload or select trade registration documents" },
+        { id: "register", label: "Register extract", description: "Upload or select register extract" },
+        { id: "estate", label: "Real estate", description: "Upload or select real estate documentation" },
+        { id: "loans", label: "Member loans", description: "Upload or select member loans documentation" },
+      ],
+    },
     {
       title: "General Information",
       icon: Clipboard,
@@ -52,6 +72,13 @@ const StatutoryAudit = () => {
     },
   ];
 
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>, itemId: string) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      console.log(`File uploaded for ${itemId}:`, file.name);
+    }
+  };
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -76,15 +103,46 @@ const StatutoryAudit = () => {
                   <div className="space-y-4">
                     {section.items.map((item) => (
                       <div key={item.id} className="flex items-start gap-4">
-                        <Checkbox id={item.id} />
-                        <div>
-                          <label htmlFor={item.id} className="font-medium block">
-                            {item.label}
-                          </label>
-                          <p className="text-sm text-muted-foreground">
-                            {item.description}
-                          </p>
-                        </div>
+                        {section.title === "General Part of the Audit" ? (
+                          <div className="flex-1">
+                            <Label htmlFor={item.id}>{item.label}</Label>
+                            <div className="flex gap-4 mt-2">
+                              <Select>
+                                <SelectTrigger className="w-[200px]">
+                                  <SelectValue placeholder="Select option" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="option1">Option 1</SelectItem>
+                                  <SelectItem value="option2">Option 2</SelectItem>
+                                  <SelectItem value="option3">Option 3</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <div className="flex-1">
+                                <Input
+                                  id={item.id}
+                                  type="file"
+                                  className="cursor-pointer"
+                                  onChange={(e) => handleFileUpload(e, item.id)}
+                                />
+                              </div>
+                            </div>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {item.description}
+                            </p>
+                          </div>
+                        ) : (
+                          <>
+                            <Checkbox id={item.id} />
+                            <div>
+                              <label htmlFor={item.id} className="font-medium block">
+                                {item.label}
+                              </label>
+                              <p className="text-sm text-muted-foreground">
+                                {item.description}
+                              </p>
+                            </div>
+                          </>
+                        )}
                       </div>
                     ))}
                   </div>
