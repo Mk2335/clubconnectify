@@ -2,25 +2,59 @@ import { useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, UserPlus, Users } from "lucide-react";
+import { 
+  Search, 
+  UserPlus, 
+  Users,
+  HelpCircle,
+  Settings,
+  Filter
+} from "lucide-react";
 
 interface Member {
   id: number;
   name: string;
   email: string;
-  status: string;
-  paymentMethod: string;
+  group: string;
+  address: string;
+  payment: string;
+  shares: number;
 }
 
 const initialMembers: Member[] = [
-  { id: 1, name: "John Doe", email: "john@example.com", status: "Active", paymentMethod: "Credit Card" },
-  { id: 2, name: "Jane Smith", email: "jane@example.com", status: "Active", paymentMethod: "Bank Transfer" },
-  { id: 3, name: "Mike Johnson", email: "mike@example.com", status: "Inactive", paymentMethod: "PayPal" },
+  { 
+    id: 1, 
+    name: "John Doe", 
+    email: "john@example.com", 
+    group: "Regular Member",
+    address: "123 Main St, City",
+    payment: "Active",
+    shares: 100
+  },
+  { 
+    id: 2, 
+    name: "Jane Smith", 
+    email: "jane@example.com", 
+    group: "Board Member",
+    address: "456 Oak Ave, Town",
+    payment: "Active",
+    shares: 150
+  },
+  { 
+    id: 3, 
+    name: "Mike Johnson", 
+    email: "mike@example.com", 
+    group: "Regular Member",
+    address: "789 Pine Rd, Village",
+    payment: "Inactive",
+    shares: 75
+  },
 ];
 
 export const MemberList = () => {
   const [members, setMembers] = useState<Member[]>(initialMembers);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
 
   const filteredMembers = members.filter((member) =>
     member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -34,10 +68,18 @@ export const MemberList = () => {
           <Users className="h-5 w-5 text-primary" />
           <h2 className="text-2xl font-bold">Members</h2>
         </div>
-        <Button className="bg-primary hover:bg-primary/90">
-          <UserPlus className="h-4 w-4 mr-2" />
-          Add Member
-        </Button>
+        <div className="flex items-center space-x-2">
+          <Button variant="outline" size="icon" title="Help">
+            <HelpCircle className="h-4 w-4" />
+          </Button>
+          <Button variant="outline" size="icon" title="Actions">
+            <Settings className="h-4 w-4" />
+          </Button>
+          <Button className="bg-primary hover:bg-primary/90">
+            <UserPlus className="h-4 w-4 mr-2" />
+            Add Member
+          </Button>
+        </div>
       </div>
       
       <div className="flex items-center space-x-2">
@@ -50,31 +92,45 @@ export const MemberList = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+        <Button 
+          variant="outline" 
+          onClick={() => setShowFilters(!showFilters)}
+          className={showFilters ? "bg-accent" : ""}
+        >
+          <Filter className="h-4 w-4 mr-2" />
+          Filter
+        </Button>
       </div>
 
       <div className="border rounded-lg">
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-[80px]">Number</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Payment Method</TableHead>
+              <TableHead>Group</TableHead>
+              <TableHead>Address</TableHead>
+              <TableHead>Payment</TableHead>
+              <TableHead className="text-right">Shares</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredMembers.map((member) => (
               <TableRow key={member.id}>
+                <TableCell>{member.id}</TableCell>
                 <TableCell className="font-medium">{member.name}</TableCell>
                 <TableCell>{member.email}</TableCell>
+                <TableCell>{member.group}</TableCell>
+                <TableCell>{member.address}</TableCell>
                 <TableCell>
                   <span className={`px-2 py-1 rounded-full text-xs ${
-                    member.status === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                    member.payment === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
                   }`}>
-                    {member.status}
+                    {member.payment}
                   </span>
                 </TableCell>
-                <TableCell>{member.paymentMethod}</TableCell>
+                <TableCell className="text-right">{member.shares}</TableCell>
               </TableRow>
             ))}
           </TableBody>
