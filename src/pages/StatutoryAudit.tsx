@@ -3,6 +3,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import { Clipboard, FileText, List, Check, Users } from "lucide-react";
+import FormProgress from "@/components/audit/FormProgress";
 import {
   Select,
   SelectContent,
@@ -19,6 +20,7 @@ import AccountingQuestionnaire from "@/components/audit/AccountingQuestionnaire"
 import { ListOfMembersSection } from "@/components/audit/ListOfMembersSection";
 import { BodiesAndRulesSection } from "@/components/audit/BodiesAndRulesSection";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 
 const StatutoryAudit = () => {
   const form = useForm({
@@ -44,6 +46,21 @@ const StatutoryAudit = () => {
       },
     },
   });
+
+  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
+
+  const calculateProgress = () => {
+    const totalItems = sections.reduce((acc, section) => acc + section.items.length, 0);
+    const checkedCount = Object.values(checkedItems).filter(Boolean).length;
+    return Math.round((checkedCount / totalItems) * 100);
+  };
+
+  const handleCheckboxChange = (itemId: string) => {
+    setCheckedItems(prev => ({
+      ...prev,
+      [itemId]: !prev[itemId]
+    }));
+  };
 
   const sections = [
     {
@@ -98,44 +115,33 @@ const StatutoryAudit = () => {
         <AppSidebar />
         <main className="flex-1 p-8">
           <div className="max-w-4xl mx-auto">
-            <SidebarTrigger className="mb-4" />
+            <div className="flex items-center gap-4 mb-4">
+              <FileText className="h-8 w-8 text-primary" />
+              <h1 className="text-3xl font-bold">Audit Questionnaire</h1>
+            </div>
             <Form {...form}>
               <form>
                 <Tabs defaultValue="checklist" className="w-full">
                   <TabsList className="w-full mb-8 grid grid-cols-5 bg-muted p-1 rounded-lg">
-                    <TabsTrigger 
-                      value="checklist" 
-                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
-                    >
+                    <TabsTrigger value="checklist" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all">
                       Document Checklist
                     </TabsTrigger>
-                    <TabsTrigger 
-                      value="questionnaire" 
-                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
-                    >
+                    <TabsTrigger value="questionnaire" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all">
                       Audit Questionnaire
                     </TabsTrigger>
-                    <TabsTrigger 
-                      value="accounting" 
-                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
-                    >
+                    <TabsTrigger value="accounting" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all">
                       Accounting Questionnaire
                     </TabsTrigger>
-                    <TabsTrigger 
-                      value="members" 
-                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
-                    >
+                    <TabsTrigger value="members" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all">
                       List of Members
                     </TabsTrigger>
-                    <TabsTrigger 
-                      value="bodies" 
-                      className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
-                    >
+                    <TabsTrigger value="bodies" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all">
                       Bodies & Rules
                     </TabsTrigger>
                   </TabsList>
                   
                   <TabsContent value="checklist" className="mt-6 space-y-8">
+                    <FormProgress progress={calculateProgress()} />
                     <div className="space-y-8">
                       {sections.map((section) => (
                         <Card key={section.title} className="p-6">
@@ -148,7 +154,11 @@ const StatutoryAudit = () => {
                               <div key={item.id} className="flex items-start gap-4">
                                 <div className="flex-1">
                                   <div className="flex items-center gap-2">
-                                    <Checkbox id={`checkbox-${item.id}`} />
+                                    <Checkbox 
+                                      id={`checkbox-${item.id}`} 
+                                      checked={checkedItems[item.id] || false}
+                                      onCheckedChange={() => handleCheckboxChange(item.id)}
+                                    />
                                     <Label htmlFor={item.id}>{item.label}</Label>
                                   </div>
                                   <div className="flex gap-4 mt-2">
