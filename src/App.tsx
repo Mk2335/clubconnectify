@@ -33,6 +33,7 @@ import Knowledge from "./pages/Knowledge";
 import Community from "./pages/Community";
 import Podcasts from "./pages/Podcasts";
 import Ebooks from "./pages/Ebooks";
+import Connect from "./pages/Connect";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +67,7 @@ const App = () => (
           <Route path="/financing/account" element={<Account />} />
           <Route path="/financing/business-plan" element={<BusinessPlan />} />
           <Route path="/financing/invoice" element={<Invoice />} />
+          <Route path="/knowledge-community/connect" element={<Connect />} />
           <Route path="/knowledge-community/knowledge" element={<Knowledge />} />
           <Route path="/knowledge-community/knowledge/podcasts" element={<Podcasts />} />
           <Route path="/knowledge-community/knowledge/ebooks" element={<Ebooks />} />
