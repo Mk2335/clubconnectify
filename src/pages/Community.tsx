@@ -2,10 +2,26 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Video, MessageCircle, Bot, Phone, Calendar, Check } from "lucide-react";
+import { Video, MessageCircle, Bot, Phone, Calendar, Check, Mail } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 
 const Community = () => {
+  const [email, setEmail] = useState("");
+  const { toast } = useToast();
+
+  const handleSupportEmail = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Here you would typically send the email to your backend
+    toast({
+      title: "Support request sent",
+      description: "We'll get back to you shortly at " + email,
+    });
+    setEmail("");
+  };
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -16,6 +32,30 @@ const Community = () => {
             <h1 className="text-2xl font-bold mb-6">Community</h1>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              {/* Support Email Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Mail className="h-5 w-5" />
+                    Support Email
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleSupportEmail} className="space-y-4">
+                    <Input
+                      type="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                    <Button type="submit" className="w-full">
+                      Request Support
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+
               {/* Live Call Section */}
               <Card>
                 <CardHeader>
