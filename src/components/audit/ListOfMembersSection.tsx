@@ -10,12 +10,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import FormProgress from "./FormProgress";
 import { useState } from "react";
 
 interface ListOfMembersSectionProps {
   isSubmitted?: boolean;
 }
+
+const cooperatives = [
+  { id: 1, name: "Wohnbaugenossenschaft 1" },
+  { id: 2, name: "Dienstleistungsgenossenschaft 2" },
+  { id: 3, name: "Agrargenossenschaft 3" },
+];
 
 export const ListOfMembersSection = ({ isSubmitted = false }: ListOfMembersSectionProps) => {
   const [formData, setFormData] = useState({
@@ -54,12 +67,21 @@ export const ListOfMembersSection = ({ isSubmitted = false }: ListOfMembersSecti
         <div className="space-y-4 mb-8">
           <div className="flex items-center gap-2">
             <span>of the</span>
-            <Input 
-              className="flex-1" 
-              placeholder="Enter cooperative name" 
+            <Select
               value={formData.cooperativeName}
-              onChange={(e) => handleInputChange('cooperativeName', e.target.value)}
-            />
+              onValueChange={(value) => handleInputChange('cooperativeName', value)}
+            >
+              <SelectTrigger className="w-[240px] bg-background">
+                <SelectValue placeholder="Select cooperative" />
+              </SelectTrigger>
+              <SelectContent>
+                {cooperatives.map((coop) => (
+                  <SelectItem key={coop.id} value={coop.name}>
+                    {coop.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <span>eG</span>
           </div>
           
