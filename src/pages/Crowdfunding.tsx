@@ -1,28 +1,8 @@
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  BarChart,
-  TrendingUp,
-  Users,
-  Gift,
-  Bell,
-  Settings,
-  Plus,
-  Search,
-} from "lucide-react";
+import { CampaignTabs } from "@/components/crowdfunding/CampaignTabs";
+import { FeaturedCampaigns } from "@/components/crowdfunding/FeaturedCampaigns";
+import { CampaignCategories } from "@/components/crowdfunding/CampaignCategories";
+import { TabsContent } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
 
 const Crowdfunding = () => {
   const featuredCampaigns = [
@@ -42,260 +22,141 @@ const Crowdfunding = () => {
     },
   ];
 
-  const backedCampaigns = [
-    {
-      title: "Local Food Co-op",
-      pledged: "€500",
-      status: "Active",
-      reward: "Founding Member",
-    },
-    {
-      title: "Renewable Energy Co-op",
-      pledged: "€1,000",
-      status: "Completed",
-      reward: "Premium Member",
-    },
-  ];
-
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex">
-        <AppSidebar />
-        <main className="flex-1 p-8">
-          <div className="max-w-7xl mx-auto space-y-6">
-            <h1 className="text-3xl font-bold">Crowdfunding Platform</h1>
+    <div className="container mx-auto p-6 space-y-6">
+      <h1 className="text-3xl font-bold mb-6">Crowdfunding Platform</h1>
+      
+      <CampaignTabs>
+        <TabsContent value="landing" className="space-y-6">
+          <FeaturedCampaigns campaigns={featuredCampaigns} />
+          <CampaignCategories />
+        </TabsContent>
 
-            <Tabs defaultValue="landing" className="space-y-4">
-              <TabsList>
-                <TabsTrigger value="landing">Featured</TabsTrigger>
-                <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
-                <TabsTrigger value="create">Create</TabsTrigger>
-                <TabsTrigger value="backer">Backer</TabsTrigger>
-                <TabsTrigger value="admin">Admin</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="landing">
-                <div className="grid gap-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Featured Campaigns</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid gap-6">
-                        {featuredCampaigns.map((campaign, index) => (
-                          <div key={index} className="space-y-4">
-                            <h3 className="text-lg font-semibold">{campaign.title}</h3>
-                            <Progress value={campaign.progress} />
-                            <div className="flex justify-between text-sm text-muted-foreground">
-                              <span>{campaign.progress}% of {campaign.goal}</span>
-                              <span>{campaign.backers} backers</span>
-                              <span>{campaign.daysLeft} days left</span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Categories</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <Button variant="outline" className="h-24">
-                          Sustainable Energy
-                        </Button>
-                        <Button variant="outline" className="h-24">
-                          Community Projects
-                        </Button>
-                        <Button variant="outline" className="h-24">
-                          Local Business
-                        </Button>
-                        <Button variant="outline" className="h-24">
-                          Social Impact
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
+        <TabsContent value="campaign">
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-semibold mb-4">Campaign Details</h2>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <h3 className="text-lg font-medium">Campaign Overview</h3>
+                    <p className="text-muted-foreground">
+                      Detailed information about the current campaign progress,
+                      goals, and timeline.
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium">Updates</h3>
+                    <p className="text-muted-foreground">
+                      Latest news and developments from the campaign organizers.
+                    </p>
+                  </div>
                 </div>
-              </TabsContent>
-
-              <TabsContent value="campaigns">
-                <Card>
-                  <CardHeader>
-                    <div className="flex justify-between items-center">
-                      <CardTitle>Active Campaigns</CardTitle>
-                      <div className="flex gap-4">
-                        <Input
-                          placeholder="Search campaigns..."
-                          className="w-64"
-                          type="search"
-                        />
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Campaign</TableHead>
-                          <TableHead>Progress</TableHead>
-                          <TableHead>Goal</TableHead>
-                          <TableHead>Backers</TableHead>
-                          <TableHead>Days Left</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {featuredCampaigns.map((campaign, index) => (
-                          <TableRow key={index}>
-                            <TableCell>{campaign.title}</TableCell>
-                            <TableCell>
-                              <Progress value={campaign.progress} className="w-24" />
-                            </TableCell>
-                            <TableCell>{campaign.goal}</TableCell>
-                            <TableCell>{campaign.backers}</TableCell>
-                            <TableCell>{campaign.daysLeft}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="create">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Create New Campaign</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-6">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Campaign Title</label>
-                        <Input placeholder="Enter campaign title" />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Funding Goal</label>
-                        <Input type="number" placeholder="Enter amount" />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Campaign Duration</label>
-                        <Input type="number" placeholder="Number of days" />
-                      </div>
-                      <Button>
-                        <Plus className="w-4 h-4 mr-2" />
-                        Create Campaign
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="backer">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Your Backed Campaigns</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Campaign</TableHead>
-                          <TableHead>Pledged Amount</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Reward Tier</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {backedCampaigns.map((campaign, index) => (
-                          <TableRow key={index}>
-                            <TableCell>{campaign.title}</TableCell>
-                            <TableCell>{campaign.pledged}</TableCell>
-                            <TableCell>{campaign.status}</TableCell>
-                            <TableCell>{campaign.reward}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="admin">
-                <div className="grid gap-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Platform Overview</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="flex items-center gap-4">
-                          <Users className="w-8 h-8 text-blue-500" />
-                          <div>
-                            <p className="text-sm text-muted-foreground">Total Users</p>
-                            <p className="text-2xl font-bold">1,234</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <TrendingUp className="w-8 h-8 text-green-500" />
-                          <div>
-                            <p className="text-sm text-muted-foreground">Total Raised</p>
-                            <p className="text-2xl font-bold">€123,456</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <BarChart className="w-8 h-8 text-purple-500" />
-                          <div>
-                            <p className="text-sm text-muted-foreground">Active Campaigns</p>
-                            <p className="text-2xl font-bold">45</p>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Recent Activity</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Action</TableHead>
-                            <TableHead>User</TableHead>
-                            <TableHead>Campaign</TableHead>
-                            <TableHead>Amount</TableHead>
-                            <TableHead>Date</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          <TableRow>
-                            <TableCell>New Pledge</TableCell>
-                            <TableCell>John Doe</TableCell>
-                            <TableCell>Sustainable Energy Project</TableCell>
-                            <TableCell>€500</TableCell>
-                            <TableCell>2024-03-20</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell>Campaign Created</TableCell>
-                            <TableCell>Jane Smith</TableCell>
-                            <TableCell>Community Garden Initiative</TableCell>
-                            <TableCell>-</TableCell>
-                            <TableCell>2024-03-19</TableCell>
-                          </TableRow>
-                        </TableBody>
-                      </Table>
-                    </CardContent>
-                  </Card>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <h3 className="text-lg font-medium">Comments</h3>
+                    <p className="text-muted-foreground">
+                      Community discussion and feedback about the campaign.
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium">FAQs</h3>
+                    <p className="text-muted-foreground">
+                      Common questions and answers about the campaign.
+                    </p>
+                  </div>
                 </div>
-              </TabsContent>
-            </Tabs>
-          </div>
-        </main>
-      </div>
-    </SidebarProvider>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="creation">
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-semibold mb-4">Create Campaign</h2>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-medium">Campaign Setup</h3>
+                  <p className="text-muted-foreground">
+                    Start your crowdfunding campaign by providing essential details
+                    about your project.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium">Funding Goals</h3>
+                  <p className="text-muted-foreground">
+                    Set your funding targets and timeline for the campaign.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium">Rewards</h3>
+                  <p className="text-muted-foreground">
+                    Define reward tiers and benefits for your campaign backers.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="backer">
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-semibold mb-4">Backer Dashboard</h2>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-medium">My Contributions</h3>
+                  <p className="text-muted-foreground">
+                    Track your campaign contributions and rewards.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium">Followed Campaigns</h3>
+                  <p className="text-muted-foreground">
+                    Monitor the progress of campaigns you're interested in.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium">Messages</h3>
+                  <p className="text-muted-foreground">
+                    Communication with campaign creators and updates.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="admin">
+          <Card>
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-semibold mb-4">Admin Panel</h2>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-medium">Campaign Management</h3>
+                  <p className="text-muted-foreground">
+                    Review and moderate campaign submissions.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium">User Management</h3>
+                  <p className="text-muted-foreground">
+                    Manage user accounts and permissions.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium">Platform Statistics</h3>
+                  <p className="text-muted-foreground">
+                    View analytics and performance metrics.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </CampaignTabs>
+    </div>
   );
 };
 
