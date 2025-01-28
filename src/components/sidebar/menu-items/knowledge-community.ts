@@ -1,4 +1,4 @@
-import { BookOpen, Users, GraduationCap, School, BookOpenCheck } from "lucide-react";
+import { BookOpen, Users, School } from "lucide-react";
 import { MenuItem } from "./types";
 
 export const knowledgeCommunityMenuItems: MenuItem = {
@@ -14,13 +14,8 @@ export const knowledgeCommunityMenuItems: MenuItem = {
         {
           icon: School,
           label: "MASTERCLASS",
-          href: "/knowledge-community/knowledge/courses/masterclass",
-        },
-        {
-          icon: BookOpenCheck,
-          label: "MASTERMIND",
-          href: "/knowledge-community/knowledge/courses/mastermind",
-        },
+          href: "/knowledge-community/knowledge/masterclass",
+        }
       ],
     },
     {

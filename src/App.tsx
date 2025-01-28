@@ -31,9 +31,7 @@ import AppointmentMeetings from "./pages/AppointmentMeetings";
 import AddressBook from "./pages/AddressBook";
 import Knowledge from "./pages/Knowledge";
 import Community from "./pages/Community";
-import Courses from "./pages/Courses";
 import Masterclass from "./pages/Masterclass";
-import Mastermind from "./pages/Mastermind";
 
 const queryClient = new QueryClient();
 
@@ -70,7 +68,6 @@ const App = () => (
           <Route path="/knowledge-community/knowledge" element={<Knowledge />} />
           <Route path="/knowledge-community/community" element={<Community />} />
           <Route path="/knowledge-community/knowledge/masterclass" element={<Masterclass />} />
-          <Route path="/knowledge-community/knowledge/mastermind" element={<Mastermind />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/integrations" element={<Integrations />} />
         </Routes>
