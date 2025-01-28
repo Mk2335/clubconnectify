@@ -9,8 +9,17 @@ import { PersonalInfoFields } from "@/components/member-applications/PersonalInf
 import { ContactFields } from "@/components/member-applications/ContactFields";
 import { MembershipTypeFields } from "@/components/member-applications/MembershipTypeFields";
 import { TermsFields } from "@/components/member-applications/TermsFields";
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 import debounce from "lodash/debounce";
+import { Input } from "@/components/ui/input";
+import { Search, Filter } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const MemberApplications = () => {
   const form = useForm<ApplicationFormData>({
@@ -25,6 +34,9 @@ const MemberApplications = () => {
       acceptDocuments: false,
     },
   });
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterValue, setFilterValue] = useState("all");
 
   // Handle resize observer warnings with debounce
   const handleResize = useCallback(
@@ -61,6 +73,38 @@ const MemberApplications = () => {
             <div className="space-y-6">
               <div>
                 <h1 className="text-2xl font-bold">Membership Application / Share Increase</h1>
+                
+                {/* Search and Filter Section */}
+                <div className="mt-4 space-y-4">
+                  <div className="flex gap-4">
+                    <div className="relative flex-1">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
+                      <Input
+                        type="text"
+                        placeholder="Search applications..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-10"
+                      />
+                    </div>
+                    <Select
+                      value={filterValue}
+                      onValueChange={setFilterValue}
+                    >
+                      <SelectTrigger className="w-[180px]">
+                        <Filter className="h-4 w-4 mr-2" />
+                        <SelectValue placeholder="Filter by status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Applications</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="approved">Approved</SelectItem>
+                        <SelectItem value="rejected">Rejected</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
                 <h2 className="text-lg font-semibold mt-6 mb-4">Personal Information</h2>
               </div>
 
