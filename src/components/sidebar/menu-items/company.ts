@@ -1,4 +1,4 @@
-import { Building2, ClipboardCheck, Database, FileText } from "lucide-react";
+import { Building2, ClipboardCheck, Database } from "lucide-react";
 import { MenuItem } from "./types";
 
 export const companyMenuItems: MenuItem = {
@@ -15,13 +15,6 @@ export const companyMenuItems: MenuItem = {
       icon: ClipboardCheck,
       label: "Statutory Audit",
       href: "/company/audit",
-      subItems: [
-        {
-          icon: FileText,
-          label: "Audit Questionnaire",
-          href: "/company/audit/questionnaire",
-        },
-      ],
     },
   ],
 };

@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AuditQuestionnaire from "./AuditQuestionnaire";
 
 const StatutoryAudit = () => {
   const sections = [
@@ -61,13 +63,6 @@ const StatutoryAudit = () => {
     },
   ];
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>, itemId: string) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      console.log(`File uploaded for ${itemId}:`, file.name);
-    }
-  };
-
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -75,58 +70,63 @@ const StatutoryAudit = () => {
         <main className="flex-1 p-8">
           <div className="max-w-4xl mx-auto">
             <SidebarTrigger className="mb-4" />
-            <div className="flex items-center gap-4 mb-8">
-              <img src="/lovable-uploads/0ffffc52-e45d-470a-817a-3232fefab2f4.png" alt="digiAUDIT" className="h-8" />
-              <h1 className="text-3xl font-bold">Statutory Audit Checklist</h1>
-            </div>
-            <p className="text-lg text-muted-foreground mb-8">
-              Required documents for conducting the mandatory audit according to §§ 53 ff GenG
-            </p>
-            <div className="space-y-8">
-              {sections.map((section) => (
-                <Card key={section.title} className="p-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <section.icon className="h-5 w-5 text-primary" />
-                    <h2 className="text-xl font-semibold">{section.title}</h2>
-                  </div>
-                  <div className="space-y-4">
-                    {section.items.map((item) => (
-                      <div key={item.id} className="flex items-start gap-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <Checkbox id={`checkbox-${item.id}`} />
-                            <Label htmlFor={item.id}>{item.label}</Label>
-                          </div>
-                          <div className="flex gap-4 mt-2">
-                            <Select>
-                              <SelectTrigger className="w-[200px]">
-                                <SelectValue placeholder="Select option" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="option1">Option 1</SelectItem>
-                                <SelectItem value="option2">Option 2</SelectItem>
-                                <SelectItem value="option3">Option 3</SelectItem>
-                              </SelectContent>
-                            </Select>
+            <Tabs defaultValue="checklist" className="w-full">
+              <TabsList className="mb-8">
+                <TabsTrigger value="checklist">Document Checklist</TabsTrigger>
+                <TabsTrigger value="questionnaire">Audit Questionnaire</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="checklist">
+                <div className="space-y-8">
+                  {sections.map((section) => (
+                    <Card key={section.title} className="p-6">
+                      <div className="flex items-center gap-2 mb-4">
+                        <section.icon className="h-5 w-5 text-primary" />
+                        <h2 className="text-xl font-semibold">{section.title}</h2>
+                      </div>
+                      <div className="space-y-4">
+                        {section.items.map((item) => (
+                          <div key={item.id} className="flex items-start gap-4">
                             <div className="flex-1">
-                              <Input
-                                id={item.id}
-                                type="file"
-                                className="cursor-pointer"
-                                onChange={(e) => handleFileUpload(e, item.id)}
-                              />
+                              <div className="flex items-center gap-2">
+                                <Checkbox id={`checkbox-${item.id}`} />
+                                <Label htmlFor={item.id}>{item.label}</Label>
+                              </div>
+                              <div className="flex gap-4 mt-2">
+                                <Select>
+                                  <SelectTrigger className="w-[200px]">
+                                    <SelectValue placeholder="Select option" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="option1">Option 1</SelectItem>
+                                    <SelectItem value="option2">Option 2</SelectItem>
+                                    <SelectItem value="option3">Option 3</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <div className="flex-1">
+                                  <Input
+                                    id={item.id}
+                                    type="file"
+                                    className="cursor-pointer"
+                                  />
+                                </div>
+                              </div>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                {item.description}
+                              </p>
                             </div>
                           </div>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            {item.description}
-                          </p>
-                        </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </Card>
-              ))}
-            </div>
+                    </Card>
+                  ))}
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="questionnaire">
+                <AuditQuestionnaire />
+              </TabsContent>
+            </Tabs>
           </div>
         </main>
       </div>

@@ -21,7 +21,6 @@ import TransferShares from "./pages/TransferShares";
 import Incorporation from "./pages/Incorporation";
 import BusinessPlan from "./pages/BusinessPlan";
 import StatutoryAudit from "./pages/StatutoryAudit";
-import AuditQuestionnaire from "./pages/AuditQuestionnaire";
 
 const queryClient = new QueryClient();
 
@@ -36,7 +35,6 @@ const App = () => (
           <Route path="/company" element={<Company />} />
           <Route path="/company/incorporation" element={<Incorporation />} />
           <Route path="/company/audit" element={<StatutoryAudit />} />
-          <Route path="/company/audit/questionnaire" element={<AuditQuestionnaire />} />
           <Route path="/members" element={<Members />} />
           <Route path="/members/applications" element={<MemberApplications />} />
           <Route path="/members/transfer" element={<TransferShares />} />
