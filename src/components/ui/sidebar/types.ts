@@ -1,6 +1,7 @@
 import { LucideIcon } from "lucide-react";
 import { VariantProps } from "class-variance-authority";
 import { sidebarMenuButtonVariants } from "./menu-button";
+import { TooltipContent } from "@/components/ui/tooltip";
 
 export type SidebarContext = {
   state: "expanded" | "collapsed";
@@ -22,6 +23,8 @@ export type SidebarProps = {
   side?: "left" | "right";
   variant?: "sidebar" | "floating" | "inset";
   collapsible?: "offcanvas" | "icon" | "none";
+  className?: string;
+  children?: React.ReactNode;
 };
 
 export type SidebarMenuButtonProps = React.ComponentProps<"button"> & {
