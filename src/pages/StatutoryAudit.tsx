@@ -72,10 +72,25 @@ const StatutoryAudit = () => {
           <div className="max-w-4xl mx-auto">
             <SidebarTrigger className="mb-4" />
             <Tabs defaultValue="checklist" className="w-full">
-              <TabsList className="w-full mb-8 grid grid-cols-3">
-                <TabsTrigger value="checklist" className="flex-1">Document Checklist</TabsTrigger>
-                <TabsTrigger value="questionnaire" className="flex-1">Audit Questionnaire</TabsTrigger>
-                <TabsTrigger value="accounting" className="flex-1">Accounting Questionnaire</TabsTrigger>
+              <TabsList className="w-full mb-8 grid grid-cols-3 bg-muted p-1 rounded-lg">
+                <TabsTrigger 
+                  value="checklist" 
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
+                >
+                  Document Checklist
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="questionnaire" 
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
+                >
+                  Audit Questionnaire
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="accounting" 
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
+                >
+                  Accounting Questionnaire
+                </TabsTrigger>
               </TabsList>
               
               <TabsContent value="checklist" className="mt-6 space-y-8">
