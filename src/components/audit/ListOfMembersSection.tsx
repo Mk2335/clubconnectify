@@ -13,7 +13,11 @@ import {
 import FormProgress from "./FormProgress";
 import { useState } from "react";
 
-export const ListOfMembersSection = () => {
+interface ListOfMembersSectionProps {
+  isSubmitted?: boolean;
+}
+
+export const ListOfMembersSection = ({ isSubmitted = false }: ListOfMembersSectionProps) => {
   const [formData, setFormData] = useState({
     cooperativeName: "",
     auditPeriod: "",
@@ -41,7 +45,7 @@ export const ListOfMembersSection = () => {
 
   return (
     <Card className="p-6 space-y-8">
-      <FormProgress progress={calculateProgress()} />
+      <FormProgress progress={isSubmitted ? 100 : calculateProgress()} isSubmitted={isSubmitted} />
       
       <div>
         <h2 className="text-xl font-semibold mb-2">Part 3 - Declaration on keeping the list of members</h2>
