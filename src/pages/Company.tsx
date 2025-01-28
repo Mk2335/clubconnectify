@@ -27,7 +27,7 @@ const Company = () => {
 
   const onSubmit = (data: any) => {
     console.log(data);
-    // Handle form submission
+    // Formular-Übermittlung verarbeiten
   };
 
   return (

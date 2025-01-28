@@ -3,17 +3,17 @@ import { MenuItem } from "./types";
 
 export const companyMenuItems: MenuItem = {
   icon: Database,
-  label: "Company Selection",
+  label: "Unternehmensauswahl",
   href: "/company",
   subItems: [
     {
       icon: Building2,
-      label: "Incorporation",
+      label: "Gründung",
       href: "/company/incorporation",
     },
     {
       icon: ClipboardCheck,
-      label: "Statutory Audit",
+      label: "Gesetzliche Prüfung",
       href: "/company/audit",
     },
   ],
