@@ -33,6 +33,13 @@ export const menuItems = [
         icon: ClipboardCheck,
         label: "Statutory Audit",
         href: "/company/audit",
+        subItems: [
+          {
+            icon: FileText,
+            label: "Audit Questionnaire",
+            href: "/company/audit/questionnaire",
+          },
+        ],
       },
     ],
   },
