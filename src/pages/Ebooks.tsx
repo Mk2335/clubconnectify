@@ -6,6 +6,12 @@ import { Book } from "lucide-react";
 
 const ebooks = [
   {
+    title: "LEXIKON der Grundlagen",
+    description: "Comprehensive reference guide for cooperative fundamentals and principles",
+    pages: 450,
+    format: "PDF & EPUB",
+  },
+  {
     title: "Genossenschaft Grundlagen",
     description: "A comprehensive guide to understanding cooperative business structures",
     pages: 245,
