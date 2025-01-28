@@ -1,20 +1,24 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
-import { MemberList } from "@/components/MemberList";
+import { Form } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
 
 const Index = () => {
+  const form = useForm({
+    defaultValues: {
+      // Add any form fields you need here
+    },
+  });
+
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <AppSidebar />
-        <main className="flex-1 p-8">
-          <div className="max-w-6xl mx-auto">
-            <SidebarTrigger className="mb-4" />
-            <MemberList />
-          </div>
-        </main>
-      </div>
-    </SidebarProvider>
+    <Form {...form}>
+      <form>
+        <div className="flex min-h-screen flex-col items-center justify-center p-24">
+          <h1 className="text-4xl font-bold">Welcome to the Cooperative Platform</h1>
+          <p className="mt-4 text-xl text-muted-foreground">
+            Manage your cooperative efficiently and effectively
+          </p>
+        </div>
+      </form>
+    </Form>
   );
 };
 
