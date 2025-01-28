@@ -10,7 +10,6 @@ import Members from "./pages/Members";
 import Calendar from "./pages/Dates";
 import Tasks from "./pages/Tasks";
 import Voting from "./pages/Voting";
-import VotingTopics from "./pages/VotingTopics";
 import GeneralAssembly from "./pages/GeneralAssembly";
 import Minutes from "./pages/Minutes";
 import Newsletter from "./pages/Newsletter";
@@ -44,7 +43,6 @@ const App = () => (
           <Route path="/calendar/tasks" element={<Tasks />} />
           <Route path="/general-assembly" element={<GeneralAssembly />} />
           <Route path="/general-assembly/voting" element={<Voting />} />
-          <Route path="/general-assembly/voting/topics" element={<VotingTopics />} />
           <Route path="/general-assembly/minutes" element={<Minutes />} />
           <Route path="/general-assembly/newsletter" element={<Newsletter />} />
           <Route path="/general-assembly/storage" element={<DataStorage />} />

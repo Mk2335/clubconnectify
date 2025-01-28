@@ -10,13 +10,6 @@ export const generalAssemblyMenuItems: MenuItem = {
       icon: Vote,
       label: "Voting",
       href: "/general-assembly/voting",
-      subItems: [
-        {
-          icon: Vote,
-          label: "Topics",
-          href: "/general-assembly/voting/topics",
-        },
-      ],
     },
     {
       icon: FileText,
