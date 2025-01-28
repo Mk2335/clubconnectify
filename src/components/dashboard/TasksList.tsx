@@ -22,7 +22,7 @@ const TasksList = ({ tasks }: TasksListProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[200px] pr-4">
+        <ScrollArea className="h-[300px] pr-4">
           {tasks.map((task, i) => (
             <div
               key={i}
