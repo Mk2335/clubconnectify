@@ -81,6 +81,9 @@ const AuditQuestionnaire = () => {
       noAssetsEmbezzled: "",
       noCustomerAssetsEmbezzled: "",
       auditAssociationDisclosed: "",
+      membersWithVotingRights: "",
+      transparencyRegister: "",
+      registrationDate: "",
     },
   });
 
