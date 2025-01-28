@@ -23,7 +23,7 @@ interface MenuItemProps {
 export function SidebarMenuItem({ icon: Icon, label, href, subItems }: MenuItemProps) {
   return (
     <BaseSidebarMenuItem>
-      <SidebarMenuButton asChild>
+      <SidebarMenuButton>
         <a href={href} className="flex items-center">
           <Icon className="mr-2 h-4 w-4" />
           <span>{label}</span>
@@ -33,7 +33,7 @@ export function SidebarMenuItem({ icon: Icon, label, href, subItems }: MenuItemP
         <SidebarMenuSub>
           {subItems.map((subItem) => (
             <SidebarMenuSubItem key={subItem.label}>
-              <SidebarMenuSubButton asChild>
+              <SidebarMenuSubButton>
                 <a href={subItem.href} className="flex items-center">
                   <subItem.icon className="mr-2 h-4 w-4" />
                   <span>{subItem.label}</span>

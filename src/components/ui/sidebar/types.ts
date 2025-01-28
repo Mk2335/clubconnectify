@@ -1,5 +1,6 @@
 import { LucideIcon } from "lucide-react";
 import { TooltipContent } from "@/components/ui/tooltip";
+import { ButtonHTMLAttributes } from "react";
 
 export type SidebarState = "expanded" | "collapsed";
 
@@ -27,7 +28,7 @@ export interface SidebarProps {
   children?: React.ReactNode;
 }
 
-export interface SidebarMenuButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface SidebarMenuButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
   isActive?: boolean;
   variant?: "default" | "outline";
