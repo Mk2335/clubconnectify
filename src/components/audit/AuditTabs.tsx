@@ -8,6 +8,7 @@ import { ListOfMembersSection } from "./ListOfMembersSection";
 import { BodiesAndRulesSection } from "./BodiesAndRulesSection";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 interface AuditTabsProps {
   form: UseFormReturn<any>;
@@ -16,8 +17,10 @@ interface AuditTabsProps {
 
 export const AuditTabs = ({ form, sections }: AuditTabsProps) => {
   const { toast } = useToast();
+  const [submittedTabs, setSubmittedTabs] = useState<Record<string, boolean>>({});
 
-  const handleSubmit = () => {
+  const handleSubmit = (tab: string) => {
+    setSubmittedTabs(prev => ({ ...prev, [tab]: true }));
     toast({
       title: "Form submitted",
       description: "Your questionnaire has been saved.",
@@ -45,37 +48,37 @@ export const AuditTabs = ({ form, sections }: AuditTabsProps) => {
       </TabsList>
       
       <TabsContent value="checklist" className="space-y-6">
-        <DocumentChecklistTab sections={sections} />
+        <DocumentChecklistTab sections={sections} isSubmitted={submittedTabs['checklist']} />
         <div className="flex justify-end">
-          <Button onClick={handleSubmit}>Submit Questionnaire</Button>
+          <Button onClick={() => handleSubmit('checklist')}>Submit Questionnaire</Button>
         </div>
       </TabsContent>
 
       <TabsContent value="questionnaire" className="space-y-6">
-        <AuditQuestionnaire />
+        <AuditQuestionnaire isSubmitted={submittedTabs['questionnaire']} />
         <div className="flex justify-end">
-          <Button onClick={handleSubmit}>Submit Questionnaire</Button>
+          <Button onClick={() => handleSubmit('questionnaire')}>Submit Questionnaire</Button>
         </div>
       </TabsContent>
 
       <TabsContent value="accounting" className="space-y-6">
         <AccountingQuestionnaire />
         <div className="flex justify-end">
-          <Button onClick={handleSubmit}>Submit Questionnaire</Button>
+          <Button onClick={() => handleSubmit('accounting')}>Submit Questionnaire</Button>
         </div>
       </TabsContent>
 
       <TabsContent value="members" className="space-y-6">
         <ListOfMembersSection />
         <div className="flex justify-end">
-          <Button onClick={handleSubmit}>Submit Questionnaire</Button>
+          <Button onClick={() => handleSubmit('members')}>Submit Questionnaire</Button>
         </div>
       </TabsContent>
 
       <TabsContent value="bodies" className="space-y-6">
         <BodiesAndRulesSection form={form} />
         <div className="flex justify-end">
-          <Button onClick={handleSubmit}>Submit Questionnaire</Button>
+          <Button onClick={() => handleSubmit('bodies')}>Submit Questionnaire</Button>
         </div>
       </TabsContent>
     </Tabs>

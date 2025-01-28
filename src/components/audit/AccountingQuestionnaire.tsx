@@ -8,8 +8,10 @@ import AnnualFinancialStatementsSection from "./AnnualFinancialStatementsSection
 import AdditionalFinancialStatementsSection from "./AdditionalFinancialStatementsSection";
 import FormProgress from "./FormProgress";
 import { AccountingQuestionnaireData } from "@/types/accountingQuestionnaire";
+import { useState } from "react";
 
 const AccountingQuestionnaire = () => {
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const form = useForm<AccountingQuestionnaireData>({
     defaultValues: {
       internalControls: "no",
@@ -50,6 +52,7 @@ const AccountingQuestionnaire = () => {
 
   const onSubmit = (data: AccountingQuestionnaireData) => {
     console.log(data);
+    setIsSubmitted(true);
     toast({
       title: "Form submitted",
       description: "Your accounting questionnaire has been saved.",
@@ -59,7 +62,7 @@ const AccountingQuestionnaire = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormProgress progress={progress} />
+        <FormProgress progress={progress} isSubmitted={isSubmitted} />
         <ManagementBooksSection form={form} />
         <AnnualFinancialStatementsSection form={form} />
         <AdditionalFinancialStatementsSection form={form} />
