@@ -24,10 +24,28 @@ import {
   FileText,
   Gavel,
   Mail,
+  Building2,
+  ClipboardCheck,
 } from "lucide-react";
 
 const menuItems = [
-  { icon: Database, label: "Company Selection", href: "/company" },
+  {
+    icon: Database,
+    label: "Company Selection",
+    href: "/company",
+    subItems: [
+      {
+        icon: Building2,
+        label: "Incorporation",
+        href: "/company/incorporation",
+      },
+      {
+        icon: ClipboardCheck,
+        label: "Statutory Audit",
+        href: "/company/audit",
+      },
+    ],
+  },
   { icon: Home, label: "Dashboard", href: "/" },
   { icon: Users, label: "Members", href: "/members" },
   { icon: Calendar, label: "Dates", href: "/dates" },

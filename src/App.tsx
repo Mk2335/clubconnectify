@@ -28,6 +28,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/company" element={<Company />} />
+          <Route path="/company/incorporation" element={<Company />} />
+          <Route path="/company/audit" element={<Company />} />
           <Route path="/members" element={<Members />} />
           <Route path="/dates" element={<Dates />} />
           <Route path="/general-assembly" element={<GeneralAssembly />} />
