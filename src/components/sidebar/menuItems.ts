@@ -15,6 +15,7 @@ import {
   ClipboardCheck,
   UserPlus,
   Share2,
+  LineChart,
 } from "lucide-react";
 
 export const menuItems = [
@@ -87,7 +88,18 @@ export const menuItems = [
       },
     ],
   },
-  { icon: DollarSign, label: "Financing", href: "/financing" },
+  { 
+    icon: DollarSign, 
+    label: "Financing", 
+    href: "/financing",
+    subItems: [
+      {
+        icon: LineChart,
+        label: "Business Plan",
+        href: "/financing/business-plan",
+      },
+    ],
+  },
   { icon: Settings, label: "Settings", href: "/settings" },
   { icon: Cable, label: "Integrations", href: "/integrations" },
 ];

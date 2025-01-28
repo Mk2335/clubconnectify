@@ -19,6 +19,7 @@ import Integrations from "./pages/Integrations";
 import MemberApplications from "./pages/MemberApplications";
 import TransferShares from "./pages/TransferShares";
 import Incorporation from "./pages/Incorporation";
+import BusinessPlan from "./pages/BusinessPlan";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ const App = () => (
           <Route path="/general-assembly/minutes" element={<Minutes />} />
           <Route path="/general-assembly/newsletter" element={<Newsletter />} />
           <Route path="/financing" element={<Financing />} />
+          <Route path="/financing/business-plan" element={<BusinessPlan />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/integrations" element={<Integrations />} />
         </Routes>
