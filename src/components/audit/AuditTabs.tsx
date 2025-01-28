@@ -72,7 +72,7 @@ export const AuditTabs = ({ form, sections }: AuditTabsProps) => {
                 <ListOfMembersSection />
               )}
               {tab.id === "bodies" && (
-                <BodiesAndRulesSection form={form} />
+                <BodiesAndRulesSection form={form} isSubmitted={submittedTabs[tab.id]} />
               )}
             </div>
           </div>
