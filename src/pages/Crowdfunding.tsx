@@ -8,16 +8,16 @@ import { TabsContent } from "@/components/ui/tabs";
 
 const sampleCampaigns = [
   {
-    title: "Sustainable Energy Co-op",
-    progress: 75,
-    goal: "€100,000",
-    backers: 150,
-    daysLeft: 15
+    title: "Genossenschaftsbank",
+    progress: 35,
+    goal: "€5,000,000",
+    backers: 2150,
+    daysLeft: 60
   },
   {
-    title: "Community Banking Initiative",
+    title: "DigiGeno Verwaltungsplattform für Genossenschaften",
     progress: 45,
-    goal: "€50,000",
+    goal: "€550,000",
     backers: 89,
     daysLeft: 30
   },
