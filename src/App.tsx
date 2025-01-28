@@ -20,6 +20,7 @@ import MemberApplications from "./pages/MemberApplications";
 import TransferShares from "./pages/TransferShares";
 import Incorporation from "./pages/Incorporation";
 import BusinessPlan from "./pages/BusinessPlan";
+import StatutoryAudit from "./pages/StatutoryAudit";
 
 const queryClient = new QueryClient();
 
@@ -33,7 +34,7 @@ const App = () => (
           <Route path="/" element={<Dashboard />} />
           <Route path="/company" element={<Company />} />
           <Route path="/company/incorporation" element={<Incorporation />} />
-          <Route path="/company/audit" element={<Company />} />
+          <Route path="/company/audit" element={<StatutoryAudit />} />
           <Route path="/members" element={<Members />} />
           <Route path="/members/applications" element={<MemberApplications />} />
           <Route path="/members/transfer" element={<TransferShares />} />
