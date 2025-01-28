@@ -1,6 +1,6 @@
-import { Rocket } from "lucide-react";
 import { Sidebar, SidebarHeader } from "@/components/ui/sidebar";
 import { SidebarMenu } from "@/components/sidebar/SidebarMenu";
+import { CooperativeSelector } from "./company/CooperativeSelector";
 
 export function AppSidebar() {
   return (
@@ -14,6 +14,7 @@ export function AppSidebar() {
           />
         </div>
       </SidebarHeader>
+      <CooperativeSelector />
       <SidebarMenu />
     </Sidebar>
   );
