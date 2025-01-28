@@ -1,41 +1,43 @@
 import { LucideIcon } from "lucide-react";
-import { VariantProps } from "class-variance-authority";
-import { sidebarMenuButtonVariants } from "./menu-button";
 import { TooltipContent } from "@/components/ui/tooltip";
 
-export type SidebarContext = {
-  state: "expanded" | "collapsed";
+export type SidebarState = "expanded" | "collapsed";
+
+export interface SidebarContext {
+  state: SidebarState;
   open: boolean;
   setOpen: (open: boolean) => void;
+  isMobile: boolean;
   openMobile: boolean;
   setOpenMobile: (open: boolean) => void;
-  isMobile: boolean;
   toggleSidebar: () => void;
-};
+}
 
-export type SidebarProviderProps = {
+export interface SidebarProviderProps {
   defaultOpen?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-};
+}
 
-export type SidebarProps = {
+export interface SidebarProps {
   side?: "left" | "right";
   variant?: "sidebar" | "floating" | "inset";
   collapsible?: "offcanvas" | "icon" | "none";
   className?: string;
   children?: React.ReactNode;
-};
+}
 
-export type SidebarMenuButtonProps = React.ComponentProps<"button"> & {
+export interface SidebarMenuButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
   isActive?: boolean;
+  variant?: "default" | "outline";
+  size?: "default" | "sm" | "lg";
   tooltip?: string | React.ComponentProps<typeof TooltipContent>;
-} & VariantProps<typeof sidebarMenuButtonVariants>;
+}
 
-export type MenuItem = {
+export interface MenuItem {
   icon: LucideIcon;
   label: string;
   href: string;
   subItems?: MenuItem[];
-};
+}
