@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import AnnualFinancialStatementsSection from "./AnnualFinancialStatementsSection";
 
 interface AccountingQuestionnaireData {
   internalControls: "yes" | "no";
@@ -14,6 +15,21 @@ interface AccountingQuestionnaireData {
   dataRetention: "yes" | "no";
   riskManagement: "yes" | "no";
   bookkeeping: "internal" | "external";
+  // Annual Financial Statements section
+  statementsExist: "yes" | "no";
+  statements: Array<{
+    statement: string;
+    setupDate: string;
+    establishedDate: string;
+    hasProtocol: "yes" | "no";
+  }>;
+  preparedBy: "cooperative" | "consultant";
+  consultantDetails: string;
+  compliesWithLaw: "yes" | "no" | "justify";
+  estimatedValues: "yes" | "no" | "justify";
+  specialCircumstances: "none" | "exist";
+  circumstances: string;
+  legalDisputesHandled: "yes" | "no";
 }
 
 const AccountingQuestionnaire = () => {
@@ -26,6 +42,21 @@ const AccountingQuestionnaire = () => {
       dataRetention: "no",
       riskManagement: "no",
       bookkeeping: "internal",
+      // Annual Financial Statements section defaults
+      statementsExist: "no",
+      statements: Array(4).fill({
+        statement: "",
+        setupDate: "",
+        establishedDate: "",
+        hasProtocol: "no"
+      }),
+      preparedBy: "cooperative",
+      consultantDetails: "",
+      compliesWithLaw: "yes",
+      estimatedValues: "yes",
+      specialCircumstances: "none",
+      circumstances: "",
+      legalDisputesHandled: "yes"
     },
   });
 
@@ -233,6 +264,8 @@ const AccountingQuestionnaire = () => {
             />
           </CardContent>
         </Card>
+
+        <AnnualFinancialStatementsSection form={form} />
 
         <div className="flex justify-end">
           <Button type="submit">Submit Questionnaire</Button>
