@@ -13,6 +13,7 @@ import {
   Mail,
   Building2,
   ClipboardCheck,
+  UserPlus,
 } from "lucide-react";
 
 export const menuItems = [
@@ -34,7 +35,18 @@ export const menuItems = [
     ],
   },
   { icon: Home, label: "Dashboard", href: "/" },
-  { icon: Users, label: "Members", href: "/members" },
+  { 
+    icon: Users, 
+    label: "Members", 
+    href: "/members",
+    subItems: [
+      {
+        icon: UserPlus,
+        label: "New Applications",
+        href: "/members/applications",
+      },
+    ],
+  },
   {
     icon: Calendar,
     label: "Calendar",

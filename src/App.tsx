@@ -16,6 +16,7 @@ import Newsletter from "./pages/Newsletter";
 import Financing from "./pages/Financing";
 import Settings from "./pages/Settings";
 import Integrations from "./pages/Integrations";
+import MemberApplications from "./pages/MemberApplications";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
           <Route path="/company/incorporation" element={<Company />} />
           <Route path="/company/audit" element={<Company />} />
           <Route path="/members" element={<Members />} />
+          <Route path="/members/applications" element={<MemberApplications />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/calendar/tasks" element={<Tasks />} />
           <Route path="/general-assembly" element={<GeneralAssembly />} />
