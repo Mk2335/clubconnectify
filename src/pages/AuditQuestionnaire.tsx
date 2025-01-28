@@ -84,6 +84,22 @@ const AuditQuestionnaire = () => {
       membersWithVotingRights: "",
       transparencyRegister: "",
       registrationDate: "",
+      
+      // New Insurance fields
+      operationsLiabilityInsurance: "",
+      dAndOInsurance: "",
+      propertyDamageInsurance: "",
+      creditDefaultInsurance: "",
+      buildingInsuranceCoverage: "",
+      buildingElementaryInsurance: "",
+      
+      // New IT & DSGVO fields
+      electronicDataProcessing: "",
+      itHardwareMonitoring: "",
+      cloudBasedSoftware: "",
+      dailyDataBackup: "",
+      dataProtectionGuideline: "",
+      gdprCompliance: "",
     },
   });
 
