@@ -14,6 +14,7 @@ import {
   Building2,
   ClipboardCheck,
   UserPlus,
+  Share2,
 } from "lucide-react";
 
 export const menuItems = [
@@ -44,6 +45,11 @@ export const menuItems = [
         icon: UserPlus,
         label: "New Applications",
         href: "/members/applications",
+      },
+      {
+        icon: Share2,
+        label: "Transfer Shares",
+        href: "/members/transfer",
       },
     ],
   },
