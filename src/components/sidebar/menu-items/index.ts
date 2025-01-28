@@ -6,6 +6,7 @@ import { generalAssemblyMenuItems } from "./general-assembly";
 import { financingMenuItems } from "./financing";
 import { settingsMenuItem } from "./settings";
 import { integrationsMenuItem } from "./integrations";
+import { knowledgeCommunityMenuItems } from "./knowledge-community";
 import { Home } from "lucide-react";
 
 export const menuItems: MenuItem[] = [
@@ -15,6 +16,7 @@ export const menuItems: MenuItem[] = [
   calendarMenuItems,
   generalAssemblyMenuItems,
   financingMenuItems,
+  knowledgeCommunityMenuItems,
   settingsMenuItem,
   integrationsMenuItem,
 ];

@@ -29,6 +29,8 @@ import Appointments from "./pages/Appointments";
 import AssociationCalendar from "./pages/AssociationCalendar";
 import AppointmentMeetings from "./pages/AppointmentMeetings";
 import AddressBook from "./pages/AddressBook";
+import Knowledge from "./pages/Knowledge";
+import Community from "./pages/Community";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +64,8 @@ const App = () => (
           <Route path="/financing/account" element={<Account />} />
           <Route path="/financing/business-plan" element={<BusinessPlan />} />
           <Route path="/financing/invoice" element={<Invoice />} />
+          <Route path="/knowledge-community/knowledge" element={<Knowledge />} />
+          <Route path="/knowledge-community/community" element={<Community />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/integrations" element={<Integrations />} />
         </Routes>
