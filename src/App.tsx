@@ -7,13 +7,13 @@ import Index from "./pages/Index";
 import Company from "./pages/Company";
 import Dashboard from "./pages/Dashboard";
 import Members from "./pages/Members";
-import Dates from "./pages/Dates";
+import Calendar from "./pages/Dates";
+import Tasks from "./pages/Tasks";
 import Voting from "./pages/Voting";
 import GeneralAssembly from "./pages/GeneralAssembly";
 import Minutes from "./pages/Minutes";
 import Newsletter from "./pages/Newsletter";
 import Financing from "./pages/Financing";
-import Tasks from "./pages/Tasks";
 import Settings from "./pages/Settings";
 import Integrations from "./pages/Integrations";
 
@@ -31,13 +31,13 @@ const App = () => (
           <Route path="/company/incorporation" element={<Company />} />
           <Route path="/company/audit" element={<Company />} />
           <Route path="/members" element={<Members />} />
-          <Route path="/dates" element={<Dates />} />
+          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/calendar/tasks" element={<Tasks />} />
           <Route path="/general-assembly" element={<GeneralAssembly />} />
           <Route path="/general-assembly/voting" element={<Voting />} />
           <Route path="/general-assembly/minutes" element={<Minutes />} />
           <Route path="/general-assembly/newsletter" element={<Newsletter />} />
           <Route path="/financing" element={<Financing />} />
-          <Route path="/tasks" element={<Tasks />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/integrations" element={<Integrations />} />
         </Routes>

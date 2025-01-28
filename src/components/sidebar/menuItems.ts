@@ -35,7 +35,18 @@ export const menuItems = [
   },
   { icon: Home, label: "Dashboard", href: "/" },
   { icon: Users, label: "Members", href: "/members" },
-  { icon: Calendar, label: "Dates", href: "/dates" },
+  {
+    icon: Calendar,
+    label: "Calendar",
+    href: "/calendar",
+    subItems: [
+      {
+        icon: List,
+        label: "Tasks",
+        href: "/calendar/tasks",
+      },
+    ],
+  },
   {
     icon: Gavel,
     label: "General Assembly",
@@ -59,7 +70,6 @@ export const menuItems = [
     ],
   },
   { icon: DollarSign, label: "Financing", href: "/financing" },
-  { icon: List, label: "Tasks", href: "/tasks" },
   { icon: Settings, label: "Settings", href: "/settings" },
   { icon: Cable, label: "Integrations", href: "/integrations" },
 ];
