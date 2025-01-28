@@ -28,11 +28,30 @@ interface IncorporationFormData {
 }
 
 const AUDITING_ASSOCIATIONS = [
-  "German Cooperative and Raiffeisen Confederation",
-  "Baden-Württembergischer Genossenschaftsverband",
-  "Genossenschaftsverband Bayern",
-  "Genossenschaftsverband Weser-Ems",
-  "Rheinisch-Westfälischer Genossenschaftsverband"
+  {
+    name: "Deutschen Interessenverband der Kleingenossenschaften e.V. (DIVK)",
+    recommended: true
+  },
+  {
+    name: "German Cooperative and Raiffeisen Confederation",
+    recommended: false
+  },
+  {
+    name: "Baden-Württembergischer Genossenschaftsverband",
+    recommended: false
+  },
+  {
+    name: "Genossenschaftsverband Bayern",
+    recommended: false
+  },
+  {
+    name: "Genossenschaftsverband Weser-Ems",
+    recommended: false
+  },
+  {
+    name: "Rheinisch-Westfälischer Genossenschaftsverband",
+    recommended: false
+  }
 ];
 
 const IncorporationForm = () => {
@@ -261,8 +280,15 @@ const IncorporationForm = () => {
                     </FormControl>
                     <SelectContent>
                       {AUDITING_ASSOCIATIONS.map((association) => (
-                        <SelectItem key={association} value={association}>
-                          {association}
+                        <SelectItem 
+                          key={association.name} 
+                          value={association.name}
+                          className={association.recommended ? "bg-green-50 font-medium" : ""}
+                        >
+                          {association.name}
+                          {association.recommended && (
+                            <span className="ml-2 text-sm text-green-600">(Recommended)</span>
+                          )}
                         </SelectItem>
                       ))}
                     </SelectContent>
