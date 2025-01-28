@@ -8,6 +8,7 @@ import { StatutesSection } from "@/components/audit/StatutesSection";
 import { EmployeesSection } from "@/components/audit/EmployeesSection";
 import { PromotionSection } from "@/components/audit/PromotionSection";
 import { LegalDisputesSection } from "@/components/audit/LegalDisputesSection";
+import { FinancialInstrumentsSection } from "@/components/audit/FinancialInstrumentsSection";
 
 const AuditQuestionnaire = () => {
   const form = useForm({
@@ -54,6 +55,15 @@ const AuditQuestionnaire = () => {
         description: "",
         value: "",
       }),
+      cryptoCurrencyTrading: "",
+      derivativeInstruments: "",
+      derivatives: Array(8).fill({
+        number: "",
+        type: "",
+        description: "",
+        value: "",
+      }),
+      dayTrading: "",
     },
   });
 
@@ -78,6 +88,7 @@ const AuditQuestionnaire = () => {
                 <EmployeesSection form={form} />
                 <PromotionSection form={form} />
                 <LegalDisputesSection form={form} />
+                <FinancialInstrumentsSection form={form} />
               </div>
             </Form>
           </div>
