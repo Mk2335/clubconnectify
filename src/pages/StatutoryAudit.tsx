@@ -17,6 +17,7 @@ import AuditQuestionnaire from "./AuditQuestionnaire";
 import AccountingQuestionnaire from "@/components/audit/AccountingQuestionnaire";
 import { ListOfMembersSection } from "@/components/audit/ListOfMembersSection";
 import { BodiesAndRulesSection } from "@/components/audit/BodiesAndRulesSection";
+import { useForm } from "react-hook-form";
 
 const StatutoryAudit = () => {
   const sections = [
@@ -65,6 +66,30 @@ const StatutoryAudit = () => {
       ],
     },
   ];
+
+  const form = useForm({
+    defaultValues: {
+      noSupervisoryBoard: "",
+      authorizedRepresentativeMember: "",
+      bodiesUnchanged: "",
+      managementBoard: {
+        chairman: "",
+        deputyChairman: "",
+        member: "",
+      },
+      authorisedRepresentative: {
+        representative: "",
+        deputy: "",
+      },
+      supervisoryBoard: {
+        chairman: "",
+        deputyChairman: "",
+        member1: "",
+        member2: "",
+        member3: "",
+      },
+    },
+  });
 
   return (
     <SidebarProvider>
@@ -167,7 +192,7 @@ const StatutoryAudit = () => {
               </TabsContent>
 
               <TabsContent value="bodies">
-                <BodiesAndRulesSection />
+                <BodiesAndRulesSection form={form} />
               </TabsContent>
             </Tabs>
           </div>
