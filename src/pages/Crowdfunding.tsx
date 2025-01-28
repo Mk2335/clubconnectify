@@ -27,18 +27,18 @@ import {
 const Crowdfunding = () => {
   const featuredCampaigns = [
     {
-      title: "Sustainable Energy Project",
-      progress: 75,
-      goal: "€50,000",
-      backers: 230,
-      daysLeft: 15,
+      title: "DigiGeno Verwaltungsplattform für Genossenschaften",
+      progress: 35,
+      goal: "€550,000",
+      backers: 180,
+      daysLeft: 45,
     },
     {
-      title: "Community Garden Initiative",
-      progress: 45,
-      goal: "€20,000",
-      backers: 150,
-      daysLeft: 25,
+      title: "Genossenschaftsbank",
+      progress: 25,
+      goal: "€5,000,000",
+      backers: 320,
+      daysLeft: 60,
     },
   ];
 
