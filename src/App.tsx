@@ -25,6 +25,9 @@ import DataStorage from "./pages/DataStorage";
 import Invoice from "./pages/Invoice";
 import Account from "./pages/Account";
 import VirtualMeetingRoom from "./pages/VirtualMeetingRoom";
+import Appointments from "./pages/Appointments";
+import AssociationCalendar from "./pages/AssociationCalendar";
+import AppointmentMeetings from "./pages/AppointmentMeetings";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +47,9 @@ const App = () => (
           <Route path="/members/transfer" element={<TransferShares />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/calendar/tasks" element={<Tasks />} />
+          <Route path="/calendar/appointments" element={<Appointments />} />
+          <Route path="/calendar/appointments/association" element={<AssociationCalendar />} />
+          <Route path="/calendar/appointments/meetings" element={<AppointmentMeetings />} />
           <Route path="/general-assembly" element={<GeneralAssembly />} />
           <Route path="/general-assembly/voting" element={<Voting />} />
           <Route path="/general-assembly/minutes" element={<Minutes />} />
