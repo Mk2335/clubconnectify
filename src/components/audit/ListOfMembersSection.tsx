@@ -10,10 +10,39 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import FormProgress from "./FormProgress";
+import { useState } from "react";
 
 export const ListOfMembersSection = () => {
+  const [formData, setFormData] = useState({
+    cooperativeName: "",
+    auditPeriod: "",
+    memberCount: "",
+    accessionsCount: "",
+    cancellationsCount: "",
+    properMaintenance: "",
+    memberLimit: "",
+    cancellationPeriod: "",
+  });
+
+  // Calculate progress based on filled fields
+  const calculateProgress = () => {
+    const totalFields = Object.keys(formData).length;
+    const filledFields = Object.values(formData).filter(value => value !== "").length;
+    return Math.round((filledFields / totalFields) * 100);
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   return (
     <Card className="p-6 space-y-8">
+      <FormProgress progress={calculateProgress()} />
+      
       <div>
         <h2 className="text-xl font-semibold mb-2">Part 3 - Declaration on keeping the list of members</h2>
         <p className="text-sm text-muted-foreground mb-6">pursuant to §§ 53 ff GenG</p>
@@ -21,13 +50,23 @@ export const ListOfMembersSection = () => {
         <div className="space-y-4 mb-8">
           <div className="flex items-center gap-2">
             <span>of the</span>
-            <Input className="flex-1" placeholder="Enter cooperative name" />
+            <Input 
+              className="flex-1" 
+              placeholder="Enter cooperative name" 
+              value={formData.cooperativeName}
+              onChange={(e) => handleInputChange('cooperativeName', e.target.value)}
+            />
             <span>eG</span>
           </div>
           
           <div className="flex items-center gap-2">
             <span>for the audit for the</span>
-            <Input className="flex-1" placeholder="Enter audit period" />
+            <Input 
+              className="flex-1" 
+              placeholder="Enter audit period"
+              value={formData.auditPeriod}
+              onChange={(e) => handleInputChange('auditPeriod', e.target.value)}
+            />
           </div>
         </div>
       </div>
@@ -47,13 +86,25 @@ export const ListOfMembersSection = () => {
             <TableBody>
               <TableRow>
                 <TableCell>
-                  <Input type="number" />
+                  <Input 
+                    type="number"
+                    value={formData.memberCount}
+                    onChange={(e) => handleInputChange('memberCount', e.target.value)}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" />
+                  <Input 
+                    type="number"
+                    value={formData.accessionsCount}
+                    onChange={(e) => handleInputChange('accessionsCount', e.target.value)}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Input type="number" />
+                  <Input 
+                    type="number"
+                    value={formData.cancellationsCount}
+                    onChange={(e) => handleInputChange('cancellationsCount', e.target.value)}
+                  />
                 </TableCell>
               </TableRow>
             </TableBody>
@@ -63,7 +114,11 @@ export const ListOfMembersSection = () => {
         <div className="space-y-6">
           <div className="bg-muted/50 p-4 rounded-lg">
             <p className="mb-4">The list of members has been properly maintained and the information regularly checked. All member declarations relating to their membership have been properly processed and recorded in the membership list.</p>
-            <RadioGroup className="flex gap-8">
+            <RadioGroup 
+              className="flex gap-8"
+              value={formData.properMaintenance}
+              onValueChange={(value) => handleInputChange('properMaintenance', value)}
+            >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="yes" id="proper-maintenance-yes" />
                 <Label htmlFor="proper-maintenance-yes">Yes</Label>
@@ -77,7 +132,11 @@ export const ListOfMembersSection = () => {
 
           <div className="bg-muted/50 p-4 rounded-lg">
             <p className="mb-4">The cooperative had up to 20 members (maximum) during the relevant audit period.</p>
-            <RadioGroup className="flex gap-8">
+            <RadioGroup 
+              className="flex gap-8"
+              value={formData.memberLimit}
+              onValueChange={(value) => handleInputChange('memberLimit', value)}
+            >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="yes" id="member-limit-yes" />
                 <Label htmlFor="member-limit-yes">Yes</Label>
@@ -91,7 +150,11 @@ export const ListOfMembersSection = () => {
 
           <div className="bg-muted/50 p-4 rounded-lg">
             <p className="mb-4">If the cancellation period for members is longer than 1 year, the members were informed of the cancellation period via the corresponding membership declarations</p>
-            <RadioGroup className="flex gap-8">
+            <RadioGroup 
+              className="flex gap-8"
+              value={formData.cancellationPeriod}
+              onValueChange={(value) => handleInputChange('cancellationPeriod', value)}
+            >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="yes" id="cancellation-period-yes" />
                 <Label htmlFor="cancellation-period-yes">Yes</Label>
