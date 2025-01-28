@@ -214,7 +214,7 @@ export const ListOfMembersSection = ({ isSubmitted = false }: ListOfMembersSecti
                 <TableRow className="bg-sky-50">
                   <TableCell colSpan={7} className="font-medium">Management Board</TableCell>
                 </TableRow>
-                {[...Array(7)].map((_, i) => (
+                {[...Array(3)].map((_, i) => (
                   <TableRow key={`management-${i}`}>
                     <TableCell><Input /></TableCell>
                     <TableCell><Input /></TableCell>
@@ -228,7 +228,7 @@ export const ListOfMembersSection = ({ isSubmitted = false }: ListOfMembersSecti
                 <TableRow className="bg-sky-50">
                   <TableCell colSpan={7} className="font-medium">Supervisory Board / Authorised representative of the General Meeting</TableCell>
                 </TableRow>
-                {[...Array(7)].map((_, i) => (
+                {[...Array(3)].map((_, i) => (
                   <TableRow key={`supervisory-${i}`}>
                     <TableCell><Input /></TableCell>
                     <TableCell><Input /></TableCell>
