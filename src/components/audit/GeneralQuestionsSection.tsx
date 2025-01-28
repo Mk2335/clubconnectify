@@ -1,8 +1,8 @@
-import { FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
+import { ComplianceQuestions } from "./general-questions/ComplianceQuestions";
+import { SecurityQuestions } from "./general-questions/SecurityQuestions";
+import { RegistrationQuestions } from "./general-questions/RegistrationQuestions";
+import { Card } from "@/components/ui/card";
 
 interface GeneralQuestionsSectionProps {
   form: UseFormReturn<any>;
@@ -10,256 +10,24 @@ interface GeneralQuestionsSectionProps {
 
 export const GeneralQuestionsSection = ({ form }: GeneralQuestionsSectionProps) => {
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold">General Questions</h2>
-
-      {/* General Questions */}
-      <FormField
-        control={form.control}
-        name="memberLoanLimits"
-        render={({ field }) => (
-          <FormItem className="space-y-3">
-            <FormLabel>Are the limits of §21b GenG observed for member loans?</FormLabel>
-            <FormControl>
-              <RadioGroup
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                className="flex flex-col space-y-1"
-              >
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="yes" id="memberLoanLimits-yes" />
-                  <Label htmlFor="memberLoanLimits-yes">Yes</Label>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="no" id="memberLoanLimits-no" />
-                  <Label htmlFor="memberLoanLimits-no">No</Label>
-                </div>
-              </RadioGroup>
-            </FormControl>
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="noDebtCertificates"
-        render={({ field }) => (
-          <FormItem className="space-y-3">
-            <FormLabel>Were no debt certificates issued?</FormLabel>
-            <FormControl>
-              <RadioGroup
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                className="flex flex-col space-y-1"
-              >
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="yes" id="noDebtCertificates-yes" />
-                  <Label htmlFor="noDebtCertificates-yes">Yes</Label>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="no" id="noDebtCertificates-no" />
-                  <Label htmlFor="noDebtCertificates-no">No</Label>
-                </div>
-              </RadioGroup>
-            </FormControl>
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="noParticipationCertificates"
-        render={({ field }) => (
-          <FormItem className="space-y-3">
-            <FormLabel>Were no participation certificates issued?</FormLabel>
-            <FormControl>
-              <RadioGroup
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                className="flex flex-col space-y-1"
-              >
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="yes" id="noParticipationCertificates-yes" />
-                  <Label htmlFor="noParticipationCertificates-yes">Yes</Label>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="no" id="noParticipationCertificates-no" />
-                  <Label htmlFor="noParticipationCertificates-no">No</Label>
-                </div>
-              </RadioGroup>
-            </FormControl>
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="noSilentPartnerships"
-        render={({ field }) => (
-          <FormItem className="space-y-3">
-            <FormLabel>Were no silent partnerships entered into?</FormLabel>
-            <FormControl>
-              <RadioGroup
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                className="flex flex-col space-y-1"
-              >
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="yes" id="noSilentPartnerships-yes" />
-                  <Label htmlFor="noSilentPartnerships-yes">Yes</Label>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="no" id="noSilentPartnerships-no" />
-                  <Label htmlFor="noSilentPartnerships-no">No</Label>
-                </div>
-              </RadioGroup>
-            </FormControl>
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="noAssetsEmbezzled"
-        render={({ field }) => (
-          <FormItem className="space-y-3">
-            <FormLabel>Has no cooperative property been embezzled?</FormLabel>
-            <FormControl>
-              <RadioGroup
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                className="flex flex-col space-y-1"
-              >
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="yes" id="noAssetsEmbezzled-yes" />
-                  <Label htmlFor="noAssetsEmbezzled-yes">Yes</Label>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="no" id="noAssetsEmbezzled-no" />
-                  <Label htmlFor="noAssetsEmbezzled-no">No</Label>
-                </div>
-              </RadioGroup>
-            </FormControl>
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="noCustomerAssetsEmbezzled"
-        render={({ field }) => (
-          <FormItem className="space-y-3">
-            <FormLabel>Has no property of customers or members been embezzled?</FormLabel>
-            <FormControl>
-              <RadioGroup
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                className="flex flex-col space-y-1"
-              >
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="yes" id="noCustomerAssetsEmbezzled-yes" />
-                  <Label htmlFor="noCustomerAssetsEmbezzled-yes">Yes</Label>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="no" id="noCustomerAssetsEmbezzled-no" />
-                  <Label htmlFor="noCustomerAssetsEmbezzled-no">No</Label>
-                </div>
-              </RadioGroup>
-            </FormControl>
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="auditAssociationDisclosed"
-        render={({ field }) => (
-          <FormItem className="space-y-3">
-            <FormLabel>Is the audit association named on the website or letterhead?</FormLabel>
-            <FormControl>
-              <RadioGroup
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                className="flex flex-col space-y-1"
-              >
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="yes" id="auditAssociationDisclosed-yes" />
-                  <Label htmlFor="auditAssociationDisclosed-yes">Yes</Label>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="no" id="auditAssociationDisclosed-no" />
-                  <Label htmlFor="auditAssociationDisclosed-no">No</Label>
-                </div>
-              </RadioGroup>
-            </FormControl>
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="membersWithVotingRights"
-        render={({ field }) => (
-          <FormItem className="space-y-3">
-            <FormLabel>Are there members with more than 25% voting rights or shares?</FormLabel>
-            <FormControl>
-              <RadioGroup
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                className="flex flex-col space-y-1"
-              >
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="yes" id="membersWithVotingRights-yes" />
-                  <Label htmlFor="membersWithVotingRights-yes">Yes</Label>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="no" id="membersWithVotingRights-no" />
-                  <Label htmlFor="membersWithVotingRights-no">No</Label>
-                </div>
-              </RadioGroup>
-            </FormControl>
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="transparencyRegister"
-        render={({ field }) => (
-          <FormItem className="space-y-3">
-            <FormLabel>Is the cooperative registered in the transparency register?</FormLabel>
-            <FormControl>
-              <RadioGroup
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                className="flex flex-col space-y-1"
-              >
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="yes" id="transparencyRegister-yes" />
-                  <Label htmlFor="transparencyRegister-yes">Yes</Label>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <RadioGroupItem value="no" id="transparencyRegister-no" />
-                  <Label htmlFor="transparencyRegister-no">No</Label>
-                </div>
-              </RadioGroup>
-            </FormControl>
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="registrationDate"
-        render={({ field }) => (
-          <FormItem className="space-y-3">
-            <FormLabel>When was the registration completed:</FormLabel>
-            <FormControl>
-              <Input type="date" {...field} />
-            </FormControl>
-          </FormItem>
-        )}
-      />
-    </div>
+    <Card className="p-6">
+      <h2 className="text-2xl font-bold mb-8">General Questions</h2>
+      <div className="space-y-8">
+        <section>
+          <h3 className="text-lg font-semibold mb-4">Compliance</h3>
+          <ComplianceQuestions form={form} />
+        </section>
+        
+        <section>
+          <h3 className="text-lg font-semibold mb-4">Security</h3>
+          <SecurityQuestions form={form} />
+        </section>
+        
+        <section>
+          <h3 className="text-lg font-semibold mb-4">Registration</h3>
+          <RegistrationQuestions form={form} />
+        </section>
+      </div>
+    </Card>
   );
 };
