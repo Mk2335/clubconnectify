@@ -71,7 +71,7 @@ const Integrations = () => {
             <Card className="border-none shadow-none bg-muted/50">
               <CardContent className="p-6">
                 <p>
-                  Connect easyVerein to third-party software solutions and create a seamless workflow across multiple applications. 
+                  Connect to third-party software solutions and create a seamless workflow across multiple applications. 
                   Keep all applications automatically up to date and use the functions of other services in conjunction with your central club administration without manual data transfer.
                 </p>
               </CardContent>
