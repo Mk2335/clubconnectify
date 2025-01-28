@@ -1,7 +1,5 @@
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Table,
   TableBody,
@@ -19,6 +17,9 @@ import {
 } from "@/components/ui/select";
 import FormProgress from "./FormProgress";
 import { useState } from "react";
+import { MemberStatisticsTable } from "./MemberStatisticsTable";
+import { MembershipQuestion } from "./MembershipQuestion";
+import { ExecutiveBodiesTable } from "./ExecutiveBodiesTable";
 
 interface ListOfMembersSectionProps {
   isSubmitted?: boolean;
@@ -42,7 +43,6 @@ export const ListOfMembersSection = ({ isSubmitted = false }: ListOfMembersSecti
     cancellationPeriod: "",
   });
 
-  // Calculate progress based on filled fields
   const calculateProgress = () => {
     const totalFields = Object.keys(formData).length;
     const filledFields = Object.values(formData).filter(value => value !== "").length;
@@ -100,97 +100,32 @@ export const ListOfMembersSection = ({ isSubmitted = false }: ListOfMembersSecti
       <div className="space-y-6">
         <div className="bg-muted/50 p-4 rounded-lg">
           <p className="font-medium mb-4">With regard to the list of members at the end of the audit period, we declare the following:</p>
-          
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-1/3">Number of members</TableHead>
-                <TableHead className="w-1/3">Number of accessions</TableHead>
-                <TableHead>Number of cancellations & exclusions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell>
-                  <Input 
-                    type="number"
-                    value={formData.memberCount}
-                    onChange={(e) => handleInputChange('memberCount', e.target.value)}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Input 
-                    type="number"
-                    value={formData.accessionsCount}
-                    onChange={(e) => handleInputChange('accessionsCount', e.target.value)}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Input 
-                    type="number"
-                    value={formData.cancellationsCount}
-                    onChange={(e) => handleInputChange('cancellationsCount', e.target.value)}
-                  />
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+          <MemberStatisticsTable formData={formData} onInputChange={handleInputChange} />
         </div>
 
         <div className="space-y-6">
-          <div className="bg-muted/50 p-4 rounded-lg">
-            <p className="mb-4">The list of members has been properly maintained and the information regularly checked. All member declarations relating to their membership have been properly processed and recorded in the membership list.</p>
-            <RadioGroup 
-              className="flex gap-8"
-              value={formData.properMaintenance}
-              onValueChange={(value) => handleInputChange('properMaintenance', value)}
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="yes" id="proper-maintenance-yes" />
-                <Label htmlFor="proper-maintenance-yes">Yes</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="no" id="proper-maintenance-no" />
-                <Label htmlFor="proper-maintenance-no">No</Label>
-              </div>
-            </RadioGroup>
-          </div>
+          <MembershipQuestion
+            question="The list of members has been properly maintained and the information regularly checked. All member declarations relating to their membership have been properly processed and recorded in the membership list."
+            value={formData.properMaintenance}
+            field="properMaintenance"
+            onValueChange={handleInputChange}
+          />
 
-          <div className="bg-muted/50 p-4 rounded-lg">
-            <p className="mb-4">The cooperative had up to 20 members (maximum) during the relevant audit period.</p>
-            <RadioGroup 
-              className="flex gap-8"
-              value={formData.memberLimit}
-              onValueChange={(value) => handleInputChange('memberLimit', value)}
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="yes" id="member-limit-yes" />
-                <Label htmlFor="member-limit-yes">Yes</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="no" id="member-limit-no" />
-                <Label htmlFor="member-limit-no">No, there were more than 20 members</Label>
-              </div>
-            </RadioGroup>
-          </div>
+          <MembershipQuestion
+            question="The cooperative had up to 20 members (maximum) during the relevant audit period."
+            value={formData.memberLimit}
+            field="memberLimit"
+            onValueChange={handleInputChange}
+            noLabel="No, there were more than 20 members"
+          />
 
-          <div className="bg-muted/50 p-4 rounded-lg">
-            <p className="mb-4">If the cancellation period for members is longer than 1 year, the members were informed of the cancellation period via the corresponding membership declarations</p>
-            <RadioGroup 
-              className="flex gap-8"
-              value={formData.cancellationPeriod}
-              onValueChange={(value) => handleInputChange('cancellationPeriod', value)}
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="yes" id="cancellation-period-yes" />
-                <Label htmlFor="cancellation-period-yes">Yes</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="no" id="cancellation-period-no" />
-                <Label htmlFor="cancellation-period-no">No, the cancellation period is only 1 year.</Label>
-              </div>
-            </RadioGroup>
-          </div>
+          <MembershipQuestion
+            question="If the cancellation period for members is longer than 1 year, the members were informed of the cancellation period via the corresponding membership declarations"
+            value={formData.cancellationPeriod}
+            field="cancellationPeriod"
+            onValueChange={handleInputChange}
+            noLabel="No, the cancellation period is only 1 year."
+          />
         </div>
 
         <div className="space-y-4">
@@ -211,34 +146,14 @@ export const ListOfMembersSection = ({ isSubmitted = false }: ListOfMembersSecti
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow className="bg-sky-50">
-                  <TableCell colSpan={7} className="font-medium">Management Board</TableCell>
-                </TableRow>
-                {[...Array(3)].map((_, i) => (
-                  <TableRow key={`management-${i}`}>
-                    <TableCell><Input /></TableCell>
-                    <TableCell><Input /></TableCell>
-                    <TableCell><Input /></TableCell>
-                    <TableCell><Input type="date" /></TableCell>
-                    <TableCell><Input /></TableCell>
-                    <TableCell><Input type="date" /></TableCell>
-                    <TableCell><Input type="date" /></TableCell>
-                  </TableRow>
-                ))}
-                <TableRow className="bg-sky-50">
-                  <TableCell colSpan={7} className="font-medium">Supervisory Board / Authorised representative of the General Meeting</TableCell>
-                </TableRow>
-                {[...Array(3)].map((_, i) => (
-                  <TableRow key={`supervisory-${i}`}>
-                    <TableCell><Input /></TableCell>
-                    <TableCell><Input /></TableCell>
-                    <TableCell><Input /></TableCell>
-                    <TableCell><Input type="date" /></TableCell>
-                    <TableCell><Input /></TableCell>
-                    <TableCell><Input type="date" /></TableCell>
-                    <TableCell><Input type="date" /></TableCell>
-                  </TableRow>
-                ))}
+                <ExecutiveBodiesTable 
+                  section="management"
+                  title="Management Board"
+                />
+                <ExecutiveBodiesTable 
+                  section="supervisory"
+                  title="Supervisory Board / Authorised representative of the General Meeting"
+                />
               </TableBody>
             </Table>
           </div>
