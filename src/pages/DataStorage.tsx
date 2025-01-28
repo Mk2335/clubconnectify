@@ -4,9 +4,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FileText, Upload, File } from "lucide-react";
+import { FileText, Upload, File, Search, Filter } from "lucide-react";
+import { useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const DataStorage = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [fileType, setFileType] = useState("all");
+
   const storedFiles = [
     { name: "[110] - Satzung - Musterfirma eG", type: "PDF", size: "1.2 MB", date: "2022-06-15" },
     { name: "[120] - Gewerbeanmeldung - Musterfirma eG", type: "PDF", size: "0.8 MB", date: "2022-06-15" },
@@ -34,6 +45,12 @@ const DataStorage = () => {
     { name: "[430] - Protokoll 5.GV 28.10.2021 mit Anlagen - Musterfirma eG", type: "PDF", size: "4.4 MB", date: "2021-10-28" },
     { name: "[430] - Protokoll 6.GV 07.08.2022 mit Anlagen - Musterfirma eG", type: "PDF", size: "4.6 MB", date: "2022-08-07" }
   ];
+
+  const filteredFiles = storedFiles.filter((file) => {
+    const matchesSearch = file.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = fileType === "all" || file.type === fileType;
+    return matchesSearch && matchesType;
+  });
 
   return (
     <SidebarProvider>
@@ -65,6 +82,33 @@ const DataStorage = () => {
                   <CardTitle>Stored Files</CardTitle>
                 </CardHeader>
                 <CardContent>
+                  <div className="flex gap-4 mb-6">
+                    <div className="relative flex-1">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
+                      <Input
+                        type="text"
+                        placeholder="Search files..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-10"
+                      />
+                    </div>
+                    <Select
+                      value={fileType}
+                      onValueChange={setFileType}
+                    >
+                      <SelectTrigger className="w-[180px]">
+                        <Filter className="h-4 w-4 mr-2" />
+                        <SelectValue placeholder="Filter by type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Files</SelectItem>
+                        <SelectItem value="PDF">PDF Files</SelectItem>
+                        <SelectItem value="XLS">Excel Files</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -76,7 +120,7 @@ const DataStorage = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {storedFiles.map((file, index) => (
+                      {filteredFiles.map((file, index) => (
                         <TableRow key={index}>
                           <TableCell className="flex items-center gap-2">
                             {file.type === "PDF" ? <FileText className="w-4 h-4" /> : <File className="w-4 h-4" />}
