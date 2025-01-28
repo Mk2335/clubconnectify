@@ -18,7 +18,7 @@ const integrations = [
   },
   {
     title: "CleverReach - Newsletter",
-    description: "Create and send newsletters easily. When you connect your CleverReach account with easyVerein, it automatically ensures all address and recipient lists in your newsletter tool are always up to date.",
+    description: "Create and send newsletters easily. When you connect your CleverReach account, it automatically ensures all address and recipient lists in your newsletter tool are always up to date.",
     logo: "/placeholder.svg",
     isActive: true,
     infoLink: "#",
@@ -27,7 +27,7 @@ const integrations = [
   },
   {
     title: "Passcreator",
-    description: "Create digital membership cards, tickets, and vouchers directly from easyVerein. Your members can load these onto their smartphones and use them digitally, for example, for simplified entry control or as proof of membership.",
+    description: "Create digital membership cards, tickets, and vouchers directly. Your members can load these onto their smartphones and use them digitally, for example, for simplified entry control or as proof of membership.",
     logo: "/placeholder.svg",
     isActive: false,
     infoLink: "#",
