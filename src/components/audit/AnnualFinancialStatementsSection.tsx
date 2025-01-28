@@ -2,19 +2,17 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
+import { UseFormReturn } from "react-hook-form";
+import FinancialStatementsTable from "./FinancialStatementsTable";
 
-interface FinancialStatement {
-  statement: string;
-  setupDate: string;
-  establishedDate: string;
-  hasProtocol: "yes" | "no";
-}
-
-export interface AnnualFinancialStatementsData {
+interface AnnualFinancialStatementsData {
   statementsExist: "yes" | "no";
-  statements: FinancialStatement[];
+  statements: Array<{
+    statement: string;
+    setupDate: string;
+    establishedDate: string;
+    hasProtocol: "yes" | "no";
+  }>;
   preparedBy: "cooperative" | "consultant";
   consultantDetails: string;
   compliesWithLaw: "yes" | "no" | "justify";
@@ -24,7 +22,7 @@ export interface AnnualFinancialStatementsData {
   legalDisputesHandled: "yes" | "no";
 }
 
-const AnnualFinancialStatementsSection = ({ form }: { form: any }) => {
+const AnnualFinancialStatementsSection = ({ form }: { form: UseFormReturn<any> }) => {
   return (
     <Card>
       <CardHeader>
@@ -60,71 +58,7 @@ const AnnualFinancialStatementsSection = ({ form }: { form: any }) => {
         />
 
         {form.watch("statementsExist") === "yes" && (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Annual Financial Statements</TableHead>
-                <TableHead>Set up on</TableHead>
-                <TableHead>Established on</TableHead>
-                <TableHead>Protocol available</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {[0, 1, 2, 3].map((index) => (
-                <TableRow key={index}>
-                  <TableCell>
-                    <FormField
-                      control={form.control}
-                      name={`statements.${index}.statement`}
-                      render={({ field }) => (
-                        <Input {...field} placeholder="Statement name" />
-                      )}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <FormField
-                      control={form.control}
-                      name={`statements.${index}.setupDate`}
-                      render={({ field }) => (
-                        <Input {...field} type="date" />
-                      )}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <FormField
-                      control={form.control}
-                      name={`statements.${index}.establishedDate`}
-                      render={({ field }) => (
-                        <Input {...field} type="date" />
-                      )}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <FormField
-                      control={form.control}
-                      name={`statements.${index}.hasProtocol`}
-                      render={({ field }) => (
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="flex flex-row space-x-4"
-                        >
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="yes" id={`protocol-yes-${index}`} />
-                            <FormLabel htmlFor={`protocol-yes-${index}`}>Yes</FormLabel>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="no" id={`protocol-no-${index}`} />
-                            <FormLabel htmlFor={`protocol-no-${index}`}>No</FormLabel>
-                          </div>
-                        </RadioGroup>
-                      )}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <FinancialStatementsTable form={form} />
         )}
 
         <FormField
