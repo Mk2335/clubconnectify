@@ -126,9 +126,7 @@ const StatutoryAudit = () => {
               </TabsContent>
               
               <TabsContent value="questionnaire" className="mt-6">
-                <Card className="p-6">
-                  <AuditQuestionnaire />
-                </Card>
+                <AuditQuestionnaire />
               </TabsContent>
 
               <TabsContent value="accounting" className="mt-6">
