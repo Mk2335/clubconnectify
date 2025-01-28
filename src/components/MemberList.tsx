@@ -10,7 +10,7 @@ import {
   Settings,
   Filter
 } from "lucide-react";
-import { Form } from "@/components/ui/form";
+import { Form, FormProvider } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -79,8 +79,8 @@ export const MemberList = () => {
   );
 
   return (
-    <Form {...form}>
-      <form className="space-y-4">
+    <FormProvider {...form}>
+      <div className="space-y-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <Users className="h-5 w-5 text-primary" />
@@ -154,7 +154,7 @@ export const MemberList = () => {
             </TableBody>
           </Table>
         </div>
-      </form>
-    </Form>
+      </div>
+    </FormProvider>
   );
 };
