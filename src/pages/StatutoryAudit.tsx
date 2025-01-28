@@ -103,46 +103,35 @@ const StatutoryAudit = () => {
                   <div className="space-y-4">
                     {section.items.map((item) => (
                       <div key={item.id} className="flex items-start gap-4">
-                        {section.title === "General Part of the Audit" ? (
-                          <div className="flex-1">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <Checkbox id={`checkbox-${item.id}`} />
                             <Label htmlFor={item.id}>{item.label}</Label>
-                            <div className="flex gap-4 mt-2">
-                              <Select>
-                                <SelectTrigger className="w-[200px]">
-                                  <SelectValue placeholder="Select option" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="option1">Option 1</SelectItem>
-                                  <SelectItem value="option2">Option 2</SelectItem>
-                                  <SelectItem value="option3">Option 3</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <div className="flex-1">
-                                <Input
-                                  id={item.id}
-                                  type="file"
-                                  className="cursor-pointer"
-                                  onChange={(e) => handleFileUpload(e, item.id)}
-                                />
-                              </div>
-                            </div>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {item.description}
-                            </p>
                           </div>
-                        ) : (
-                          <>
-                            <Checkbox id={item.id} />
-                            <div>
-                              <label htmlFor={item.id} className="font-medium block">
-                                {item.label}
-                              </label>
-                              <p className="text-sm text-muted-foreground">
-                                {item.description}
-                              </p>
+                          <div className="flex gap-4 mt-2">
+                            <Select>
+                              <SelectTrigger className="w-[200px]">
+                                <SelectValue placeholder="Select option" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="option1">Option 1</SelectItem>
+                                <SelectItem value="option2">Option 2</SelectItem>
+                                <SelectItem value="option3">Option 3</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <div className="flex-1">
+                              <Input
+                                id={item.id}
+                                type="file"
+                                className="cursor-pointer"
+                                onChange={(e) => handleFileUpload(e, item.id)}
+                              />
                             </div>
-                          </>
-                        )}
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {item.description}
+                          </p>
+                        </div>
                       </div>
                     ))}
                   </div>
