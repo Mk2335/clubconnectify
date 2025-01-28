@@ -65,165 +65,253 @@ const MemberApplications = () => {
                 <h2 className="text-lg font-semibold mt-6 mb-4">Personal Information</h2>
               </div>
 
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <FormItem>
-                    <FormLabel>First Name</FormLabel>
-                    <FormControl>
-                      <Input {...form.register("firstName")} />
-                    </FormControl>
-                  </FormItem>
-
-                  <FormItem>
-                    <FormLabel>Last Name</FormLabel>
-                    <FormControl>
-                      <Input {...form.register("lastName")} />
-                    </FormControl>
-                  </FormItem>
-                </div>
-
-                <FormItem>
-                  <FormLabel>Street and House Number</FormLabel>
-                  <FormControl>
-                    <Input {...form.register("street")} />
-                  </FormControl>
-                </FormItem>
-
-                <FormItem>
-                  <FormLabel>Additional Address Information</FormLabel>
-                  <FormControl>
-                    <Input {...form.register("additionalAddress")} />
-                  </FormControl>
-                </FormItem>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <FormItem>
-                    <FormLabel>ZIP Code</FormLabel>
-                    <FormControl>
-                      <Input {...form.register("zipCode")} />
-                    </FormControl>
-                  </FormItem>
-
-                  <FormItem>
-                    <FormLabel>City</FormLabel>
-                    <FormControl>
-                      <Input {...form.register("city")} />
-                    </FormControl>
-                  </FormItem>
-                </div>
-
-                <FormItem>
-                  <FormLabel>Email Address</FormLabel>
-                  <FormControl>
-                    <Input type="email" {...form.register("email")} />
-                  </FormControl>
-                </FormItem>
-
-                <FormItem>
-                  <FormLabel>Confirm Email Address</FormLabel>
-                  <FormControl>
-                    <Input type="email" {...form.register("emailConfirm")} />
-                  </FormControl>
-                </FormItem>
-
-                <FormItem>
-                  <FormLabel>Tax ID (if available)</FormLabel>
-                  <FormControl>
-                    <Input {...form.register("taxId")} />
-                  </FormControl>
-                </FormItem>
-
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="new-member"
-                      checked={form.watch("membershipType") === "new"}
-                      onCheckedChange={() => form.setValue("membershipType", "new")}
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="firstName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>First Name</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
                     />
-                    <Label htmlFor="new-member">
-                      I want to become a member and declare my intention to join Sample Co-op. 
-                      I would like to participate with the following number of shares at €100.00 each:
-                    </Label>
+
+                    <FormField
+                      control={form.control}
+                      name="lastName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Last Name</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
                   </div>
 
-                  {form.watch("membershipType") === "new" && (
-                    <Input
-                      type="number"
-                      min="1"
-                      className="w-32"
-                      {...form.register("shares", { valueAsNumber: true })}
-                    />
-                  )}
+                  <FormField
+                    control={form.control}
+                    name="street"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Street and House Number</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
 
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="existing-member"
-                      checked={form.watch("membershipType") === "existing"}
-                      onCheckedChange={() => form.setValue("membershipType", "existing")}
+                  <FormField
+                    control={form.control}
+                    name="additionalAddress"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Additional Address Information</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="zipCode"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>ZIP Code</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
                     />
-                    <div className="flex items-center space-x-2">
-                      <Label htmlFor="existing-member">
-                        I am already a member with member number
-                      </Label>
-                      <Input
-                        className="w-32"
-                        {...form.register("memberId")}
-                        disabled={form.watch("membershipType") !== "existing"}
+
+                    <FormField
+                      control={form.control}
+                      name="city"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>City</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email Address</FormLabel>
+                        <FormControl>
+                          <Input type="email" {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="emailConfirm"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Confirm Email Address</FormLabel>
+                        <FormControl>
+                          <Input type="email" {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="taxId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tax ID (if available)</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="membershipType"
+                      render={({ field }) => (
+                        <FormItem className="space-y-4">
+                          <div className="flex items-center space-x-2">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value === "new"}
+                                onCheckedChange={() => field.onChange("new")}
+                              />
+                            </FormControl>
+                            <FormLabel>
+                              I want to become a member and declare my intention to join Sample Co-op. 
+                              I would like to participate with the following number of shares at €100.00 each:
+                            </FormLabel>
+                          </div>
+
+                          {field.value === "new" && (
+                            <FormField
+                              control={form.control}
+                              name="shares"
+                              render={({ field: sharesField }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      min="1"
+                                      className="w-32"
+                                      {...sharesField}
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
+                          )}
+
+                          <div className="flex items-center space-x-2">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value === "existing"}
+                                onCheckedChange={() => field.onChange("existing")}
+                              />
+                            </FormControl>
+                            <div className="flex items-center space-x-2">
+                              <FormLabel>
+                                I am already a member with member number
+                              </FormLabel>
+                              <FormField
+                                control={form.control}
+                                name="memberId"
+                                render={({ field: memberIdField }) => (
+                                  <FormItem>
+                                    <FormControl>
+                                      <Input
+                                        className="w-32"
+                                        {...memberIdField}
+                                        disabled={field.value !== "existing"}
+                                      />
+                                    </FormControl>
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="space-y-4">
+                    {[
+                      {
+                        name: "acceptTerms",
+                        label: "I commit to making the required payments for the share(s) according to law and statute."
+                      },
+                      {
+                        name: "acceptNotice",
+                        label: "I acknowledge that the notice period according to the statute is 2 years."
+                      },
+                      {
+                        name: "isInvestingMember",
+                        label: "[If applicable:] I would like to be admitted as an investing member of the cooperative"
+                      },
+                      {
+                        name: "acceptLiability",
+                        label: "[If applicable:] I commit to making the additional contributions required to satisfy creditors up to the amount specified in the statute as limited/unlimited liability."
+                      },
+                      {
+                        name: "acceptFees",
+                        label: "[If applicable:] I acknowledge that the statute includes additional payment obligations (admission fee of €50.00 and monthly membership fee of €10.00)."
+                      },
+                      {
+                        name: "acceptDocuments",
+                        label: "The statute [link] and privacy policy [link] have been made available to me for download."
+                      }
+                    ].map((item) => (
+                      <FormField
+                        key={item.name}
+                        control={form.control}
+                        name={item.name as keyof ApplicationFormData}
+                        render={({ field }) => (
+                          <FormItem className="flex items-top space-x-2">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                              />
+                            </FormControl>
+                            <FormLabel className="text-sm">
+                              {item.label}
+                            </FormLabel>
+                          </FormItem>
+                        )}
                       />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="flex items-top space-x-2">
-                    <Checkbox id="terms" {...form.register("acceptTerms")} />
-                    <Label htmlFor="terms" className="text-sm">
-                      I commit to making the required payments for the share(s) according to law and statute.
-                    </Label>
+                    ))}
                   </div>
 
-                  <div className="flex items-top space-x-2">
-                    <Checkbox id="notice" {...form.register("acceptNotice")} />
-                    <Label htmlFor="notice" className="text-sm">
-                      I acknowledge that the notice period according to the statute is 2 years.
-                    </Label>
-                  </div>
-
-                  <div className="flex items-top space-x-2">
-                    <Checkbox id="investing" {...form.register("isInvestingMember")} />
-                    <Label htmlFor="investing" className="text-sm">
-                      [If applicable:] I would like to be admitted as an investing member of the cooperative
-                    </Label>
-                  </div>
-
-                  <div className="flex items-top space-x-2">
-                    <Checkbox id="liability" {...form.register("acceptLiability")} />
-                    <Label htmlFor="liability" className="text-sm">
-                      [If applicable:] I commit to making the additional contributions required to satisfy creditors 
-                      up to the amount specified in the statute as limited/unlimited liability.
-                    </Label>
-                  </div>
-
-                  <div className="flex items-top space-x-2">
-                    <Checkbox id="fees" {...form.register("acceptFees")} />
-                    <Label htmlFor="fees" className="text-sm">
-                      [If applicable:] I acknowledge that the statute includes additional payment obligations 
-                      (admission fee of €50.00 and monthly membership fee of €10.00).
-                    </Label>
-                  </div>
-
-                  <div className="flex items-top space-x-2">
-                    <Checkbox id="documents" {...form.register("acceptDocuments")} />
-                    <Label htmlFor="documents" className="text-sm">
-                      The statute [link] and privacy policy [link] have been made available to me for download.
-                    </Label>
-                  </div>
-                </div>
-
-                <Button type="submit" className="w-full">
-                  Submit Membership Application
-                </Button>
-              </form>
+                  <Button type="submit" className="w-full">
+                    Submit Membership Application
+                  </Button>
+                </form>
+              </Form>
             </div>
           </div>
         </main>
