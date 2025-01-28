@@ -6,6 +6,39 @@ import { Progress } from "@/components/ui/progress";
 import { useNavigate } from "react-router-dom";
 import { Book, Headphones } from "lucide-react";
 
+const courses = [
+  {
+    title: "MASTERCLASS - Genossenschaft",
+    progress: 88,
+    image: "/lovable-uploads/71fc05aa-a6f1-421a-ab3b-9743019c51ea.png",
+    path: "/knowledge-community/knowledge/masterclass"
+  },
+  {
+    title: "MASTERCLASS - 150 Millionen Gründe",
+    progress: 100,
+    image: "/lovable-uploads/71fc05aa-a6f1-421a-ab3b-9743019c51ea.png",
+    path: "/knowledge-community/knowledge/masterclass"
+  },
+  {
+    title: "MASTERCLASS - Steuerberatung",
+    progress: 80,
+    image: "/lovable-uploads/71fc05aa-a6f1-421a-ab3b-9743019c51ea.png",
+    path: "/knowledge-community/knowledge/masterclass"
+  },
+  {
+    title: "MASTERCLASS - Asset Protection",
+    progress: 62,
+    image: "/lovable-uploads/71fc05aa-a6f1-421a-ab3b-9743019c51ea.png",
+    path: "/knowledge-community/knowledge/masterclass"
+  },
+  {
+    title: "MASTERCLASS - LEXIKON der Grundlagen",
+    progress: 9,
+    image: "/lovable-uploads/71fc05aa-a6f1-421a-ab3b-9743019c51ea.png",
+    path: "/knowledge-community/knowledge/masterclass"
+  }
+];
+
 const Knowledge = () => {
   const navigate = useNavigate();
 
