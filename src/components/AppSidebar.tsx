@@ -8,8 +8,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
-  SidebarMenuSubButton,
   SidebarMenuSubItem,
+  SidebarMenuSubButton,
 } from "@/components/ui/sidebar";
 import {
   Database,
@@ -23,6 +23,7 @@ import {
   Cable,
   FileText,
   Gavel,
+  Mail,
 } from "lucide-react";
 
 const menuItems = [
@@ -44,6 +45,11 @@ const menuItems = [
         icon: FileText,
         label: "Minutes",
         href: "/general-assembly/minutes",
+      },
+      {
+        icon: Mail,
+        label: "Newsletter",
+        href: "/general-assembly/newsletter",
       },
     ],
   },
