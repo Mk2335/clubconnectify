@@ -31,7 +31,8 @@ import AppointmentMeetings from "./pages/AppointmentMeetings";
 import AddressBook from "./pages/AddressBook";
 import Knowledge from "./pages/Knowledge";
 import Community from "./pages/Community";
-import Masterclass from "./pages/Masterclass";
+import Podcasts from "./pages/Podcasts";
+import Ebooks from "./pages/Ebooks";
 
 const queryClient = new QueryClient();
 
@@ -66,8 +67,9 @@ const App = () => (
           <Route path="/financing/business-plan" element={<BusinessPlan />} />
           <Route path="/financing/invoice" element={<Invoice />} />
           <Route path="/knowledge-community/knowledge" element={<Knowledge />} />
+          <Route path="/knowledge-community/knowledge/podcasts" element={<Podcasts />} />
+          <Route path="/knowledge-community/knowledge/ebooks" element={<Ebooks />} />
           <Route path="/knowledge-community/community" element={<Community />} />
-          <Route path="/knowledge-community/knowledge/masterclass" element={<Masterclass />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/integrations" element={<Integrations />} />
         </Routes>
