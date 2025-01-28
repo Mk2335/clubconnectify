@@ -89,7 +89,7 @@ export const ShareholdingsSection = ({ form }: ShareholdingsSectionProps) => {
           name="significantContracts"
           render={({ field }) => (
             <FormItem className="space-y-3">
-              <FormLabel>Has the cooperative concluded any significant contracts during the relevant audit period? (Real estate purchases, company shareholdings >25%)</FormLabel>
+              <FormLabel>Has the cooperative concluded any significant contracts during the relevant audit period? (Real estate purchases, company shareholdings {'>'} 25%)</FormLabel>
               <FormControl>
                 <RadioGroup
                   onValueChange={field.onChange}
