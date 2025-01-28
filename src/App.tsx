@@ -22,6 +22,7 @@ import Incorporation from "./pages/Incorporation";
 import BusinessPlan from "./pages/BusinessPlan";
 import StatutoryAudit from "./pages/StatutoryAudit";
 import DataStorage from "./pages/DataStorage";
+import Invoice from "./pages/Invoice";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => (
           <Route path="/general-assembly/storage" element={<DataStorage />} />
           <Route path="/financing" element={<Financing />} />
           <Route path="/financing/business-plan" element={<BusinessPlan />} />
+          <Route path="/financing/invoice" element={<Invoice />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/integrations" element={<Integrations />} />
         </Routes>
