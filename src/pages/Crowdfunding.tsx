@@ -1,6 +1,7 @@
 import { CampaignTabs } from "@/components/crowdfunding/CampaignTabs";
 import { FeaturedCampaigns } from "@/components/crowdfunding/FeaturedCampaigns";
 import { CampaignCategories } from "@/components/crowdfunding/CampaignCategories";
+import { FinancingPartners } from "@/components/crowdfunding/FinancingPartners";
 import { TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -154,6 +155,10 @@ const Crowdfunding = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="partners">
+          <FinancingPartners />
         </TabsContent>
       </CampaignTabs>
     </div>
