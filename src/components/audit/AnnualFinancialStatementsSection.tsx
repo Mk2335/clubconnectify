@@ -4,6 +4,7 @@ import { StatementsExistenceSection } from "./annual-statements/StatementsExiste
 import { PreparationSection } from "./annual-statements/PreparationSection";
 import { ComplianceSection } from "./annual-statements/ComplianceSection";
 import { CircumstancesSection } from "./annual-statements/CircumstancesSection";
+import { TaxReturnsSection } from "./annual-statements/TaxReturnsSection";
 
 const AnnualFinancialStatementsSection = ({ form }: { form: UseFormReturn<any> }) => {
   return (
@@ -16,6 +17,7 @@ const AnnualFinancialStatementsSection = ({ form }: { form: UseFormReturn<any> }
         <PreparationSection form={form} />
         <ComplianceSection form={form} />
         <CircumstancesSection form={form} />
+        <TaxReturnsSection form={form} />
       </CardContent>
     </Card>
   );
