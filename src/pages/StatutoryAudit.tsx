@@ -2,7 +2,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
-import { Clipboard, FileText, List, Check, Upload } from "lucide-react";
+import { Clipboard, FileText, List, Check } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -15,17 +15,6 @@ import { Label } from "@/components/ui/label";
 
 const StatutoryAudit = () => {
   const sections = [
-    {
-      title: "General Part of the Audit",
-      icon: Upload,
-      items: [
-        { id: "statute", label: "Statute of Coop", description: "Upload or select the cooperative's statute" },
-        { id: "trade", label: "Trade registration", description: "Upload or select trade registration documents" },
-        { id: "register", label: "Register extract", description: "Upload or select register extract" },
-        { id: "estate", label: "Real estate", description: "Upload or select real estate documentation" },
-        { id: "loans", label: "Member loans", description: "Upload or select member loans documentation" },
-      ],
-    },
     {
       title: "General Information",
       icon: Clipboard,
