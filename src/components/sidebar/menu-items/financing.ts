@@ -1,4 +1,4 @@
-import { DollarSign, LineChart, FileText, Wallet } from "lucide-react";
+import { DollarSign, LineChart, FileText, Wallet, Users } from "lucide-react";
 import { MenuItem } from "./types";
 
 export const financingMenuItems: MenuItem = {
@@ -20,6 +20,11 @@ export const financingMenuItems: MenuItem = {
       icon: FileText,
       label: "Invoice",
       href: "/financing/invoice",
+    },
+    {
+      icon: Users,
+      label: "Crowdfunding",
+      href: "/financing/crowdfunding",
     },
   ],
 };
