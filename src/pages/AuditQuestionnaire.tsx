@@ -1,9 +1,9 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import { FileText } from "lucide-react";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { Progress } from "@/components/ui/progress";
+import { Card } from "@/components/ui/card";
 import { GeneralSection } from "@/components/audit/GeneralSection";
 import { StatutesSection } from "@/components/audit/StatutesSection";
 import { EmployeesSection } from "@/components/audit/EmployeesSection";
@@ -13,6 +13,7 @@ import { FinancialInstrumentsSection } from "@/components/audit/FinancialInstrum
 import { ShareholdingsSection } from "@/components/audit/ShareholdingsSection";
 import { GeneralQuestionsSection } from "@/components/audit/GeneralQuestionsSection";
 import { useEffect, useState } from "react";
+import { FileText } from "lucide-react";
 
 interface AuditQuestionnaireProps {
   isSubmitted?: boolean;
@@ -137,43 +138,41 @@ const AuditQuestionnaire = ({ isSubmitted = false }: AuditQuestionnaireProps) =>
   }, [form.watch()]);
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <AppSidebar />
-        <main className="flex-1 p-8">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-center gap-4 mb-4">
-              <FileText className="h-8 w-8 text-primary" />
-              <h1 className="text-3xl font-bold">Audit Questionnaire</h1>
-            </div>
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-sm text-muted-foreground">
-                  {isSubmitted ? "Questionnaire Submitted" : "Completion Progress"}
-                </p>
-                <span className="text-sm font-medium">{progress}%</span>
-              </div>
-              <Progress value={isSubmitted ? 100 : progress} className="h-2" />
-            </div>
-            <p className="text-lg text-muted-foreground mb-8">
-              Complete the mandatory audit questionnaire according to §§ 53 ff GenG
+    <Card className="p-6">
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <FileText className="h-6 w-6 text-primary" />
+          <h2 className="text-2xl font-semibold">Audit Questionnaire</h2>
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">
+              {isSubmitted ? "Questionnaire Submitted" : "Completion Progress"}
             </p>
-            <Form {...form}>
-              <div className="space-y-8">
-                <GeneralQuestionsSection form={form} />
-                <GeneralSection form={form} />
-                <StatutesSection form={form} />
-                <EmployeesSection form={form} />
-                <PromotionSection form={form} />
-                <LegalDisputesSection form={form} />
-                <FinancialInstrumentsSection form={form} />
-                <ShareholdingsSection form={form} />
-              </div>
-            </Form>
+            <span className="text-sm font-medium">{progress}%</span>
           </div>
-        </main>
+          <Progress value={isSubmitted ? 100 : progress} className="h-2" />
+        </div>
+
+        <p className="text-muted-foreground">
+          Complete the mandatory audit questionnaire according to §§ 53 ff GenG
+        </p>
+
+        <Form {...form}>
+          <form className="space-y-8">
+            <GeneralQuestionsSection form={form} />
+            <GeneralSection form={form} />
+            <StatutesSection form={form} />
+            <EmployeesSection form={form} />
+            <PromotionSection form={form} />
+            <LegalDisputesSection form={form} />
+            <FinancialInstrumentsSection form={form} />
+            <ShareholdingsSection form={form} />
+          </form>
+        </Form>
       </div>
-    </SidebarProvider>
+    </Card>
   );
 };
 
