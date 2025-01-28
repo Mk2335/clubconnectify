@@ -46,7 +46,7 @@ const integrations = [
   },
   {
     title: "MOCO - Project Management",
-    description: "Integrate your project management with MOCO. Synchronize your projects, time tracking, and resource planning directly between easyVerein and MOCO.",
+    description: "Integrate your project management with MOCO. Synchronize your projects, time tracking, and resource planning directly with MOCO.",
     logo: "/placeholder.svg",
     isActive: false,
     infoLink: "#",
