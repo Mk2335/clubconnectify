@@ -1,23 +1,20 @@
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-} from "@/components/ui/sidebar";
-import { SidebarMenu } from "./sidebar/SidebarMenu";
+import { Rocket } from "lucide-react";
+import { Sidebar, SidebarHeader } from "@/components/ui/sidebar";
+import { SidebarMenu } from "@/components/sidebar/SidebarMenu";
 
 export function AppSidebar() {
   return (
     <Sidebar>
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Main Menu</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu />
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
+      <SidebarHeader className="border-b">
+        <div className="flex items-center gap-2 px-6 py-4">
+          <img
+            src="/lovable-uploads/0676ad4e-4a1a-45f6-a430-a0e4711a5870.png"
+            alt="Mr Genossenschaft"
+            className="h-8"
+          />
+        </div>
+      </SidebarHeader>
+      <SidebarMenu />
     </Sidebar>
   );
 }
