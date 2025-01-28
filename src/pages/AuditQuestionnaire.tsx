@@ -1,4 +1,4 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { FileText } from "lucide-react";
 import { Form } from "@/components/ui/form";
@@ -138,7 +138,6 @@ const AuditQuestionnaire = () => {
         <AppSidebar />
         <main className="flex-1 p-8">
           <div className="max-w-4xl mx-auto">
-            <SidebarTrigger className="mb-4" />
             <div className="flex items-center gap-4 mb-4">
               <FileText className="h-8 w-8 text-primary" />
               <h1 className="text-3xl font-bold">Audit Questionnaire</h1>
