@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -8,8 +8,15 @@ import { Button } from "@/components/ui/button";
 import { Users, Building2, FileText, DollarSign, List } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+interface FoundingMember {
+  name: string;
+  email: string;
+  group: string;
+  address: string;
+}
+
 interface IncorporationFormData {
-  foundingMembers: string;
+  foundingMembers: FoundingMember[];
   coopName: string;
   address: string;
   incorporationType: string;
@@ -29,10 +36,27 @@ const AUDITING_ASSOCIATIONS = [
 ];
 
 const IncorporationForm = () => {
-  const form = useForm<IncorporationFormData>();
+  const form = useForm<IncorporationFormData>({
+    defaultValues: {
+      foundingMembers: Array(3).fill({
+        name: "",
+        email: "",
+        group: "Regular Member",
+        address: ""
+      })
+    }
+  });
   const { toast } = useToast();
 
   const onSubmit = (data: IncorporationFormData) => {
+    if (data.foundingMembers.length < 3) {
+      toast({
+        title: "Validation Error",
+        description: "At least 3 founding members are required.",
+        variant: "destructive"
+      });
+      return;
+    }
     console.log(data);
     toast({
       title: "Form submitted",
@@ -50,43 +74,71 @@ const IncorporationForm = () => {
               Founding Members and Basic Information
             </CardTitle>
           </CardHeader>
-          <CardContent className="grid gap-4 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="foundingMembers"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Founding Members</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Enter founding members details" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="coopName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name of Cooperative</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter cooperative name" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Address</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Enter cooperative address" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+          <CardContent className="space-y-4">
+            {[0, 1, 2].map((index) => (
+              <div key={index} className="grid gap-4 md:grid-cols-2 p-4 border rounded-lg">
+                <FormField
+                  control={form.control}
+                  name={`foundingMembers.${index}.name`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name {index < 3 && "*"}</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter member name" {...field} required={index < 3} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`foundingMembers.${index}.email`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email {index < 3 && "*"}</FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="Enter email address" {...field} required={index < 3} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`foundingMembers.${index}.address`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Address {index < 3 && "*"}</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter address" {...field} required={index < 3} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`foundingMembers.${index}.group`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Member Type {index < 3 && "*"}</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select member type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Regular Member">Regular Member</SelectItem>
+                          <SelectItem value="Board Member">Board Member</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            ))}
           </CardContent>
         </Card>
 
