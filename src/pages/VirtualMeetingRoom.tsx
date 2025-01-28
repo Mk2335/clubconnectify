@@ -57,7 +57,7 @@ const VirtualMeetingRoom = () => {
               <Button variant="outline">Enter meeting room (new window)</Button>
             </div>
 
-            <Alert variant="warning" className="mb-8">
+            <Alert variant="destructive" className="mb-8">
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription>
                 We use local instances of the Jitsi video platform to provide the feature. No meetings are recorded or shared. 
