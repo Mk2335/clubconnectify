@@ -2,11 +2,11 @@ import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Progress } from "@/components/ui/progress";
-import { useEffect, useState } from "react";
+import { useFormProgress } from "@/hooks/useFormProgress";
 import ManagementBooksSection from "./ManagementBooksSection";
 import AnnualFinancialStatementsSection from "./AnnualFinancialStatementsSection";
 import AdditionalFinancialStatementsSection from "./AdditionalFinancialStatementsSection";
+import FormProgress from "./FormProgress";
 
 interface AccountingQuestionnaireData {
   internalControls: "yes" | "no";
@@ -30,8 +30,6 @@ interface AccountingQuestionnaireData {
   specialCircumstances: "none" | "exist";
   circumstances: string;
   legalDisputesHandled: "yes" | "no";
-  
-  // New tax returns section properties
   taxReturnsSubmittedBy: string;
   taxAssessmentNoticesUntil: string;
   taxReturnsPreparedBy: "cooperative" | "consultant";
@@ -44,8 +42,6 @@ interface AccountingQuestionnaireData {
 }
 
 const AccountingQuestionnaire = () => {
-  const [progress, setProgress] = useState(0);
-  
   const form = useForm<AccountingQuestionnaireData>({
     defaultValues: {
       internalControls: "no",
@@ -69,8 +65,6 @@ const AccountingQuestionnaire = () => {
       specialCircumstances: "none",
       circumstances: "",
       legalDisputesHandled: "yes",
-      
-      // New tax returns section default values
       taxReturnsSubmittedBy: "",
       taxAssessmentNoticesUntil: "",
       taxReturnsPreparedBy: "cooperative",
@@ -83,36 +77,8 @@ const AccountingQuestionnaire = () => {
     },
   });
 
+  const progress = useFormProgress(form);
   const { toast } = useToast();
-
-  // Calculate progress whenever form values change
-  useEffect(() => {
-    const values = form.getValues();
-    const totalFields = Object.keys(values).length;
-    let filledFields = 0;
-
-    const countFilledFields = (obj: any) => {
-      Object.entries(obj).forEach(([_, value]) => {
-        if (Array.isArray(value)) {
-          value.forEach((item) => {
-            if (typeof item === 'object') {
-              countFilledFields(item);
-            } else if (item) {
-              filledFields++;
-            }
-          });
-        } else if (typeof value === 'object' && value !== null) {
-          countFilledFields(value);
-        } else if (value) {
-          filledFields++;
-        }
-      });
-    };
-
-    countFilledFields(values);
-    const calculatedProgress = Math.round((filledFields / totalFields) * 100);
-    setProgress(calculatedProgress);
-  }, [form.watch()]);
 
   const onSubmit = (data: AccountingQuestionnaireData) => {
     console.log(data);
@@ -125,13 +91,7 @@ const AccountingQuestionnaire = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-sm text-muted-foreground">Completion Progress</p>
-            <span className="text-sm font-medium">{progress}%</span>
-          </div>
-          <Progress value={progress} className="h-2" />
-        </div>
+        <FormProgress progress={progress} />
         <ManagementBooksSection form={form} />
         <AnnualFinancialStatementsSection form={form} />
         <AdditionalFinancialStatementsSection form={form} />
