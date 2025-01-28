@@ -5,21 +5,33 @@ import { Button } from "@/components/ui/button";
 import { Video, MessageCircle, Bot, Phone, Calendar, Check, Mail } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { Textarea } from "@/components/ui/textarea";
 
 const Community = () => {
   const [email, setEmail] = useState("");
+  const [question, setQuestion] = useState("");
   const { toast } = useToast();
 
   const handleSupportEmail = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send the email to your backend
     toast({
       title: "Support request sent",
       description: "We'll get back to you shortly at " + email,
     });
     setEmail("");
+  };
+
+  const handleQuestionSubmit = () => {
+    if (question.trim()) {
+      toast({
+        title: "Question submitted",
+        description: "Your question has been submitted for the live call.",
+      });
+      setQuestion("");
+    }
   };
 
   return (
@@ -64,7 +76,25 @@ const Community = () => {
                     Live Call
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="question">Submit your question for the live call</Label>
+                    <Textarea
+                      id="question"
+                      placeholder="Type your question here..."
+                      value={question}
+                      onChange={(e) => setQuestion(e.target.value)}
+                      className="min-h-[100px]"
+                    />
+                    <Button 
+                      onClick={handleQuestionSubmit}
+                      className="w-full"
+                      disabled={!question.trim()}
+                    >
+                      Submit Question
+                    </Button>
+                  </div>
+                  <Separator />
                   <Button className="w-full">
                     Join Live Call
                   </Button>
