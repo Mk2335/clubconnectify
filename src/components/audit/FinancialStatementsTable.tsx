@@ -2,7 +2,7 @@ import { FormField } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { FormLabel } from "@/components/ui/label";
+import { Label } from "@/components/ui/label";
 import { UseFormReturn } from "react-hook-form";
 
 interface FinancialStatementsTableProps {
@@ -62,11 +62,11 @@ const FinancialStatementsTable = ({ form }: FinancialStatementsTableProps) => {
                   >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="yes" id={`protocol-yes-${index}`} />
-                      <FormLabel htmlFor={`protocol-yes-${index}`}>Yes</FormLabel>
+                      <Label htmlFor={`protocol-yes-${index}`}>Yes</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="no" id={`protocol-no-${index}`} />
-                      <FormLabel htmlFor={`protocol-no-${index}`}>No</FormLabel>
+                      <Label htmlFor={`protocol-no-${index}`}>No</Label>
                     </div>
                   </RadioGroup>
                 )}
