@@ -105,4 +105,109 @@ export const SidebarContent = React.forwardRef<
 ));
 SidebarContent.displayName = "SidebarContent";
 
-// ... Add other smaller components following the same pattern
+export const SidebarGroup = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"div">
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    data-sidebar="group"
+    className={cn("flex flex-col gap-4", className)}
+    {...props}
+  />
+));
+SidebarGroup.displayName = "SidebarGroup";
+
+export const SidebarGroupLabel = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"div">
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    data-sidebar="group-label"
+    className={cn("px-2 text-xs font-semibold text-sidebar-foreground/60", className)}
+    {...props}
+  />
+));
+SidebarGroupLabel.displayName = "SidebarGroupLabel";
+
+export const SidebarGroupContent = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"div">
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    data-sidebar="group-content"
+    className={cn("flex flex-col gap-1", className)}
+    {...props}
+  />
+));
+SidebarGroupContent.displayName = "SidebarGroupContent";
+
+export const SidebarMenu = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"div">
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    data-sidebar="menu"
+    className={cn("flex flex-col gap-1", className)}
+    {...props}
+  />
+));
+SidebarMenu.displayName = "SidebarMenu";
+
+export const SidebarMenuItem = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"div">
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    data-sidebar="menu-item"
+    className={cn("relative flex flex-col", className)}
+    {...props}
+  />
+));
+SidebarMenuItem.displayName = "SidebarMenuItem";
+
+export const SidebarMenuSub = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"div">
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    data-sidebar="menu-sub"
+    className={cn("flex flex-col gap-1 pl-6", className)}
+    {...props}
+  />
+));
+SidebarMenuSub.displayName = "SidebarMenuSub";
+
+export const SidebarMenuSubItem = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<"div">
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    data-sidebar="menu-sub-item"
+    className={cn("relative flex", className)}
+    {...props}
+  />
+));
+SidebarMenuSubItem.displayName = "SidebarMenuSubItem";
+
+export const SidebarMenuSubButton = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentProps<"button">
+>(({ className, ...props }, ref) => (
+  <button
+    ref={ref}
+    data-sidebar="menu-sub-button"
+    className={cn(
+      "flex w-full items-center gap-2 rounded-md p-2 text-sm hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+      className
+    )}
+    {...props}
+  />
+));
+SidebarMenuSubButton.displayName = "SidebarMenuSubButton";
