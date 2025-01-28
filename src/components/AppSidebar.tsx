@@ -22,6 +22,7 @@ import {
   Settings,
   Cable,
   Users2,
+  Gavel,
 } from "lucide-react";
 
 const menuItems = [
@@ -30,14 +31,14 @@ const menuItems = [
   { icon: Users, label: "Members", href: "/members" },
   { icon: Calendar, label: "Dates", href: "/dates" },
   {
-    icon: Vote,
-    label: "Voting",
-    href: "/voting",
+    icon: Gavel,
+    label: "General Assembly",
+    href: "/general-assembly",
     subItems: [
       {
-        icon: Users2,
-        label: "General Assembly",
-        href: "/voting/general-assembly",
+        icon: Vote,
+        label: "Voting",
+        href: "/general-assembly/voting",
       },
     ],
   },
