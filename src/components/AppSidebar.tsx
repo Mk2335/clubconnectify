@@ -1,6 +1,7 @@
 import { Sidebar, SidebarHeader } from "@/components/ui/sidebar";
 import { SidebarMenu } from "@/components/sidebar/SidebarMenu";
 import { CooperativeSelector } from "./company/CooperativeSelector";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function AppSidebar() {
   return (
@@ -14,8 +15,10 @@ export function AppSidebar() {
           />
         </div>
       </SidebarHeader>
-      <CooperativeSelector />
-      <SidebarMenu />
+      <ScrollArea className="flex-1">
+        <CooperativeSelector />
+        <SidebarMenu />
+      </ScrollArea>
     </Sidebar>
   );
 }
