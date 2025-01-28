@@ -30,20 +30,20 @@ const CalendarPage = () => {
   const tasks = [
     {
       title: "Review Q1 Reports",
-      status: "In Progress",
+      status: "In Progress" as const,
       dueDate: "2024-04-21"
     },
     {
       title: "Prepare Meeting Minutes",
-      status: "Pending",
+      status: "Pending" as const,
       dueDate: "2024-04-23"
     },
     {
       title: "Update Shareholder Registry",
-      status: "Completed",
+      status: "Completed" as const,
       dueDate: "2024-04-19"
     }
-  ] as const;
+  ];
 
   return (
     <SidebarProvider>
