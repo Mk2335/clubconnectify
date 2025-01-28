@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import ManagementBooksSection from "./ManagementBooksSection";
 import AnnualFinancialStatementsSection from "./AnnualFinancialStatementsSection";
+import AdditionalFinancialStatementsSection from "./AdditionalFinancialStatementsSection";
 
 interface AccountingQuestionnaireData {
   internalControls: "yes" | "no";
@@ -28,6 +29,21 @@ interface AccountingQuestionnaireData {
   specialCircumstances: "none" | "exist";
   circumstances: string;
   legalDisputesHandled: "yes" | "no";
+  
+  // New properties for additional financial statements section
+  materialChanges: "yes" | "no";
+  statutoryViolations: "do-not-exist" | "exist";
+  statutoryViolationsDescription: string;
+  materialMisstatements: "do-not-exist" | "exist";
+  materialMisstatementsDescription: string;
+  deceptions: "do-not-exist" | "exist";
+  deceptionsDescription: string;
+  offBalanceTransactions: "do-not-exist" | "exist";
+  offBalanceTransactionsDescription: string;
+  postBalanceEvents: "do-not-exist" | "exist";
+  postBalanceEventsDescription: string;
+  materialEventsBeforeAudit: "yes" | "no";
+  receivablesFromBoards: "do-not-exist" | "exist";
 }
 
 const AccountingQuestionnaire = () => {
@@ -54,7 +70,22 @@ const AccountingQuestionnaire = () => {
       estimatedValues: "yes",
       specialCircumstances: "none",
       circumstances: "",
-      legalDisputesHandled: "yes"
+      legalDisputesHandled: "yes",
+      
+      // New default values
+      materialChanges: "yes",
+      statutoryViolations: "do-not-exist",
+      statutoryViolationsDescription: "",
+      materialMisstatements: "do-not-exist",
+      materialMisstatementsDescription: "",
+      deceptions: "do-not-exist",
+      deceptionsDescription: "",
+      offBalanceTransactions: "do-not-exist",
+      offBalanceTransactionsDescription: "",
+      postBalanceEvents: "do-not-exist",
+      postBalanceEventsDescription: "",
+      materialEventsBeforeAudit: "yes",
+      receivablesFromBoards: "do-not-exist",
     },
   });
 
@@ -73,6 +104,7 @@ const AccountingQuestionnaire = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <ManagementBooksSection form={form} />
         <AnnualFinancialStatementsSection form={form} />
+        <AdditionalFinancialStatementsSection form={form} />
         <div className="flex justify-end">
           <Button type="submit">Submit Questionnaire</Button>
         </div>
