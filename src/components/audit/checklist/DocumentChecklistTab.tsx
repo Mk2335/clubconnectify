@@ -19,7 +19,12 @@ interface ChecklistSection {
   items: ChecklistItem[];
 }
 
-export const DocumentChecklistTab = ({ sections }: { sections: ChecklistSection[] }) => {
+interface DocumentChecklistTabProps {
+  sections: ChecklistSection[];
+  isSubmitted?: boolean;
+}
+
+export const DocumentChecklistTab = ({ sections, isSubmitted = false }: DocumentChecklistTabProps) => {
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
 
   const calculateProgress = () => {
@@ -37,7 +42,7 @@ export const DocumentChecklistTab = ({ sections }: { sections: ChecklistSection[
 
   return (
     <div className="mt-6 space-y-8">
-      <FormProgress progress={calculateProgress()} />
+      <FormProgress progress={calculateProgress()} isSubmitted={isSubmitted} />
       <div className="space-y-8">
         {sections.map((section) => (
           <Card key={section.title} className="p-6">

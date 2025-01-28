@@ -14,7 +14,11 @@ import { ShareholdingsSection } from "@/components/audit/ShareholdingsSection";
 import { GeneralQuestionsSection } from "@/components/audit/GeneralQuestionsSection";
 import { useEffect, useState } from "react";
 
-const AuditQuestionnaire = () => {
+interface AuditQuestionnaireProps {
+  isSubmitted?: boolean;
+}
+
+const AuditQuestionnaire = ({ isSubmitted = false }: AuditQuestionnaireProps) => {
   const [progress, setProgress] = useState(0);
 
   const form = useForm({
@@ -144,10 +148,12 @@ const AuditQuestionnaire = () => {
             </div>
             <div className="mb-8">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-sm text-muted-foreground">Completion Progress</p>
+                <p className="text-sm text-muted-foreground">
+                  {isSubmitted ? "Questionnaire Submitted" : "Completion Progress"}
+                </p>
                 <span className="text-sm font-medium">{progress}%</span>
               </div>
-              <Progress value={progress} className="h-2" />
+              <Progress value={isSubmitted ? 100 : progress} className="h-2" />
             </div>
             <p className="text-lg text-muted-foreground mb-8">
               Complete the mandatory audit questionnaire according to §§ 53 ff GenG
