@@ -10,6 +10,7 @@ import Members from "./pages/Members";
 import Dates from "./pages/Dates";
 import Voting from "./pages/Voting";
 import GeneralAssembly from "./pages/GeneralAssembly";
+import Minutes from "./pages/Minutes";
 import Financing from "./pages/Financing";
 import Tasks from "./pages/Tasks";
 import Settings from "./pages/Settings";
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/dates" element={<Dates />} />
           <Route path="/general-assembly" element={<GeneralAssembly />} />
           <Route path="/general-assembly/voting" element={<Voting />} />
+          <Route path="/general-assembly/minutes" element={<Minutes />} />
           <Route path="/financing" element={<Financing />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/settings" element={<Settings />} />

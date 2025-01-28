@@ -21,7 +21,7 @@ import {
   List,
   Settings,
   Cable,
-  Users2,
+  FileText,
   Gavel,
 } from "lucide-react";
 
@@ -39,6 +39,11 @@ const menuItems = [
         icon: Vote,
         label: "Voting",
         href: "/general-assembly/voting",
+      },
+      {
+        icon: FileText,
+        label: "Minutes",
+        href: "/general-assembly/minutes",
       },
     ],
   },
