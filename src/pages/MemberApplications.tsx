@@ -9,6 +9,8 @@ import { PersonalInfoFields } from "@/components/member-applications/PersonalInf
 import { ContactFields } from "@/components/member-applications/ContactFields";
 import { MembershipTypeFields } from "@/components/member-applications/MembershipTypeFields";
 import { TermsFields } from "@/components/member-applications/TermsFields";
+import { useEffect, useCallback } from "react";
+import debounce from "lodash/debounce";
 
 const MemberApplications = () => {
   const form = useForm<ApplicationFormData>({
@@ -23,6 +25,22 @@ const MemberApplications = () => {
       acceptDocuments: false,
     },
   });
+
+  // Handle resize observer warnings with debounce
+  const handleResize = useCallback(
+    debounce(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 100),
+    []
+  );
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      handleResize.cancel();
+    };
+  }, [handleResize]);
 
   const onSubmit = (data: ApplicationFormData) => {
     console.log(data);
