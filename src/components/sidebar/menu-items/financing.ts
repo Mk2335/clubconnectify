@@ -1,4 +1,4 @@
-import { DollarSign, LineChart, FileText } from "lucide-react";
+import { DollarSign, LineChart, FileText, Wallet } from "lucide-react";
 import { MenuItem } from "./types";
 
 export const financingMenuItems: MenuItem = {
@@ -6,6 +6,11 @@ export const financingMenuItems: MenuItem = {
   label: "Financing",
   href: "/financing",
   subItems: [
+    {
+      icon: Wallet,
+      label: "Account",
+      href: "/financing/account",
+    },
     {
       icon: LineChart,
       label: "Business Plan",
