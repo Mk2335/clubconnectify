@@ -12,21 +12,14 @@ export const knowledgeCommunityMenuItems: MenuItem = {
       href: "/knowledge-community/knowledge",
       subItems: [
         {
-          icon: GraduationCap,
-          label: "Courses",
-          href: "/knowledge-community/knowledge/courses",
-          subItems: [
-            {
-              icon: School,
-              label: "MASTERCLASS",
-              href: "/knowledge-community/knowledge/courses/masterclass",
-            },
-            {
-              icon: BookOpenCheck,
-              label: "MASTERMIND",
-              href: "/knowledge-community/knowledge/courses/mastermind",
-            },
-          ],
+          icon: School,
+          label: "MASTERCLASS",
+          href: "/knowledge-community/knowledge/courses/masterclass",
+        },
+        {
+          icon: BookOpenCheck,
+          label: "MASTERMIND",
+          href: "/knowledge-community/knowledge/courses/mastermind",
         },
       ],
     },
