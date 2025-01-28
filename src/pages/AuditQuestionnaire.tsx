@@ -7,6 +7,7 @@ import { GeneralSection } from "@/components/audit/GeneralSection";
 import { StatutesSection } from "@/components/audit/StatutesSection";
 import { EmployeesSection } from "@/components/audit/EmployeesSection";
 import { PromotionSection } from "@/components/audit/PromotionSection";
+import { LegalDisputesSection } from "@/components/audit/LegalDisputesSection";
 
 const AuditQuestionnaire = () => {
   const form = useForm({
@@ -45,6 +46,14 @@ const AuditQuestionnaire = () => {
       naturalPromotionEntries: [{ year: "", description: "" }],
       promotionalServices: "",
       memberSatisfaction: "",
+      disputesCount: "",
+      totalDisputeValue: "",
+      disputeDescription: "",
+      disputes: Array(5).fill({
+        status: "",
+        description: "",
+        value: "",
+      }),
     },
   });
 
@@ -68,6 +77,7 @@ const AuditQuestionnaire = () => {
                 <StatutesSection form={form} />
                 <EmployeesSection form={form} />
                 <PromotionSection form={form} />
+                <LegalDisputesSection form={form} />
               </div>
             </Form>
           </div>
