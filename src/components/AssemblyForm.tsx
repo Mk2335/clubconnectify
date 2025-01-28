@@ -105,6 +105,34 @@ export function AssemblyForm() {
               </Card>
             </div>
 
+            <div>
+              <Label>Draft Resolutions</Label>
+              <Card className="mt-2">
+                <CardContent className="pt-6 space-y-4">
+                  <div>
+                    <Label htmlFor="resolution-title">Title of Resolution</Label>
+                    <Input id="resolution-title" />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="resolution-text">Resolution Text</Label>
+                    <Textarea 
+                      id="resolution-text" 
+                      className="min-h-[100px]"
+                      placeholder="Enter the full text of the resolution..."
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="resolution-proposer">Proposer</Label>
+                    <Input id="resolution-proposer" />
+                  </div>
+
+                  <Button className="w-full">Add Resolution</Button>
+                </CardContent>
+              </Card>
+            </div>
+
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <Label htmlFor="notify-association">
