@@ -34,6 +34,25 @@ const integrations = [
     isBeta: true,
     registrationLink: "https://passcreator.com/register",
     freeDetails: "Additional costs apply for using this integration, as a paid Passcreator account is required."
+  },
+  {
+    title: "DATEV - Accounting",
+    description: "Connect your accounting directly with DATEV. Export your financial data, receipts, and transactions automatically to your DATEV system for seamless accounting integration.",
+    logo: "/placeholder.svg",
+    isActive: false,
+    infoLink: "#",
+    registrationLink: "https://datev.com/register",
+    freeDetails: "Requires an active DATEV account. Contact DATEV for pricing details."
+  },
+  {
+    title: "MOCO - Project Management",
+    description: "Integrate your project management with MOCO. Synchronize your projects, time tracking, and resource planning directly between easyVerein and MOCO.",
+    logo: "/placeholder.svg",
+    isActive: false,
+    infoLink: "#",
+    isBeta: true,
+    registrationLink: "https://mocoapp.com/register",
+    freeDetails: "A MOCO subscription is required. Free trial available for 30 days."
   }
 ];
 
