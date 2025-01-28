@@ -6,6 +6,8 @@ import AuditQuestionnaire from "@/pages/AuditQuestionnaire";
 import AccountingQuestionnaire from "./AccountingQuestionnaire";
 import { ListOfMembersSection } from "./ListOfMembersSection";
 import { BodiesAndRulesSection } from "./BodiesAndRulesSection";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 interface AuditTabsProps {
   form: UseFormReturn<any>;
@@ -13,6 +15,15 @@ interface AuditTabsProps {
 }
 
 export const AuditTabs = ({ form, sections }: AuditTabsProps) => {
+  const { toast } = useToast();
+
+  const handleSubmit = () => {
+    toast({
+      title: "Form submitted",
+      description: "Your questionnaire has been saved.",
+    });
+  };
+
   return (
     <Tabs defaultValue="checklist" className="w-full">
       <TabsList className="w-full mb-8 grid grid-cols-5 bg-muted p-1 rounded-lg">
@@ -33,24 +44,39 @@ export const AuditTabs = ({ form, sections }: AuditTabsProps) => {
         </TabsTrigger>
       </TabsList>
       
-      <TabsContent value="checklist">
+      <TabsContent value="checklist" className="space-y-6">
         <DocumentChecklistTab sections={sections} />
+        <div className="flex justify-end">
+          <Button onClick={handleSubmit}>Submit Questionnaire</Button>
+        </div>
       </TabsContent>
 
-      <TabsContent value="questionnaire">
+      <TabsContent value="questionnaire" className="space-y-6">
         <AuditQuestionnaire />
+        <div className="flex justify-end">
+          <Button onClick={handleSubmit}>Submit Questionnaire</Button>
+        </div>
       </TabsContent>
 
-      <TabsContent value="accounting">
+      <TabsContent value="accounting" className="space-y-6">
         <AccountingQuestionnaire />
+        <div className="flex justify-end">
+          <Button onClick={handleSubmit}>Submit Questionnaire</Button>
+        </div>
       </TabsContent>
 
-      <TabsContent value="members">
+      <TabsContent value="members" className="space-y-6">
         <ListOfMembersSection />
+        <div className="flex justify-end">
+          <Button onClick={handleSubmit}>Submit Questionnaire</Button>
+        </div>
       </TabsContent>
 
-      <TabsContent value="bodies">
+      <TabsContent value="bodies" className="space-y-6">
         <BodiesAndRulesSection form={form} />
+        <div className="flex justify-end">
+          <Button onClick={handleSubmit}>Submit Questionnaire</Button>
+        </div>
       </TabsContent>
     </Tabs>
   );
