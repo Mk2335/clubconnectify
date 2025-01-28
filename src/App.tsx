@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Members from "./pages/Members";
 import Dates from "./pages/Dates";
 import Voting from "./pages/Voting";
+import GeneralAssembly from "./pages/GeneralAssembly";
 import Financing from "./pages/Financing";
 import Tasks from "./pages/Tasks";
 import Settings from "./pages/Settings";
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/members" element={<Members />} />
           <Route path="/dates" element={<Dates />} />
           <Route path="/voting" element={<Voting />} />
+          <Route path="/voting/general-assembly" element={<GeneralAssembly />} />
           <Route path="/financing" element={<Financing />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/settings" element={<Settings />} />

@@ -7,6 +7,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import {
   Database,
@@ -18,6 +21,7 @@ import {
   List,
   Settings,
   Cable,
+  Users2,
 } from "lucide-react";
 
 const menuItems = [
@@ -25,7 +29,18 @@ const menuItems = [
   { icon: Home, label: "Dashboard", href: "/" },
   { icon: Users, label: "Members", href: "/members" },
   { icon: Calendar, label: "Dates", href: "/dates" },
-  { icon: Vote, label: "Voting", href: "/voting" },
+  {
+    icon: Vote,
+    label: "Voting",
+    href: "/voting",
+    subItems: [
+      {
+        icon: Users2,
+        label: "General Assembly",
+        href: "/voting/general-assembly",
+      },
+    ],
+  },
   { icon: DollarSign, label: "Financing", href: "/financing" },
   { icon: List, label: "Tasks", href: "/tasks" },
   { icon: Settings, label: "Settings", href: "/settings" },
@@ -48,6 +63,20 @@ export function AppSidebar() {
                       <span>{item.label}</span>
                     </a>
                   </SidebarMenuButton>
+                  {item.subItems && (
+                    <SidebarMenuSub>
+                      {item.subItems.map((subItem) => (
+                        <SidebarMenuSubItem key={subItem.label}>
+                          <SidebarMenuSubButton asChild>
+                            <a href={subItem.href} className="flex items-center">
+                              <subItem.icon className="mr-2 h-4 w-4" />
+                              <span>{subItem.label}</span>
+                            </a>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ))}
+                    </SidebarMenuSub>
+                  )}
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
