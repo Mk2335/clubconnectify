@@ -9,6 +9,7 @@ import AdditionalFinancialStatementsSection from "./AdditionalFinancialStatement
 import FormProgress from "./FormProgress";
 import { AccountingQuestionnaireData } from "@/types/accountingQuestionnaire";
 import { useState } from "react";
+import { Card } from "@/components/ui/card";
 
 const AccountingQuestionnaire = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -63,9 +64,11 @@ const AccountingQuestionnaire = () => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormProgress progress={progress} isSubmitted={isSubmitted} />
-        <ManagementBooksSection form={form} />
-        <AnnualFinancialStatementsSection form={form} />
-        <AdditionalFinancialStatementsSection form={form} />
+        <Card className="space-y-8 p-6">
+          <ManagementBooksSection form={form} />
+          <AnnualFinancialStatementsSection form={form} />
+          <AdditionalFinancialStatementsSection form={form} />
+        </Card>
         <div className="flex justify-end">
           <Button type="submit">Submit Questionnaire</Button>
         </div>

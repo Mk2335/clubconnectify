@@ -9,6 +9,7 @@ import { BodiesAndRulesSection } from "./BodiesAndRulesSection";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { FileText, ClipboardCheck, Calculator, Users, Building2 } from "lucide-react";
 
 interface AuditTabsProps {
   form: UseFormReturn<any>;
@@ -27,60 +28,64 @@ export const AuditTabs = ({ form, sections }: AuditTabsProps) => {
     });
   };
 
+  const tabs = [
+    { id: "checklist", label: "Document Checklist", icon: ClipboardCheck },
+    { id: "questionnaire", label: "Audit Questionnaire", icon: FileText },
+    { id: "accounting", label: "Accounting Questionnaire", icon: Calculator },
+    { id: "members", label: "List of Members", icon: Users },
+    { id: "bodies", label: "Bodies & Rules", icon: Building2 },
+  ];
+
   return (
     <Tabs defaultValue="checklist" className="w-full">
-      <TabsList className="w-full mb-8 grid grid-cols-5 bg-muted p-1 rounded-lg">
-        <TabsTrigger value="checklist" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all">
-          Document Checklist
-        </TabsTrigger>
-        <TabsTrigger value="questionnaire" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all">
-          Audit Questionnaire
-        </TabsTrigger>
-        <TabsTrigger value="accounting" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all">
-          Accounting Questionnaire
-        </TabsTrigger>
-        <TabsTrigger value="members" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all">
-          List of Members
-        </TabsTrigger>
-        <TabsTrigger value="bodies" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all">
-          Bodies & Rules
-        </TabsTrigger>
+      <TabsList className="w-full mb-8 grid grid-cols-5 bg-muted/50 p-1 rounded-lg">
+        {tabs.map((tab) => (
+          <TabsTrigger
+            key={tab.id}
+            value={tab.id}
+            className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
+          >
+            <tab.icon className="h-4 w-4" />
+            <span className="hidden sm:inline">{tab.label}</span>
+          </TabsTrigger>
+        ))}
       </TabsList>
       
-      <TabsContent value="checklist" className="space-y-6">
-        <DocumentChecklistTab sections={sections} isSubmitted={submittedTabs['checklist']} />
-        <div className="flex justify-end">
-          <Button onClick={() => handleSubmit('checklist')}>Submit Questionnaire</Button>
-        </div>
-      </TabsContent>
-
-      <TabsContent value="questionnaire" className="space-y-6">
-        <AuditQuestionnaire isSubmitted={submittedTabs['questionnaire']} />
-        <div className="flex justify-end">
-          <Button onClick={() => handleSubmit('questionnaire')}>Submit Questionnaire</Button>
-        </div>
-      </TabsContent>
-
-      <TabsContent value="accounting" className="space-y-6">
-        <AccountingQuestionnaire />
-        <div className="flex justify-end">
-          <Button onClick={() => handleSubmit('accounting')}>Submit Questionnaire</Button>
-        </div>
-      </TabsContent>
-
-      <TabsContent value="members" className="space-y-6">
-        <ListOfMembersSection />
-        <div className="flex justify-end">
-          <Button onClick={() => handleSubmit('members')}>Submit Questionnaire</Button>
-        </div>
-      </TabsContent>
-
-      <TabsContent value="bodies" className="space-y-6">
-        <BodiesAndRulesSection form={form} />
-        <div className="flex justify-end">
-          <Button onClick={() => handleSubmit('bodies')}>Submit Questionnaire</Button>
-        </div>
-      </TabsContent>
+      {tabs.map((tab) => (
+        <TabsContent key={tab.id} value={tab.id} className="space-y-6">
+          <div className="bg-card rounded-lg border shadow-sm">
+            <div className="flex items-center gap-2 p-6 border-b">
+              <tab.icon className="h-5 w-5 text-primary" />
+              <h2 className="text-2xl font-semibold">{tab.label}</h2>
+            </div>
+            <div className="p-6">
+              {tab.id === "checklist" && (
+                <DocumentChecklistTab sections={sections} isSubmitted={submittedTabs[tab.id]} />
+              )}
+              {tab.id === "questionnaire" && (
+                <AuditQuestionnaire isSubmitted={submittedTabs[tab.id]} />
+              )}
+              {tab.id === "accounting" && (
+                <AccountingQuestionnaire />
+              )}
+              {tab.id === "members" && (
+                <ListOfMembersSection />
+              )}
+              {tab.id === "bodies" && (
+                <BodiesAndRulesSection form={form} />
+              )}
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <Button 
+              onClick={() => handleSubmit(tab.id)}
+              className="bg-primary hover:bg-primary/90"
+            >
+              Submit {tab.label}
+            </Button>
+          </div>
+        </TabsContent>
+      ))}
     </Tabs>
   );
 };
