@@ -10,6 +10,7 @@ import { PromotionSection } from "@/components/audit/PromotionSection";
 import { LegalDisputesSection } from "@/components/audit/LegalDisputesSection";
 import { FinancialInstrumentsSection } from "@/components/audit/FinancialInstrumentsSection";
 import { ShareholdingsSection } from "@/components/audit/ShareholdingsSection";
+import { GeneralQuestionsSection } from "@/components/audit/GeneralQuestionsSection";
 
 const AuditQuestionnaire = () => {
   const form = useForm({
@@ -69,6 +70,13 @@ const AuditQuestionnaire = () => {
       shareholdingsPurpose: "",
       shareholdingsJustification: "",
       significantContracts: "",
+      memberLoanLimits: "",
+      noDebtCertificates: "",
+      noParticipationCertificates: "",
+      noSilentPartnerships: "",
+      noAssetsEmbezzled: "",
+      noCustomerAssetsEmbezzled: "",
+      auditAssociationDisclosed: "",
     },
   });
 
@@ -88,6 +96,7 @@ const AuditQuestionnaire = () => {
             </p>
             <Form {...form}>
               <div className="space-y-8">
+                <GeneralQuestionsSection form={form} />
                 <GeneralSection form={form} />
                 <StatutesSection form={form} />
                 <EmployeesSection form={form} />
