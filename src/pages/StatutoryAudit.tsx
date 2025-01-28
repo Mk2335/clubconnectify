@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AuditQuestionnaire from "./AuditQuestionnaire";
+import AccountingQuestionnaire from "@/components/audit/AccountingQuestionnaire";
 
 const StatutoryAudit = () => {
   const sections = [
@@ -74,6 +75,7 @@ const StatutoryAudit = () => {
               <TabsList className="mb-8">
                 <TabsTrigger value="checklist">Document Checklist</TabsTrigger>
                 <TabsTrigger value="questionnaire">Audit Questionnaire</TabsTrigger>
+                <TabsTrigger value="accounting">Accounting Questionnaire</TabsTrigger>
               </TabsList>
               
               <TabsContent value="checklist">
@@ -125,6 +127,10 @@ const StatutoryAudit = () => {
               
               <TabsContent value="questionnaire">
                 <AuditQuestionnaire />
+              </TabsContent>
+
+              <TabsContent value="accounting">
+                <AccountingQuestionnaire />
               </TabsContent>
             </Tabs>
           </div>
