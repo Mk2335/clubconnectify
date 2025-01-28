@@ -2,7 +2,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
-import { Clipboard, FileText, List, Check } from "lucide-react";
+import { Clipboard, FileText, List, Check, Users } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -16,6 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AuditQuestionnaire from "./AuditQuestionnaire";
 import AccountingQuestionnaire from "@/components/audit/AccountingQuestionnaire";
 import { ListOfMembersSection } from "@/components/audit/ListOfMembersSection";
+import { BodiesAndRulesSection } from "@/components/audit/BodiesAndRulesSection";
 
 const StatutoryAudit = () => {
   const sections = [
@@ -73,7 +74,7 @@ const StatutoryAudit = () => {
           <div className="max-w-4xl mx-auto">
             <SidebarTrigger className="mb-4" />
             <Tabs defaultValue="checklist" className="w-full">
-              <TabsList className="w-full mb-8 grid grid-cols-4 bg-muted p-1 rounded-lg">
+              <TabsList className="w-full mb-8 grid grid-cols-5 bg-muted p-1 rounded-lg">
                 <TabsTrigger 
                   value="checklist" 
                   className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
@@ -97,6 +98,12 @@ const StatutoryAudit = () => {
                   className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
                 >
                   List of Members
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="bodies" 
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-all"
+                >
+                  Bodies & Rules
                 </TabsTrigger>
               </TabsList>
               
@@ -157,6 +164,10 @@ const StatutoryAudit = () => {
 
               <TabsContent value="members">
                 <ListOfMembersSection />
+              </TabsContent>
+
+              <TabsContent value="bodies">
+                <BodiesAndRulesSection />
               </TabsContent>
             </Tabs>
           </div>
