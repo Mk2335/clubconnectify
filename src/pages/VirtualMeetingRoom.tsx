@@ -29,7 +29,7 @@ const VirtualMeetingRoom = () => {
             
             <p className="text-muted-foreground mb-6">
               If you cannot meet on site, for example because you live too far away from each other or have limited time, 
-              we offer you the possibility to meet online in a virtual meeting in your easyVerein club management software. 
+              we offer you the possibility to meet online in a virtual meeting in your Coop management software. 
               Your meeting room can be started from this page at any time.
             </p>
 
