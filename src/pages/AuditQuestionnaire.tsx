@@ -9,6 +9,7 @@ import { EmployeesSection } from "@/components/audit/EmployeesSection";
 import { PromotionSection } from "@/components/audit/PromotionSection";
 import { LegalDisputesSection } from "@/components/audit/LegalDisputesSection";
 import { FinancialInstrumentsSection } from "@/components/audit/FinancialInstrumentsSection";
+import { ShareholdingsSection } from "@/components/audit/ShareholdingsSection";
 
 const AuditQuestionnaire = () => {
   const form = useForm({
@@ -64,6 +65,10 @@ const AuditQuestionnaire = () => {
         value: "",
       }),
       dayTrading: "",
+      hasShareholdings: "",
+      shareholdingsPurpose: "",
+      shareholdingsJustification: "",
+      significantContracts: "",
     },
   });
 
@@ -89,6 +94,7 @@ const AuditQuestionnaire = () => {
                 <PromotionSection form={form} />
                 <LegalDisputesSection form={form} />
                 <FinancialInstrumentsSection form={form} />
+                <ShareholdingsSection form={form} />
               </div>
             </Form>
           </div>
