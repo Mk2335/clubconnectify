@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useNavigate } from "react-router-dom";
-import { Book, Headphones } from "lucide-react";
+import { Book, Headphones, GraduationCap } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const courses = [
   {
@@ -51,6 +52,16 @@ const Knowledge = () => {
             <SidebarTrigger className="mb-4" />
             <h1 className="text-2xl font-bold mb-6">Knowledge</h1>
             
+            <Tabs defaultValue="overview" className="mb-8">
+              <TabsList>
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="courses" onClick={() => navigate("/knowledge-community/knowledge/courses")}>
+                  <GraduationCap className="h-4 w-4 mr-2" />
+                  Courses
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               <Card className="flex flex-col">
                 <CardHeader>
