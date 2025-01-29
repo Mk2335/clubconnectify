@@ -30,6 +30,7 @@ import AssociationCalendar from "./pages/AssociationCalendar";
 import AppointmentMeetings from "./pages/AppointmentMeetings";
 import AddressBook from "./pages/AddressBook";
 import Knowledge from "./pages/Knowledge";
+import Courses from "./pages/Courses";
 import Community from "./pages/Community";
 import Podcasts from "./pages/Podcasts";
 import Ebooks from "./pages/Ebooks";
@@ -71,6 +72,7 @@ const App = () => (
           <Route path="/financing/crowdfunding" element={<Crowdfunding />} />
           <Route path="/knowledge-community/connect" element={<Connect />} />
           <Route path="/knowledge-community/knowledge" element={<Knowledge />} />
+          <Route path="/knowledge-community/knowledge/courses" element={<Courses />} />
           <Route path="/knowledge-community/knowledge/podcasts" element={<Podcasts />} />
           <Route path="/knowledge-community/knowledge/ebooks" element={<Ebooks />} />
           <Route path="/knowledge-community/community" element={<Community />} />

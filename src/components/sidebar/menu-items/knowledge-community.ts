@@ -1,4 +1,4 @@
-import { BookOpen, Users, School, Headphones, Book, Network } from "lucide-react";
+import { BookOpen, Users, School, Headphones, Book, Network, GraduationCap } from "lucide-react";
 import { MenuItem } from "./types";
 
 export const knowledgeCommunityMenuItems: MenuItem = {
@@ -11,6 +11,11 @@ export const knowledgeCommunityMenuItems: MenuItem = {
       label: "Knowledge",
       href: "/knowledge-community/knowledge",
       subItems: [
+        {
+          icon: GraduationCap,
+          label: "Courses",
+          href: "/knowledge-community/knowledge/courses",
+        },
         {
           icon: Headphones,
           label: "Podcasts",
