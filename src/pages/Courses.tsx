@@ -3,6 +3,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Clock } from "lucide-react";
+import { KnowledgeTabs } from "@/components/knowledge/KnowledgeTabs";
 
 const courseModules = [
   {
@@ -79,6 +80,8 @@ const Courses = () => {
           <div className="max-w-6xl mx-auto">
             <SidebarTrigger className="mb-4" />
             <h1 className="text-2xl font-bold mb-6">Courses</h1>
+            
+            <KnowledgeTabs />
             
             <div className="grid gap-6">
               {courseModules.map((module, index) => (
