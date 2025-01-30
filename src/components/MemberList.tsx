@@ -53,7 +53,7 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
             id: (members.length + index + 1).toString(),
             name: values[0]?.trim() || '',
             email: values[1]?.trim() || '',
-            status: 'Active',
+            status: "Active" as const, // Explicitly set as "Active" with type assertion
             joinDate: new Date().toISOString().split('T')[0],
           };
         }).filter(member => member.name && member.email);
