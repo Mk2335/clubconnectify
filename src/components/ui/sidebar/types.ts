@@ -1,6 +1,6 @@
 import { LucideIcon } from "lucide-react";
 import { TooltipContent } from "@/components/ui/tooltip";
-import { ButtonHTMLAttributes } from "react";
+import { ButtonHTMLAttributes, HTMLAttributes } from "react";
 
 export type SidebarState = "expanded" | "collapsed";
 
@@ -20,7 +20,7 @@ export interface SidebarProviderProps {
   onOpenChange?: (open: boolean) => void;
 }
 
-export interface SidebarProps {
+export interface SidebarProps extends HTMLAttributes<HTMLDivElement> {
   side?: "left" | "right";
   variant?: "sidebar" | "floating" | "inset";
   collapsible?: "offcanvas" | "icon" | "none";
