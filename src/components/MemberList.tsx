@@ -1,5 +1,6 @@
 /**
  * Main component for managing and displaying member data
+ * Handles member listing, importing, sorting, and filtering functionality
  */
 
 import { useCallback, useMemo, useState } from "react";
@@ -30,6 +31,9 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
     },
   ]);
 
+  /**
+   * Handles CSV file upload and member data import
+   */
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -44,7 +48,7 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
         const newMembers = lines.slice(1)
           .map((line, index) => {
             const values = line.split(',');
-            const memberData = {
+            const memberData: Member = {
               id: (members.length + index + 1).toString(),
               name: values[0]?.trim() || '',
               email: values[1]?.trim() || '',
@@ -62,6 +66,7 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
           description: TOAST_MESSAGES.IMPORT_SUCCESS,
         });
       } catch (error) {
+        console.error('Import error:', error);
         toast({
           title: "Import Failed",
           description: TOAST_MESSAGES.IMPORT_ERROR,
@@ -72,6 +77,9 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
     reader.readAsText(file);
   };
 
+  /**
+   * Handles sorting of member data
+   */
   const handleSort = useCallback((key: keyof Member) => {
     setSortConfig((currentSort) => {
       if (currentSort?.key === key) {
@@ -84,6 +92,9 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
     });
   }, []);
 
+  /**
+   * Handles member editing
+   */
   const handleEdit = useCallback((memberId: string) => {
     toast({
       title: "Edit Member",
@@ -91,6 +102,9 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
     });
   }, []);
 
+  /**
+   * Handles member deletion
+   */
   const handleDelete = useCallback((memberId: string) => {
     toast({
       title: "Delete Member",
@@ -99,6 +113,9 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
     });
   }, []);
 
+  /**
+   * Handles member deactivation
+   */
   const handleDeactivate = useCallback((memberId: string) => {
     toast({
       title: "Deactivate Member",
@@ -107,6 +124,9 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
     });
   }, []);
 
+  /**
+   * Memoized sorted and filtered members list
+   */
   const sortedAndFilteredMembers = useMemo(() => {
     let result = [...members];
     
