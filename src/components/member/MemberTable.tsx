@@ -1,9 +1,14 @@
+/**
+ * Component for displaying member data in a table format
+ */
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash, UserX, ArrowUpDown } from "lucide-react";
 import { Member } from "@/types/member";
 import { MemberTableProps } from "@/types/table";
-import { useCallback } from "react";
+import { formatDate, getStatusBadgeClass } from "@/utils/memberUtils";
+import { TABLE_HEADERS } from "@/constants/memberConstants";
 
 export const MemberTable = ({ 
   members, 
@@ -13,19 +18,6 @@ export const MemberTable = ({
   sortConfig, 
   onSort 
 }: MemberTableProps) => {
-  const getStatusColor = useCallback((status: Member["status"]) => {
-    switch (status) {
-      case "Active":
-        return "text-green-600 bg-green-50 px-2 py-1 rounded-full text-xs font-medium";
-      case "Inactive":
-        return "text-red-600 bg-red-50 px-2 py-1 rounded-full text-xs font-medium";
-      case "Pending":
-        return "text-yellow-600 bg-yellow-50 px-2 py-1 rounded-full text-xs font-medium";
-      default:
-        return "";
-    }
-  }, []);
-
   if (members.length === 0) {
     return (
       <TableRow>
@@ -44,31 +36,31 @@ export const MemberTable = ({
             className="w-[200px] cursor-pointer hover:bg-muted/50"
             onClick={() => onSort('name')}
           >
-            Name
+            {TABLE_HEADERS.NAME}
             <ArrowUpDown className="ml-2 h-4 w-4 inline-block" />
           </TableHead>
           <TableHead 
             className="cursor-pointer hover:bg-muted/50"
             onClick={() => onSort('email')}
           >
-            Email
+            {TABLE_HEADERS.EMAIL}
             <ArrowUpDown className="ml-2 h-4 w-4 inline-block" />
           </TableHead>
           <TableHead 
             className="w-[100px] cursor-pointer hover:bg-muted/50"
             onClick={() => onSort('status')}
           >
-            Status
+            {TABLE_HEADERS.STATUS}
             <ArrowUpDown className="ml-2 h-4 w-4 inline-block" />
           </TableHead>
           <TableHead 
             className="w-[150px] cursor-pointer hover:bg-muted/50"
             onClick={() => onSort('joinDate')}
           >
-            Join Date
+            {TABLE_HEADERS.JOIN_DATE}
             <ArrowUpDown className="ml-2 h-4 w-4 inline-block" />
           </TableHead>
-          <TableHead className="w-[200px]">Actions</TableHead>
+          <TableHead className="w-[200px]">{TABLE_HEADERS.ACTIONS}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -77,11 +69,11 @@ export const MemberTable = ({
             <TableCell className="font-medium">{member.name}</TableCell>
             <TableCell>{member.email}</TableCell>
             <TableCell>
-              <span className={getStatusColor(member.status)}>
+              <span className={getStatusBadgeClass(member.status)}>
                 {member.status}
               </span>
             </TableCell>
-            <TableCell>{new Date(member.joinDate).toLocaleDateString()}</TableCell>
+            <TableCell>{formatDate(member.joinDate)}</TableCell>
             <TableCell>
               <div className="flex gap-2">
                 <Button

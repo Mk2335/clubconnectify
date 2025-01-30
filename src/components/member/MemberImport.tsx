@@ -1,3 +1,7 @@
+/**
+ * Component for handling member data import via CSV
+ */
+
 import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
 import {
@@ -8,6 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { TOAST_MESSAGES } from "@/constants/memberConstants";
 
 interface MemberImportProps {
   onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;

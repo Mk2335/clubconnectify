@@ -1,26 +1,31 @@
+/**
+ * Main component for managing and displaying member data
+ */
+
 import { useCallback, useMemo, useState } from "react";
 import { Member, MemberListProps } from "@/types/member";
 import { toast } from "@/components/ui/use-toast";
 import { MemberTable } from "./member/MemberTable";
 import { MemberImport } from "./member/MemberImport";
 import { SortConfig } from "@/types/table";
+import { validateMemberData } from "@/utils/memberUtils";
+import { MEMBER_STATUS, TOAST_MESSAGES } from "@/constants/memberConstants";
 
 export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
-
   const [members, setMembers] = useState<Member[]>([
     {
       id: "1",
       name: "John Doe",
       email: "john@example.com",
-      status: "Active",
+      status: MEMBER_STATUS.ACTIVE,
       joinDate: "2024-01-15",
     },
     {
       id: "2",
       name: "Jane Smith",
       email: "jane@example.com",
-      status: "Active",
+      status: MEMBER_STATUS.ACTIVE,
       joinDate: "2024-02-01",
     },
   ]);
@@ -36,26 +41,30 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
         const lines = csv.split('\n');
         const headers = lines[0].split(',');
         
-        const newMembers: Member[] = lines.slice(1).map((line, index) => {
-          const values = line.split(',');
-          return {
-            id: (members.length + index + 1).toString(),
-            name: values[0]?.trim() || '',
-            email: values[1]?.trim() || '',
-            status: "Active" as const,
-            joinDate: new Date().toISOString().split('T')[0],
-          };
-        }).filter(member => member.name && member.email);
+        const newMembers: Member[] = lines.slice(1)
+          .map((line, index) => {
+            const values = line.split(',');
+            const memberData = {
+              id: (members.length + index + 1).toString(),
+              name: values[0]?.trim() || '',
+              email: values[1]?.trim() || '',
+              status: MEMBER_STATUS.ACTIVE,
+              joinDate: new Date().toISOString().split('T')[0],
+            };
+
+            return validateMemberData(memberData) ? memberData : null;
+          })
+          .filter((member): member is Member => member !== null);
 
         setMembers(prev => [...prev, ...newMembers]);
         toast({
           title: "Import Successful",
-          description: `${newMembers.length} members have been imported.`,
+          description: TOAST_MESSAGES.IMPORT_SUCCESS,
         });
       } catch (error) {
         toast({
           title: "Import Failed",
-          description: "Please check your CSV file format.",
+          description: TOAST_MESSAGES.IMPORT_ERROR,
           variant: "destructive",
         });
       }
@@ -63,7 +72,7 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
     reader.readAsText(file);
   };
 
-  const handleSort = (key: keyof Member) => {
+  const handleSort = useCallback((key: keyof Member) => {
     setSortConfig((currentSort) => {
       if (currentSort?.key === key) {
         return {
@@ -73,41 +82,41 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
       }
       return { key, direction: 'asc' };
     });
-  };
+  }, []);
 
-  const handleEdit = (memberId: string) => {
+  const handleEdit = useCallback((memberId: string) => {
     toast({
       title: "Edit Member",
-      description: `Editing member ${memberId}`,
+      description: TOAST_MESSAGES.EDIT_SUCCESS,
     });
-  };
+  }, []);
 
-  const handleDelete = (memberId: string) => {
+  const handleDelete = useCallback((memberId: string) => {
     toast({
       title: "Delete Member",
-      description: `Deleting member ${memberId}`,
+      description: TOAST_MESSAGES.DELETE_SUCCESS,
       variant: "destructive",
     });
-  };
+  }, []);
 
-  const handleDeactivate = (memberId: string) => {
+  const handleDeactivate = useCallback((memberId: string) => {
     toast({
       title: "Deactivate Member",
-      description: `Deactivating member ${memberId}`,
+      description: TOAST_MESSAGES.DEACTIVATE_SUCCESS,
       variant: "destructive",
     });
-  };
+  }, []);
 
   const sortedAndFilteredMembers = useMemo(() => {
     let result = [...members];
     
-    // Apply search filter
-    result = result.filter((member) =>
-      member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.email.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    if (searchQuery) {
+      result = result.filter((member) =>
+        member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        member.email.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
 
-    // Apply sorting
     if (sortConfig) {
       result.sort((a, b) => {
         const aValue = a[sortConfig.key];
