@@ -10,7 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function AppSidebar() {
   return (
-    <Sidebar className="border-r" role="navigation" aria-label="Main Navigation">
+    <Sidebar className="border-r">
       <SidebarHeader className="border-b">
         <div className="flex items-center gap-2 px-6 py-4">
           <img
@@ -23,7 +23,7 @@ export function AppSidebar() {
           />
         </div>
       </SidebarHeader>
-      <ScrollArea className="flex-1 px-4">
+      <ScrollArea className="flex-1 px-4" role="navigation" aria-label="Main Navigation">
         <div className="space-y-4 py-4">
           <CooperativeSelector />
           <SidebarMenu />
