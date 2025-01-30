@@ -1,4 +1,9 @@
-import { FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
+/**
+ * Contact information form fields component for member applications
+ * Handles email, email confirmation, and tax ID inputs with validation
+ */
+
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { type Control } from "react-hook-form";
 import { type ApplicationFormData } from "@/types/memberApplication";
@@ -15,10 +20,17 @@ export const ContactFields = ({ control }: ContactFieldsProps) => {
         name="email"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Email Address</FormLabel>
+            <FormLabel htmlFor="email">Email Address</FormLabel>
             <FormControl>
-              <Input type="email" {...field} />
+              <Input 
+                type="email" 
+                id="email"
+                placeholder="Enter your email address"
+                aria-describedby="email-description"
+                {...field} 
+              />
             </FormControl>
+            <FormMessage />
           </FormItem>
         )}
       />
@@ -28,10 +40,17 @@ export const ContactFields = ({ control }: ContactFieldsProps) => {
         name="emailConfirm"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Confirm Email Address</FormLabel>
+            <FormLabel htmlFor="emailConfirm">Confirm Email Address</FormLabel>
             <FormControl>
-              <Input type="email" {...field} />
+              <Input 
+                type="email" 
+                id="emailConfirm"
+                placeholder="Confirm your email address"
+                aria-describedby="email-confirm-description"
+                {...field} 
+              />
             </FormControl>
+            <FormMessage />
           </FormItem>
         )}
       />
@@ -41,10 +60,16 @@ export const ContactFields = ({ control }: ContactFieldsProps) => {
         name="taxId"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Tax ID (if available)</FormLabel>
+            <FormLabel htmlFor="taxId">Tax ID (if available)</FormLabel>
             <FormControl>
-              <Input {...field} />
+              <Input 
+                id="taxId"
+                placeholder="Enter your tax ID (optional)"
+                aria-describedby="tax-id-description"
+                {...field} 
+              />
             </FormControl>
+            <FormMessage />
           </FormItem>
         )}
       />
