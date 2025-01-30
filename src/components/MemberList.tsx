@@ -1,20 +1,8 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useCallback, useMemo } from "react";
-
-interface Member {
-  id: string;
-  name: string;
-  email: string;
-  status: "Active" | "Inactive" | "Pending";
-  joinDate: string;
-}
-
-interface MemberListProps {
-  searchQuery?: string;
-}
+import { Member, MemberListProps } from "@/types/member";
 
 export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
-  // This is dummy data - in a real application, this would come from an API
   const members: Member[] = useMemo(() => [
     {
       id: "1",
@@ -35,11 +23,11 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
   const getStatusColor = useCallback((status: Member["status"]) => {
     switch (status) {
       case "Active":
-        return "text-green-600";
+        return "text-green-600 bg-green-50 px-2 py-1 rounded-full text-xs font-medium";
       case "Inactive":
-        return "text-red-600";
+        return "text-red-600 bg-red-50 px-2 py-1 rounded-full text-xs font-medium";
       case "Pending":
-        return "text-yellow-600";
+        return "text-yellow-600 bg-yellow-50 px-2 py-1 rounded-full text-xs font-medium";
       default:
         return "";
     }
@@ -66,23 +54,32 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
+            <TableHead className="w-[200px]">Name</TableHead>
             <TableHead>Email</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Join Date</TableHead>
+            <TableHead className="w-[100px]">Status</TableHead>
+            <TableHead className="w-[150px]">Join Date</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {filteredMembers.map((member) => (
-            <TableRow key={member.id}>
+            <TableRow key={member.id} className="hover:bg-muted/50 transition-colors">
               <TableCell className="font-medium">{member.name}</TableCell>
               <TableCell>{member.email}</TableCell>
-              <TableCell className={getStatusColor(member.status)}>
-                {member.status}
+              <TableCell>
+                <span className={getStatusColor(member.status)}>
+                  {member.status}
+                </span>
               </TableCell>
-              <TableCell>{member.joinDate}</TableCell>
+              <TableCell>{new Date(member.joinDate).toLocaleDateString()}</TableCell>
             </TableRow>
           ))}
+          {filteredMembers.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={4} className="text-center h-24 text-muted-foreground">
+                No members found matching your search.
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>

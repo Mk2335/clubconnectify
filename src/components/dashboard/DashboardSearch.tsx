@@ -15,6 +15,7 @@ export const DashboardSearch = ({ onSearch }: DashboardSearchProps) => {
     toast({
       title: "Coming Soon",
       description: "Advanced filtering options will be available soon.",
+      duration: 3000,
     });
   }, [toast]);
 
@@ -22,6 +23,7 @@ export const DashboardSearch = ({ onSearch }: DashboardSearchProps) => {
     toast({
       title: "Coming Soon",
       description: "Export functionality will be available soon.",
+      duration: 3000,
     });
   }, [toast]);
 
@@ -42,6 +44,7 @@ export const DashboardSearch = ({ onSearch }: DashboardSearchProps) => {
           variant="outline" 
           size="sm"
           onClick={handleFilter}
+          className="whitespace-nowrap"
         >
           Filter
         </Button>
@@ -49,6 +52,7 @@ export const DashboardSearch = ({ onSearch }: DashboardSearchProps) => {
           variant="outline" 
           size="sm"
           onClick={handleExport}
+          className="whitespace-nowrap"
         >
           Export
         </Button>
