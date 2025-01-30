@@ -41,14 +41,14 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
         const lines = csv.split('\n');
         const headers = lines[0].split(',');
         
-        const newMembers: Member[] = lines.slice(1)
+        const newMembers = lines.slice(1)
           .map((line, index) => {
             const values = line.split(',');
             const memberData = {
               id: (members.length + index + 1).toString(),
               name: values[0]?.trim() || '',
               email: values[1]?.trim() || '',
-              status: MEMBER_STATUS.ACTIVE,
+              status: MEMBER_STATUS.ACTIVE as Member['status'],
               joinDate: new Date().toISOString().split('T')[0],
             };
 
