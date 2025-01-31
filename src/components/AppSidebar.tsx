@@ -23,7 +23,7 @@ export function AppSidebar() {
           />
         </div>
       </SidebarHeader>
-      <ScrollArea className="flex-1 px-4" role="navigation" aria-label="Main Navigation">
+      <ScrollArea className="flex-1 px-4">
         <div className="space-y-4 py-4">
           <CooperativeSelector />
           <SidebarMenu />
