@@ -1,3 +1,4 @@
+
 import { MenuItem } from "./types";
 import { companyMenuItems } from "./company";
 import { membersMenuItems } from "./members";
@@ -11,7 +12,7 @@ import { Home } from "lucide-react";
 
 export const menuItems: MenuItem[] = [
   companyMenuItems,
-  { icon: Home, label: "Dashboard", href: "/" },
+  { icon: Home, label: "Übersicht", href: "/" },
   membersMenuItems,
   calendarMenuItems,
   generalAssemblyMenuItems,
