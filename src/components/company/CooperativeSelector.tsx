@@ -1,3 +1,4 @@
+
 import {
   Select,
   SelectContent,
@@ -11,6 +12,7 @@ const cooperatives = [
   { id: 1, name: "Wohnbaugenossenschaft 1" },
   { id: 2, name: "Dienstleistungsgenossenschaft 2" },
   { id: 3, name: "Agrargenossenschaft 3" },
+  { id: 4, name: "Stiftung" },
 ];
 
 export function CooperativeSelector() {
