@@ -58,7 +58,6 @@ export const translations: Translations = {
     crowdfunding: "Crowdfunding",
     connect: "Verbinden",
     dataStorage: "Datenspeicher",
-    dashboard: "Dashboard",
     account: "Konto",
     audit: "Prüfung",
     incorporation: "Gründung",
