@@ -1,37 +1,56 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis } from "recharts";
-import { ChartBar } from "lucide-react";
 
-interface FinancialData {
-  month: string;
-  income: number;
-  expenses: number;
-}
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from "recharts";
 
 interface FinancialChartProps {
-  data: FinancialData[];
+  data: Array<{
+    month: string;
+    income: number;
+    expenses: number;
+  }>;
+  incomeLabel?: string;
+  expensesLabel?: string;
 }
 
-const FinancialChart = ({ data }: FinancialChartProps) => {
+const FinancialChart = ({ data, incomeLabel = "Income", expensesLabel = "Expenses" }: FinancialChartProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <ChartBar className="h-5 w-5" />
-          Financial Overview
-        </CardTitle>
+        <CardTitle>Financial Overview</CardTitle>
       </CardHeader>
       <CardContent>
-        <ChartContainer className="h-[200px]" config={{}}>
-          <BarChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
-            <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-            <YAxis tick={{ fontSize: 12 }} />
-            <ChartTooltip />
-            <Bar dataKey="income" fill="#22c55e" name="Income" />
-            <Bar dataKey="expenses" fill="#ef4444" name="Expenses" />
+        <ResponsiveContainer width="100%" height={350}>
+          <BarChart data={data}>
+            <XAxis
+              dataKey="month"
+              stroke="#888888"
+              fontSize={12}
+              tickLine={false}
+              axisLine={false}
+            />
+            <YAxis
+              stroke="#888888"
+              fontSize={12}
+              tickLine={false}
+              axisLine={false}
+              tickFormatter={(value) => `€${value}`}
+            />
+            <Tooltip />
+            <Legend />
+            <Bar
+              dataKey="income"
+              name={incomeLabel}
+              fill="#4ade80"
+              radius={[4, 4, 0, 0]}
+            />
+            <Bar
+              dataKey="expenses"
+              name={expensesLabel}
+              fill="#f43f5e"
+              radius={[4, 4, 0, 0]}
+            />
           </BarChart>
-        </ChartContainer>
+        </ResponsiveContainer>
       </CardContent>
     </Card>
   );

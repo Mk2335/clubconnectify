@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { MemberList } from "@/components/MemberList";
@@ -8,6 +9,7 @@ import { DashboardSearch } from "@/components/dashboard/DashboardSearch";
 import StatsCard from "@/components/dashboard/StatsCard";
 import FinancialChart from "@/components/dashboard/FinancialChart";
 import EventsList from "@/components/dashboard/EventsList";
+import { useTranslation } from "@/utils/translations";
 
 const financialData = [
   { month: "Jan", income: 4000, expenses: 2400 },
@@ -38,6 +40,13 @@ const events = [
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const t = useTranslation('de');
+
+  const translatedEvents = events.map(event => ({
+    ...event,
+    title: t(event.title.toLowerCase().replace(/\s+/g, '')),
+    type: t(event.type.toLowerCase())
+  }));
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -50,46 +59,50 @@ const Index = () => {
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           <StatsCard
-            title="Total Members"
+            title={t("totalMembers")}
             value="45"
-            subtitle="+2 from last month"
+            subtitle={`+2 ${t("fromLastMonth")}`}
             icon={Users}
           />
           <StatsCard
-            title="Active Tasks"
+            title={t("activeTasks")}
             value="12"
-            subtitle="4 due this week"
+            subtitle={`4 ${t("dueThisWeek")}`}
             icon={ListCheck}
           />
           <StatsCard
-            title="Monthly Income"
+            title={t("monthlyIncome")}
             value="€3,423"
-            subtitle="+12.5% from last month"
+            subtitle="+12.5% ${t('fromLastMonth')}"
             icon={TrendingUp}
             iconColor="text-green-500"
           />
           <StatsCard
-            title="Upcoming Events"
+            title={t("upcomingEvents")}
             value="3"
-            subtitle="This week"
+            subtitle={t("thisWeek")}
             icon={Calendar}
           />
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          <FinancialChart data={financialData} />
-          <EventsList events={events} />
+          <FinancialChart 
+            data={financialData}
+            incomeLabel={t("income")}
+            expensesLabel={t("expenses")}
+          />
+          <EventsList events={translatedEvents} />
         </div>
 
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Users className="h-5 w-5" />
-              Member Directory
+              {t("memberDirectory")}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <DashboardSearch onSearch={handleSearch} />
+            <DashboardSearch onSearch={handleSearch} placeholder={t("searchMembers")} />
             <MemberList searchQuery={searchQuery} />
           </CardContent>
         </Card>
