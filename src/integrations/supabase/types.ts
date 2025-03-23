@@ -9,6 +9,162 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      address_book: {
+        Row: {
+          additional_address: string | null
+          city: string
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          member_id: string | null
+          phone: string | null
+          status: string
+          street: string
+          updated_at: string
+          zip_code: string
+        }
+        Insert: {
+          additional_address?: string | null
+          city: string
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          member_id?: string | null
+          phone?: string | null
+          status?: string
+          street: string
+          updated_at?: string
+          zip_code: string
+        }
+        Update: {
+          additional_address?: string | null
+          city?: string
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          member_id?: string | null
+          phone?: string | null
+          status?: string
+          street?: string
+          updated_at?: string
+          zip_code?: string
+        }
+        Relationships: []
+      }
+      appointments: {
+        Row: {
+          created_at: string
+          description: string | null
+          end_time: string
+          id: string
+          location: string | null
+          start_time: string
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          end_time: string
+          id?: string
+          location?: string | null
+          start_time: string
+          title: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          end_time?: string
+          id?: string
+          location?: string | null
+          start_time?: string
+          title?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      member_applications: {
+        Row: {
+          accept_documents: boolean
+          accept_fees: boolean
+          accept_liability: boolean
+          accept_notice: boolean
+          accept_terms: boolean
+          additional_address: string | null
+          city: string
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          is_investing_member: boolean
+          last_name: string
+          member_id: string | null
+          membership_type: string
+          shares: number | null
+          status: string
+          street: string
+          tax_id: string | null
+          updated_at: string
+          zip_code: string
+        }
+        Insert: {
+          accept_documents?: boolean
+          accept_fees?: boolean
+          accept_liability?: boolean
+          accept_notice?: boolean
+          accept_terms?: boolean
+          additional_address?: string | null
+          city: string
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          is_investing_member?: boolean
+          last_name: string
+          member_id?: string | null
+          membership_type: string
+          shares?: number | null
+          status?: string
+          street: string
+          tax_id?: string | null
+          updated_at?: string
+          zip_code: string
+        }
+        Update: {
+          accept_documents?: boolean
+          accept_fees?: boolean
+          accept_liability?: boolean
+          accept_notice?: boolean
+          accept_terms?: boolean
+          additional_address?: string | null
+          city?: string
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          is_investing_member?: boolean
+          last_name?: string
+          member_id?: string | null
+          membership_type?: string
+          shares?: number | null
+          status?: string
+          street?: string
+          tax_id?: string | null
+          updated_at?: string
+          zip_code?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
