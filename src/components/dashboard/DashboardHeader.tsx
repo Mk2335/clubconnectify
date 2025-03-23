@@ -1,17 +1,17 @@
+
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useCallback } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 export const DashboardHeader = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleAddMember = useCallback(() => {
-    toast({
-      title: "Coming Soon",
-      description: "The add member functionality will be available soon.",
-    });
-  }, [toast]);
+    navigate("/members");
+  }, [navigate]);
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

@@ -4,6 +4,16 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
+import { 
+  Sheet, 
+  SheetContent, 
+  SheetDescription, 
+  SheetHeader, 
+  SheetTitle, 
+  SheetFooter,
+  SheetClose
+} from "@/components/ui/sheet";
+import { Label } from "@/components/ui/label";
 
 export interface Member {
   id: string;
@@ -17,6 +27,17 @@ export function MemberList({ searchQuery = "" }: { searchQuery?: string }) {
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [importEmail, setImportEmail] = useState("");
+  const [showAddSheet, setShowAddSheet] = useState(false);
+  const [newMember, setNewMember] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    street: "",
+    city: "",
+    zip_code: "",
+    phone: "",
+    status: "Active"
+  });
   const { toast } = useToast();
 
   useEffect(() => {
@@ -90,6 +111,61 @@ export function MemberList({ searchQuery = "" }: { searchQuery?: string }) {
     }
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setNewMember(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleAddMember = async () => {
+    // Validate required fields
+    if (!newMember.first_name || !newMember.last_name || !newMember.email) {
+      toast({
+        title: "Error",
+        description: "Please fill in all required fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('address_book')
+        .insert([newMember])
+        .select();
+        
+      if (error) throw error;
+      
+      toast({
+        title: "Success",
+        description: `Member ${newMember.first_name} ${newMember.last_name} added successfully.`,
+      });
+      
+      // Reset form and close sheet
+      setNewMember({
+        first_name: "",
+        last_name: "",
+        email: "",
+        street: "",
+        city: "",
+        zip_code: "",
+        phone: "",
+        status: "Active"
+      });
+      setShowAddSheet(false);
+      fetchMembers();
+    } catch (error) {
+      console.error('Error adding member:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add member. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const filteredMembers = members.filter((member) => {
     const searchLower = searchQuery.toLowerCase();
     return (
@@ -103,7 +179,7 @@ export function MemberList({ searchQuery = "" }: { searchQuery?: string }) {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Members</h2>
-        <Button variant="outline">Add New Member</Button>
+        <Button variant="outline" onClick={() => setShowAddSheet(true)}>Add New Member</Button>
       </div>
 
       <div className="flex gap-2 mb-4">
@@ -153,6 +229,97 @@ export function MemberList({ searchQuery = "" }: { searchQuery?: string }) {
           </tbody>
         </table>
       </div>
+
+      {/* Add Member Sheet */}
+      <Sheet open={showAddSheet} onOpenChange={setShowAddSheet}>
+        <SheetContent className="sm:max-w-md">
+          <SheetHeader>
+            <SheetTitle>Add New Member</SheetTitle>
+            <SheetDescription>
+              Fill in the details to add a new member to the cooperative.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="first_name">First Name *</Label>
+                <Input
+                  id="first_name"
+                  name="first_name"
+                  value={newMember.first_name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="last_name">Last Name *</Label>
+                <Input
+                  id="last_name"
+                  name="last_name"
+                  value={newMember.last_name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email *</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                value={newMember.email}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="street">Street Address</Label>
+              <Input
+                id="street"
+                name="street"
+                value={newMember.street}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="zip_code">ZIP Code</Label>
+                <Input
+                  id="zip_code"
+                  name="zip_code"
+                  value={newMember.zip_code}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="city">City</Label>
+                <Input
+                  id="city"
+                  name="city"
+                  value={newMember.city}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone</Label>
+              <Input
+                id="phone"
+                name="phone"
+                value={newMember.phone}
+                onChange={handleInputChange}
+              />
+            </div>
+          </div>
+          <SheetFooter className="sm:justify-end">
+            <SheetClose asChild>
+              <Button variant="outline" className="mr-2">Cancel</Button>
+            </SheetClose>
+            <Button type="submit" onClick={handleAddMember}>Add Member</Button>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
