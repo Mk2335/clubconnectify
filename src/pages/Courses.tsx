@@ -1,3 +1,4 @@
+
 import { AppLayout } from "@/components/layout/AppLayout";
 import { KnowledgeTabs } from "@/components/knowledge/KnowledgeTabs";
 import { CourseCard } from "@/components/knowledge/CourseCard";
