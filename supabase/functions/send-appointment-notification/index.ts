@@ -45,7 +45,12 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { appointment, recipients = ["user@example.com"] } = await req.json() as RequestBody;
+    // Parse the request body
+    const reqBody = await req.json();
+    console.log("Request body:", JSON.stringify(reqBody));
+    
+    // Destructure with default values to prevent undefined errors
+    const { appointment, recipients = ["user@example.com"] } = reqBody as RequestBody;
 
     if (!appointment) {
       throw new Error("Appointment data is required");
@@ -121,17 +126,23 @@ const handler = async (req: Request): Promise<Response> => {
       </html>
     `;
 
-    // Send the email
-    const { data, error } = await resend.emails.send({
+    // Send the email with proper error handling
+    console.log("Attempting to send email via Resend...");
+    
+    const emailData = {
       from: "Appointments <onboarding@resend.dev>",
       to: recipients,
       subject: `New Appointment: ${appointment.title}`,
       html: html,
-    });
+    };
+    
+    console.log("Email data:", JSON.stringify(emailData));
+    
+    const { data, error } = await resend.emails.send(emailData);
 
     if (error) {
-      console.error("Error sending email:", error);
-      throw error;
+      console.error("Resend API error:", error);
+      throw new Error(`Resend API error: ${error.message || JSON.stringify(error)}`);
     }
 
     console.log("Email sent successfully:", data);
@@ -155,7 +166,7 @@ const handler = async (req: Request): Promise<Response> => {
         error: error instanceof Error ? error.message : "Unknown error" 
       }),
       {
-        status: 500,
+        status: 200, // Return 200 even on error to prevent the FunctionsHttpError
         headers: {
           "Content-Type": "application/json",
           ...corsHeaders,

@@ -11,11 +11,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import { PlusCircle, CalendarIcon, X, Plus } from "lucide-react";
+import { PlusCircle, CalendarIcon, X, Plus, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface AppointmentFormData {
   title: string;
@@ -47,6 +48,8 @@ const Calendar = () => {
   const [showDialog, setShowDialog] = useState(false);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [emailSending, setEmailSending] = useState(false);
+  const [emailError, setEmailError] = useState<string | null>(null);
   const { toast } = useToast();
   const [newRecipient, setNewRecipient] = useState("");
   
@@ -73,6 +76,12 @@ const Calendar = () => {
     if (!recipients.includes(newRecipient)) {
       form.setValue("recipients", [...recipients, newRecipient]);
       setNewRecipient("");
+    } else {
+      toast({
+        title: "Email already added",
+        description: "This email is already in the recipients list.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -118,31 +127,50 @@ const Calendar = () => {
   };
 
   const sendEmailNotification = async (appointmentData: any) => {
+    setEmailSending(true);
+    setEmailError(null);
     try {
+      const recipientsList = form.getValues("recipients");
+      if (recipientsList.length === 0) {
+        throw new Error("Please add at least one email recipient to send notifications");
+      }
+      
+      console.log("Sending notification to:", recipientsList);
+      
       const response = await supabase.functions.invoke('send-appointment-notification', {
         body: { 
           appointment: appointmentData,
-          recipients: form.getValues("recipients").length > 0 
-            ? form.getValues("recipients") 
-            : ["user@example.com"]
+          recipients: recipientsList
         }
       });
       
+      console.log("Email notification response:", response);
+      
       if (response.error) {
-        throw response.error;
+        throw new Error(response.error.message || "Failed to send email notifications");
+      }
+      
+      if (!response.data.success) {
+        throw new Error(response.data.error || "Failed to send email notifications");
       }
       
       toast({
         title: "Email Sent",
         description: "Notification emails have been sent successfully.",
       });
-    } catch (error) {
+      
+      return true;
+    } catch (error: any) {
       console.error('Error sending email notification:', error);
+      setEmailError(error.message || "Failed to send email notifications. Please try again later.");
       toast({
         title: "Email Notification Failed",
-        description: "We couldn't send the email notifications.",
+        description: error.message || "We couldn't send the email notifications.",
         variant: "destructive",
       });
+      return false;
+    } finally {
+      setEmailSending(false);
     }
   };
 
@@ -171,18 +199,29 @@ const Calendar = () => {
         description: "Your appointment has been created successfully.",
       });
       
+      let emailSent = true;
       if (data.notifyByEmail && appointmentData) {
-        await sendEmailNotification(appointmentData);
+        if (data.recipients.length === 0) {
+          toast({
+            title: "Warning",
+            description: "No email recipients provided. Notifications were not sent.",
+            variant: "destructive",
+          });
+        } else {
+          emailSent = await sendEmailNotification(appointmentData);
+        }
       }
       
-      setShowDialog(false);
-      form.reset();
-      fetchAppointments();
-    } catch (error) {
+      if (emailSent) {
+        setShowDialog(false);
+        form.reset();
+        fetchAppointments();
+      }
+    } catch (error: any) {
       console.error('Error creating appointment:', error);
       toast({
         title: "Error",
-        description: "Failed to create appointment. Please try again.",
+        description: error.message || "Failed to create appointment. Please try again.",
         variant: "destructive",
       });
     }
@@ -198,6 +237,13 @@ const Calendar = () => {
         );
       })
     : [];
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addRecipient();
+    }
+  };
 
   return (
     <AppLayout title="Calendar">
@@ -450,12 +496,22 @@ const Calendar = () => {
                     <div className="space-y-4 border rounded-md p-4">
                       <FormLabel>Recipients</FormLabel>
                       
+                      {emailError && (
+                        <Alert variant="destructive" className="mb-4">
+                          <AlertCircle className="h-4 w-4 mr-2" />
+                          <AlertDescription>
+                            {emailError}
+                          </AlertDescription>
+                        </Alert>
+                      )}
+                      
                       <div className="flex gap-2">
                         <Input
                           type="email"
                           placeholder="Enter email address"
                           value={newRecipient}
                           onChange={(e) => setNewRecipient(e.target.value)}
+                          onKeyDown={handleKeyDown}
                         />
                         <Button 
                           type="button" 
@@ -486,7 +542,7 @@ const Calendar = () => {
                         </div>
                       ) : (
                         <p className="text-sm text-muted-foreground">
-                          No recipients added. Default notification email will be used.
+                          No recipients added. Please add at least one recipient to send notifications.
                         </p>
                       )}
                     </div>
@@ -498,7 +554,9 @@ const Calendar = () => {
                 <Button type="button" variant="outline" onClick={() => setShowDialog(false)}>
                   Cancel
                 </Button>
-                <Button type="submit">Save Appointment</Button>
+                <Button type="submit" disabled={emailSending}>
+                  {emailSending ? "Sending..." : "Save Appointment"}
+                </Button>
               </DialogFooter>
             </form>
           </Form>
