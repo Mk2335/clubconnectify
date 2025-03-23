@@ -1,118 +1,70 @@
 
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import { toast } from "@/components/ui/use-toast";
-import { type ApplicationFormData } from "@/types/memberApplication";
-import { PersonalInfoFields } from "@/components/member-applications/PersonalInfoFields";
-import { ContactFields } from "@/components/member-applications/ContactFields";
-import { MembershipTypeFields } from "@/components/member-applications/MembershipTypeFields";
-import { TermsFields } from "@/components/member-applications/TermsFields";
-import { useEffect, useCallback, useState } from "react";
-import debounce from "lodash/debounce";
-import { Input } from "@/components/ui/input";
-import { Search, Filter, Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase";
+import { CheckedState } from "@radix-ui/react-checkbox";
 
 const MemberApplications = () => {
-  const navigate = useNavigate();
-  const [applications, setApplications] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterValue, setFilterValue] = useState("all");
-  const [showForm, setShowForm] = useState(false);
-
-  const form = useForm<ApplicationFormData>({
-    defaultValues: {
-      membershipType: "new",
-      shares: 1,
-      acceptTerms: false,
-      acceptNotice: false,
-      isInvestingMember: false,
-      acceptLiability: false,
-      acceptFees: false,
-      acceptDocuments: false,
-    },
+  const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    first_name: "",
+    last_name: "",
+    street: "",
+    additional_address: "",
+    zip_code: "",
+    city: "",
+    email: "",
+    tax_id: "",
+    shares: 1,
+    membership_type: "new" as "new" | "existing",
+    member_id: "",
+    accept_terms: false as CheckedState,
+    accept_notice: false as CheckedState,
+    is_investing_member: false as CheckedState,
+    accept_liability: false as CheckedState,
+    accept_fees: false as CheckedState,
+    accept_documents: false as CheckedState,
   });
 
-  // Handle resize observer warnings with debounce
-  const handleResize = useCallback(
-    debounce(() => {
-      window.dispatchEvent(new Event('resize'));
-    }, 100),
-    []
-  );
-
-  useEffect(() => {
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      handleResize.cancel();
-    };
-  }, [handleResize]);
-
-  useEffect(() => {
-    fetchApplications();
-  }, [filterValue]);
-
-  const fetchApplications = async () => {
-    setLoading(true);
-    try {
-      let query = supabase.from('member_applications').select('*');
-      
-      if (filterValue !== 'all') {
-        query = query.eq('status', filterValue);
-      }
-      
-      const { data, error } = await query;
-      
-      if (error) throw error;
-      
-      setApplications(data || []);
-    } catch (error) {
-      console.error('Error fetching applications:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load applications. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+  const handleChange = (field: string, value: string | number | CheckedState) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const onSubmit = async (data: ApplicationFormData) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
     try {
-      const { error } = await supabase.from('member_applications').insert([{
-        first_name: data.firstName,
-        last_name: data.lastName,
-        street: data.street,
-        additional_address: data.additionalAddress,
-        zip_code: data.zipCode,
-        city: data.city,
-        email: data.email,
-        tax_id: data.taxId,
-        shares: data.shares,
-        membership_type: data.membershipType,
-        member_id: data.memberId,
-        accept_terms: data.acceptTerms,
-        accept_notice: data.acceptNotice,
-        is_investing_member: data.isInvestingMember,
-        accept_liability: data.acceptLiability,
-        accept_fees: data.acceptFees,
-        accept_documents: data.acceptDocuments
-      }]);
+      // Convert CheckedState to boolean for Supabase
+      const dataToSubmit = {
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        street: formData.street,
+        additional_address: formData.additional_address,
+        zip_code: formData.zip_code,
+        city: formData.city,
+        email: formData.email,
+        tax_id: formData.tax_id,
+        shares: formData.shares,
+        membership_type: formData.membership_type,
+        member_id: formData.member_id,
+        accept_terms: Boolean(formData.accept_terms),
+        accept_notice: Boolean(formData.accept_notice),
+        is_investing_member: Boolean(formData.is_investing_member),
+        accept_liability: Boolean(formData.accept_liability),
+        accept_fees: Boolean(formData.accept_fees),
+        accept_documents: Boolean(formData.accept_documents),
+      };
+      
+      const { data, error } = await supabase
+        .from('member_applications')
+        .insert([dataToSubmit]);
       
       if (error) throw error;
       
@@ -121,142 +73,245 @@ const MemberApplications = () => {
         description: "Your membership application has been submitted successfully.",
       });
       
-      form.reset();
-      setShowForm(false);
-      fetchApplications();
+      // Reset form
+      setFormData({
+        first_name: "",
+        last_name: "",
+        street: "",
+        additional_address: "",
+        zip_code: "",
+        city: "",
+        email: "",
+        tax_id: "",
+        shares: 1,
+        membership_type: "new",
+        member_id: "",
+        accept_terms: false,
+        accept_notice: false,
+        is_investing_member: false,
+        accept_liability: false,
+        accept_fees: false,
+        accept_documents: false,
+      });
+      
     } catch (error) {
-      console.error('Error submitting application:', error);
+      console.error("Error submitting application:", error);
       toast({
-        title: "Submission Error",
-        description: "There was a problem submitting your application. Please try again.",
+        title: "Error",
+        description: "There was an error submitting your application. Please try again.",
         variant: "destructive",
       });
     }
   };
 
-  const filteredApplications = applications.filter(app => 
-    app.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.email?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
-    <AppLayout title="Membership Applications">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <p className="text-muted-foreground">
-              Manage new membership applications and share increases
-            </p>
-          </div>
-          <Button onClick={() => setShowForm(!showForm)}>
-            <Plus className="mr-2 h-4 w-4" />
-            {showForm ? "Cancel" : "New Application"}
-          </Button>
-        </div>
-        
-        {showForm ? (
-          <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm border">
-            <h2 className="text-xl font-semibold">New Membership Application</h2>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <PersonalInfoFields control={form.control} />
-                <ContactFields control={form.control} />
-                <MembershipTypeFields control={form.control} />
-                <TermsFields control={form.control} />
-
-                <Button type="submit" className="w-full">
-                  Submit Membership Application
-                </Button>
-              </form>
-            </Form>
-          </div>
-        ) : (
-          <>
-            <div className="mb-6 space-y-4">
-              <div className="flex gap-4">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
-                  <Input
-                    type="text"
-                    placeholder="Search applications..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-                <Select
-                  value={filterValue}
-                  onValueChange={setFilterValue}
-                >
-                  <SelectTrigger className="w-[180px]">
-                    <Filter className="h-4 w-4 mr-2" />
-                    <SelectValue placeholder="Filter by status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Applications</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="approved">Approved</SelectItem>
-                    <SelectItem value="rejected">Rejected</SelectItem>
-                  </SelectContent>
-                </Select>
+    <AppLayout title="Member Applications">
+      <Card>
+        <CardHeader>
+          <CardTitle>Apply for Membership</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="firstName">First Name</Label>
+                <Input 
+                  id="firstName" 
+                  value={formData.first_name}
+                  onChange={(e) => handleChange("first_name", e.target.value)}
+                  required 
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input 
+                  id="lastName" 
+                  value={formData.last_name}
+                  onChange={(e) => handleChange("last_name", e.target.value)}
+                  required 
+                />
               </div>
             </div>
 
-            {loading ? (
-              <div className="text-center py-8">
-                <p>Loading applications...</p>
+            <div className="space-y-2">
+              <Label htmlFor="street">Street and House Number</Label>
+              <Input 
+                id="street" 
+                value={formData.street}
+                onChange={(e) => handleChange("street", e.target.value)}
+                required 
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="additionalAddress">Additional Address Information</Label>
+              <Input 
+                id="additionalAddress" 
+                value={formData.additional_address}
+                onChange={(e) => handleChange("additional_address", e.target.value)}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="zipCode">ZIP Code</Label>
+                <Input 
+                  id="zipCode" 
+                  value={formData.zip_code}
+                  onChange={(e) => handleChange("zip_code", e.target.value)}
+                  required 
+                />
               </div>
-            ) : filteredApplications.length === 0 ? (
-              <div className="text-center py-8 bg-white rounded-lg border">
-                <p className="text-muted-foreground">No applications found.</p>
-                <Button 
-                  variant="outline" 
-                  onClick={() => setShowForm(true)} 
-                  className="mt-4"
-                >
-                  Create New Application
-                </Button>
+              <div className="space-y-2">
+                <Label htmlFor="city">City</Label>
+                <Input 
+                  id="city" 
+                  value={formData.city}
+                  onChange={(e) => handleChange("city", e.target.value)}
+                  required 
+                />
               </div>
-            ) : (
-              <div className="bg-white rounded-lg shadow-sm border">
-                <table className="w-full">
-                  <thead className="bg-muted/50">
-                    <tr>
-                      <th className="text-left py-3 px-4 font-medium">Name</th>
-                      <th className="text-left py-3 px-4 font-medium">Email</th>
-                      <th className="text-left py-3 px-4 font-medium">Type</th>
-                      <th className="text-left py-3 px-4 font-medium">Status</th>
-                      <th className="text-left py-3 px-4 font-medium">Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredApplications.map((app) => (
-                      <tr key={app.id} className="border-t hover:bg-muted/50">
-                        <td className="py-3 px-4">{`${app.first_name} ${app.last_name}`}</td>
-                        <td className="py-3 px-4">{app.email}</td>
-                        <td className="py-3 px-4">{app.membership_type === 'new' ? 'New Member' : 'Existing Member'}</td>
-                        <td className="py-3 px-4">
-                          <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            app.status === 'approved' 
-                              ? 'bg-green-100 text-green-800' 
-                              : app.status === 'rejected' 
-                              ? 'bg-red-100 text-red-800' 
-                              : 'bg-yellow-100 text-yellow-800'
-                          }`}>
-                            {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
-                          </div>
-                        </td>
-                        <td className="py-3 px-4">{new Date(app.created_at).toLocaleDateString()}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email">Email Address</Label>
+              <Input 
+                id="email" 
+                type="email" 
+                value={formData.email}
+                onChange={(e) => handleChange("email", e.target.value)}
+                required 
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="taxId">Tax ID (if available)</Label>
+              <Input 
+                id="taxId" 
+                value={formData.tax_id}
+                onChange={(e) => handleChange("tax_id", e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="shares">Number of Shares</Label>
+              <Input 
+                id="shares" 
+                type="number" 
+                min="1" 
+                value={formData.shares}
+                onChange={(e) => handleChange("shares", parseInt(e.target.value))}
+                required 
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="membershipType">Membership Type</Label>
+              <Select 
+                value={formData.membership_type}
+                onValueChange={(value) => handleChange("membership_type", value as "new" | "existing")}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select membership type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="new">New Member</SelectItem>
+                  <SelectItem value="existing">Existing Member</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {formData.membership_type === "existing" && (
+              <div className="space-y-2">
+                <Label htmlFor="memberId">Member ID</Label>
+                <Input 
+                  id="memberId" 
+                  value={formData.member_id}
+                  onChange={(e) => handleChange("member_id", e.target.value)}
+                  required={formData.membership_type === "existing"}
+                />
               </div>
             )}
-          </>
-        )}
-      </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="acceptTerms" 
+                  checked={formData.accept_terms}
+                  onCheckedChange={(checked) => handleChange("accept_terms", checked)}
+                  required 
+                />
+                <Label htmlFor="acceptTerms">
+                  I accept the terms and conditions of the cooperative
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="acceptNotice" 
+                  checked={formData.accept_notice}
+                  onCheckedChange={(checked) => handleChange("accept_notice", checked)}
+                  required 
+                />
+                <Label htmlFor="acceptNotice">
+                  I acknowledge notice of the statute and statement of member's shares
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="isInvestingMember" 
+                  checked={formData.is_investing_member}
+                  onCheckedChange={(checked) => handleChange("is_investing_member", checked)}
+                />
+                <Label htmlFor="isInvestingMember">
+                  I want to join as an investing member
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="acceptLiability" 
+                  checked={formData.accept_liability}
+                  onCheckedChange={(checked) => handleChange("accept_liability", checked)}
+                  required 
+                />
+                <Label htmlFor="acceptLiability">
+                  I understand my liability for cooperative debts is limited to my shares
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="acceptFees" 
+                  checked={formData.accept_fees}
+                  onCheckedChange={(checked) => handleChange("accept_fees", checked)}
+                  required 
+                />
+                <Label htmlFor="acceptFees">
+                  I agree to pay the membership fee and share price
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="acceptDocuments" 
+                  checked={formData.accept_documents}
+                  onCheckedChange={(checked) => handleChange("accept_documents", checked)}
+                  required 
+                />
+                <Label htmlFor="acceptDocuments">
+                  I confirm all submitted documents are true and correct
+                </Label>
+              </div>
+            </div>
+
+            <Button type="submit" className="w-full">
+              Submit Application
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </AppLayout>
   );
 };
