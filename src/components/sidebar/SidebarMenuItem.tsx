@@ -1,3 +1,4 @@
+
 import {
   SidebarMenuItem as BaseSidebarMenuItem,
   SidebarMenuButton,
@@ -6,6 +7,7 @@ import {
   SidebarMenuSubButton,
 } from "@/components/ui/sidebar";
 import { LucideIcon } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 
 interface SubItem {
   icon: LucideIcon;
@@ -21,26 +23,32 @@ interface MenuItemProps {
 }
 
 export function SidebarMenuItem({ icon: Icon, label, href, subItems }: MenuItemProps) {
+  const location = useLocation();
+  const isActive = location.pathname === href;
+
   return (
     <BaseSidebarMenuItem>
-      <SidebarMenuButton>
-        <a href={href} className="flex items-center">
+      <SidebarMenuButton isActive={isActive}>
+        <Link to={href} className="flex items-center w-full">
           <Icon className="mr-2 h-4 w-4" />
           <span>{label}</span>
-        </a>
+        </Link>
       </SidebarMenuButton>
       {subItems && (
         <SidebarMenuSub>
-          {subItems.map((subItem) => (
-            <SidebarMenuSubItem key={subItem.label}>
-              <SidebarMenuSubButton>
-                <a href={subItem.href} className="flex items-center">
-                  <subItem.icon className="mr-2 h-4 w-4" />
-                  <span>{subItem.label}</span>
-                </a>
-              </SidebarMenuSubButton>
-            </SidebarMenuSubItem>
-          ))}
+          {subItems.map((subItem) => {
+            const isSubActive = location.pathname === subItem.href;
+            return (
+              <SidebarMenuSubItem key={subItem.label}>
+                <SidebarMenuSubButton data-active={isSubActive}>
+                  <Link to={subItem.href} className="flex items-center w-full">
+                    <subItem.icon className="mr-2 h-4 w-4" />
+                    <span>{subItem.label}</span>
+                  </Link>
+                </SidebarMenuSubButton>
+              </SidebarMenuSubItem>
+            );
+          })}
         </SidebarMenuSub>
       )}
     </BaseSidebarMenuItem>
