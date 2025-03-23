@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { AppLayout } from "@/components/layout/AppLayout";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -68,7 +67,6 @@ const Calendar = () => {
 
   React.useEffect(() => {
     if (date) {
-      // Format selected date to match with appointment dates
       const formattedDate = format(date, 'yyyy-MM-dd');
       console.log("Selected date:", formattedDate);
     }
@@ -148,7 +146,6 @@ const Calendar = () => {
         description: "Your appointment has been created successfully.",
       });
       
-      // Send email notification if option is selected
       if (data.notifyByEmail && appointmentData) {
         await sendEmailNotification(appointmentData);
       }
@@ -166,7 +163,6 @@ const Calendar = () => {
     }
   };
 
-  // Filter appointments for the selected date
   const filteredAppointments = date
     ? appointments.filter(appointment => {
         const appointmentDate = new Date(appointment.start_time);
@@ -439,3 +435,4 @@ const Calendar = () => {
 };
 
 export default Calendar;
+
