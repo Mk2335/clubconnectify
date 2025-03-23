@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { UserMenu } from "@/components/auth/UserMenu";
 import { CooperativeSelector } from "@/components/company/CooperativeSelector";
 import { useTranslation } from "@/utils/translations";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function AppHeader() {
   const navigate = useNavigate();
   const t = useTranslation('de');
+  const { user } = useAuth();
 
   return (
     <header className="border-b bg-background">
@@ -18,7 +20,7 @@ export function AppHeader() {
           >
             clubconnectify
           </button>
-          <CooperativeSelector />
+          {user && <CooperativeSelector />}
         </div>
         <div className="ml-auto flex items-center space-x-4">
           <UserMenu />
