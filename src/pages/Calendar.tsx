@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription } from "@/components/ui/form";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { PlusCircle, CalendarIcon, X, Plus, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -70,8 +70,22 @@ const Calendar = () => {
 
   const recipients = form.watch("recipients") || [];
 
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const addRecipient = () => {
-    if (!newRecipient || !newRecipient.includes('@')) return;
+    if (!newRecipient) return;
+    
+    if (!validateEmail(newRecipient)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return;
+    }
     
     if (!recipients.includes(newRecipient)) {
       form.setValue("recipients", [...recipients, newRecipient]);
@@ -135,6 +149,13 @@ const Calendar = () => {
         throw new Error("Please add at least one email recipient to send notifications");
       }
       
+      // Validate all emails before sending
+      for (const email of recipientsList) {
+        if (!validateEmail(email)) {
+          throw new Error(`Invalid email format: ${email}`);
+        }
+      }
+      
       console.log("Sending notification to:", recipientsList);
       
       const response = await supabase.functions.invoke('send-appointment-notification', {
@@ -150,8 +171,10 @@ const Calendar = () => {
         throw new Error(response.error.message || "Failed to send email notifications");
       }
       
-      if (!response.data.success) {
-        throw new Error(response.data.error || "Failed to send email notifications");
+      const data = response.data;
+      
+      if (!data || !data.success) {
+        throw new Error(data?.error || "Failed to send email notifications");
       }
       
       toast({
@@ -212,7 +235,7 @@ const Calendar = () => {
         }
       }
       
-      if (emailSent) {
+      if (emailSent || !data.notifyByEmail) {
         setShowDialog(false);
         form.reset();
         fetchAppointments();

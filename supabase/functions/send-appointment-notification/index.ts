@@ -56,6 +56,18 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Appointment data is required");
     }
 
+    if (!recipients || recipients.length === 0) {
+      throw new Error("At least one recipient email is required");
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    for (const email of recipients) {
+      if (!emailRegex.test(email)) {
+        throw new Error(`Invalid email format: ${email}`);
+      }
+    }
+
     console.log("Sending email notification for appointment:", appointment.title);
     console.log("Recipients:", recipients);
 
@@ -142,7 +154,19 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (error) {
       console.error("Resend API error:", error);
-      throw new Error(`Resend API error: ${error.message || JSON.stringify(error)}`);
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: error.message || JSON.stringify(error)
+        }),
+        {
+          status: 200, // Return 200 even on error to prevent the FunctionsHttpError
+          headers: {
+            "Content-Type": "application/json",
+            ...corsHeaders,
+          },
+        }
+      );
     }
 
     console.log("Email sent successfully:", data);
