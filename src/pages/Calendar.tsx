@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { AppLayout } from "@/components/layout/AppLayout";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -8,9 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import { PlusCircle, CalendarIcon } from "lucide-react";
+import { PlusCircle, CalendarIcon, X, Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
@@ -26,6 +27,7 @@ interface AppointmentFormData {
   location: string;
   type: string;
   notifyByEmail: boolean;
+  recipients: string[];
 }
 
 interface Appointment {
@@ -46,6 +48,7 @@ const Calendar = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const [newRecipient, setNewRecipient] = useState("");
   
   const form = useForm<AppointmentFormData>({
     defaultValues: {
@@ -57,9 +60,28 @@ const Calendar = () => {
       endTime: "10:00",
       location: "",
       type: "Meeting",
-      notifyByEmail: true
+      notifyByEmail: true,
+      recipients: []
     }
   });
+
+  const recipients = form.watch("recipients") || [];
+
+  const addRecipient = () => {
+    if (!newRecipient || !newRecipient.includes('@')) return;
+    
+    if (!recipients.includes(newRecipient)) {
+      form.setValue("recipients", [...recipients, newRecipient]);
+      setNewRecipient("");
+    }
+  };
+
+  const removeRecipient = (email: string) => {
+    form.setValue(
+      "recipients",
+      recipients.filter((r) => r !== email)
+    );
+  };
 
   React.useEffect(() => {
     fetchAppointments();
@@ -100,6 +122,9 @@ const Calendar = () => {
       const response = await supabase.functions.invoke('send-appointment-notification', {
         body: { 
           appointment: appointmentData,
+          recipients: form.getValues("recipients").length > 0 
+            ? form.getValues("recipients") 
+            : ["user@example.com"]
         }
       });
       
@@ -109,13 +134,13 @@ const Calendar = () => {
       
       toast({
         title: "Email Sent",
-        description: "Notification email has been sent successfully.",
+        description: "Notification emails have been sent successfully.",
       });
     } catch (error) {
       console.error('Error sending email notification:', error);
       toast({
         title: "Email Notification Failed",
-        description: "We couldn't send the email notification.",
+        description: "We couldn't send the email notifications.",
         variant: "destructive",
       });
     }
@@ -263,9 +288,10 @@ const Calendar = () => {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <Tabs defaultValue="basic" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="basic">Basic Info</TabsTrigger>
                   <TabsTrigger value="details">Details</TabsTrigger>
+                  <TabsTrigger value="notifications">Notifications</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="basic" className="space-y-4 pt-4">
@@ -394,7 +420,9 @@ const Calendar = () => {
                       </FormItem>
                     )}
                   />
-                  
+                </TabsContent>
+                
+                <TabsContent value="notifications" className="space-y-4 pt-4">
                   <FormField
                     control={form.control}
                     name="notifyByEmail"
@@ -409,14 +437,60 @@ const Calendar = () => {
                           />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                          <FormLabel>Send Email Notification</FormLabel>
-                          <p className="text-sm text-muted-foreground">
+                          <FormLabel>Send Email Notifications</FormLabel>
+                          <FormDescription className="text-sm text-muted-foreground">
                             Notify participants about this appointment via email
-                          </p>
+                          </FormDescription>
                         </div>
                       </FormItem>
                     )}
                   />
+                  
+                  {form.watch("notifyByEmail") && (
+                    <div className="space-y-4 border rounded-md p-4">
+                      <FormLabel>Recipients</FormLabel>
+                      
+                      <div className="flex gap-2">
+                        <Input
+                          type="email"
+                          placeholder="Enter email address"
+                          value={newRecipient}
+                          onChange={(e) => setNewRecipient(e.target.value)}
+                        />
+                        <Button 
+                          type="button" 
+                          onClick={addRecipient}
+                          variant="outline"
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      
+                      {recipients.length > 0 ? (
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {recipients.map((email) => (
+                            <div 
+                              key={email} 
+                              className="flex items-center gap-1 bg-muted px-2 py-1 rounded-full text-sm"
+                            >
+                              <span>{email}</span>
+                              <button
+                                type="button"
+                                onClick={() => removeRecipient(email)}
+                                className="text-muted-foreground hover:text-foreground"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">
+                          No recipients added. Default notification email will be used.
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </TabsContent>
               </Tabs>
               
@@ -435,4 +509,3 @@ const Calendar = () => {
 };
 
 export default Calendar;
-

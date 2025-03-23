@@ -52,6 +52,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     console.log("Sending email notification for appointment:", appointment.title);
+    console.log("Recipients:", recipients);
 
     // Format appointment dates
     const startTime = formatDate(appointment.start_time);
@@ -70,6 +71,7 @@ const handler = async (req: Request): Promise<Response> => {
             h1 { color: #007bff; margin: 0; }
             .detail { margin-bottom: 10px; }
             .label { font-weight: bold; }
+            .recipients { margin-top: 20px; border-top: 1px solid #eaeaea; padding-top: 10px; font-size: 12px; }
           </style>
         </head>
         <body>
@@ -106,6 +108,10 @@ const handler = async (req: Request): Promise<Response> => {
               ` : ''}
               
               <p>Please add this appointment to your calendar.</p>
+              
+              <div class="recipients">
+                <p>This notification was sent to: ${recipients.join(', ')}</p>
+              </div>
             </div>
             <div class="footer">
               This is an automated notification. Please do not reply to this email.
