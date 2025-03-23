@@ -1,25 +1,22 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+
 import { AppSidebar } from "@/components/AppSidebar";
+import { AppHeader } from "@/components/layout/AppHeader";
+import { ReactNode } from "react";
 
 interface AppLayoutProps {
-  children: React.ReactNode;
-  title?: string;
-  className?: string;
+  children: ReactNode;
 }
 
-export const AppLayout = ({ children, title, className = "" }: AppLayoutProps) => {
+export function AppLayout({ children }: AppLayoutProps) {
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
+    <div className="flex min-h-screen flex-col bg-background">
+      <AppHeader />
+      <div className="flex flex-1">
         <AppSidebar />
-        <main className="flex-1 p-8">
-          <div className={`max-w-6xl mx-auto ${className}`}>
-            <SidebarTrigger className="mb-4" />
-            {title && <h1 className="text-2xl font-bold mb-6">{title}</h1>}
-            {children}
-          </div>
+        <main className="flex-1 p-6 md:p-8">
+          {children}
         </main>
       </div>
-    </SidebarProvider>
+    </div>
   );
-};
+}

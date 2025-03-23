@@ -1,3 +1,4 @@
+
 import { Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Members from "./pages/Members";
@@ -23,35 +24,43 @@ import Tasks from "./pages/Tasks";
 import Appointments from "./pages/Appointments";
 import GeneralAssembly from "./pages/GeneralAssembly";
 import Integrations from "./pages/Integrations";
+import Auth from "./pages/Auth";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import { Toaster } from "@/components/ui/toaster";
 
 function App() {
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/members" element={<Members />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/protocols" element={<Protocols />} />
-          <Route path="/address-book" element={<AddressBook />} />
-          <Route path="/courses" element={<Courses />} />
-          <Route path="/company" element={<Company />} />
-          <Route path="/business-plan" element={<BusinessPlan />} />
-          <Route path="/crowdfunding" element={<Crowdfunding />} />
-          <Route path="/connect" element={<Connect />} />
-          <Route path="/data-storage" element={<DataStorage />} />
-          <Route path="/account" element={<Account />} />
-          <Route path="/audit" element={<Audit />} />
-          <Route path="/incorporation" element={<Incorporation />} />
-          <Route path="/financing" element={<Financing />} />
-          <Route path="/knowledge-community" element={<KnowledgeCommunity />} />
-          <Route path="/calendar" element={<Calendar />} />
-          <Route path="/tasks" element={<Tasks />} />
-          <Route path="/appointments" element={<Appointments />} />
-          <Route path="/general-assembly" element={<GeneralAssembly />} />
-           <Route path="/integrations" element={<Integrations />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/members" element={<ProtectedRoute><Members /></ProtectedRoute>} />
+            <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+            <Route path="/protocols" element={<ProtectedRoute><Protocols /></ProtectedRoute>} />
+            <Route path="/address-book" element={<ProtectedRoute><AddressBook /></ProtectedRoute>} />
+            <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
+            <Route path="/company" element={<ProtectedRoute><Company /></ProtectedRoute>} />
+            <Route path="/business-plan" element={<ProtectedRoute><BusinessPlan /></ProtectedRoute>} />
+            <Route path="/crowdfunding" element={<ProtectedRoute><Crowdfunding /></ProtectedRoute>} />
+            <Route path="/connect" element={<ProtectedRoute><Connect /></ProtectedRoute>} />
+            <Route path="/data-storage" element={<ProtectedRoute><DataStorage /></ProtectedRoute>} />
+            <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+            <Route path="/audit" element={<ProtectedRoute><Audit /></ProtectedRoute>} />
+            <Route path="/incorporation" element={<ProtectedRoute><Incorporation /></ProtectedRoute>} />
+            <Route path="/financing" element={<ProtectedRoute><Financing /></ProtectedRoute>} />
+            <Route path="/knowledge-community" element={<ProtectedRoute><KnowledgeCommunity /></ProtectedRoute>} />
+            <Route path="/calendar" element={<ProtectedRoute><Calendar /></ProtectedRoute>} />
+            <Route path="/tasks" element={<ProtectedRoute><Tasks /></ProtectedRoute>} />
+            <Route path="/appointments" element={<ProtectedRoute><Appointments /></ProtectedRoute>} />
+            <Route path="/general-assembly" element={<ProtectedRoute><GeneralAssembly /></ProtectedRoute>} />
+            <Route path="/integrations" element={<ProtectedRoute><Integrations /></ProtectedRoute>} />
+          </Routes>
+          <Toaster />
+        </AuthProvider>
       </LanguageProvider>
     </ThemeProvider>
   );
