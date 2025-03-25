@@ -1,325 +1,180 @@
+/**
+ * Main component for managing and displaying member data
+ * Handles member listing, importing, sorting, and filtering functionality
+ */
 
-import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { Input } from "@/components/ui/input";
-import { 
-  Sheet, 
-  SheetContent, 
-  SheetDescription, 
-  SheetHeader, 
-  SheetTitle, 
-  SheetFooter,
-  SheetClose
-} from "@/components/ui/sheet";
-import { Label } from "@/components/ui/label";
+import { useCallback, useMemo, useState } from "react";
+import { Member, MemberListProps } from "@/types/member";
+import { toast } from "@/components/ui/use-toast";
+import { MemberTable } from "./member/MemberTable";
+import { MemberImport } from "./member/MemberImport";
+import { SortConfig } from "@/types/table";
+import { validateMemberData } from "@/utils/memberUtils";
+import { MEMBER_STATUS, TOAST_MESSAGES } from "@/constants/memberConstants";
 
-export interface Member {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  status: string;
-}
+export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
+  const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
+  const [members, setMembers] = useState<Member[]>([
+    {
+      id: "1",
+      name: "John Doe",
+      email: "john@example.com",
+      status: MEMBER_STATUS.ACTIVE,
+      joinDate: "2024-01-15",
+    },
+    {
+      id: "2",
+      name: "Jane Smith",
+      email: "jane@example.com",
+      status: MEMBER_STATUS.ACTIVE,
+      joinDate: "2024-02-01",
+    },
+  ]);
 
-export function MemberList({ searchQuery = "" }: { searchQuery?: string }) {
-  const [members, setMembers] = useState<Member[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [importEmail, setImportEmail] = useState("");
-  const [showAddSheet, setShowAddSheet] = useState(false);
-  const [newMember, setNewMember] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-    street: "",
-    city: "",
-    zip_code: "",
-    phone: "",
-    status: "Active"
-  });
-  const { toast } = useToast();
+  /**
+   * Handles CSV file upload and member data import
+   */
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
 
-  useEffect(() => {
-    fetchMembers();
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const csv = e.target?.result as string;
+        const lines = csv.split('\n');
+        const headers = lines[0].split(',');
+        
+        const newMembers = lines.slice(1)
+          .map((line, index) => {
+            const values = line.split(',');
+            const memberData: Member = {
+              id: (members.length + index + 1).toString(),
+              name: values[0]?.trim() || '',
+              email: values[1]?.trim() || '',
+              status: MEMBER_STATUS.ACTIVE as Member['status'],
+              joinDate: new Date().toISOString().split('T')[0],
+            };
+
+            return validateMemberData(memberData) ? memberData : null;
+          })
+          .filter((member): member is Member => member !== null);
+
+        setMembers(prev => [...prev, ...newMembers]);
+        toast({
+          title: "Import Successful",
+          description: TOAST_MESSAGES.IMPORT_SUCCESS,
+        });
+      } catch (error) {
+        console.error('Import error:', error);
+        toast({
+          title: "Import Failed",
+          description: TOAST_MESSAGES.IMPORT_ERROR,
+          variant: "destructive",
+        });
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  /**
+   * Handles sorting of member data
+   */
+  const handleSort = useCallback((key: keyof Member) => {
+    setSortConfig((currentSort) => {
+      if (currentSort?.key === key) {
+        return {
+          key,
+          direction: currentSort.direction === 'asc' ? 'desc' : 'asc'
+        };
+      }
+      return { key, direction: 'asc' };
+    });
   }, []);
 
-  async function fetchMembers() {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('address_book')
-        .select('*');
-      
-      if (error) throw error;
-      
-      if (data) {
-        setMembers(data);
-      }
-    } catch (error) {
-      console.error('Error fetching members:', error);
-    } finally {
-      setLoading(false);
+  /**
+   * Handles member editing
+   */
+  const handleEdit = useCallback((memberId: string) => {
+    toast({
+      title: "Edit Member",
+      description: TOAST_MESSAGES.EDIT_SUCCESS,
+    });
+  }, []);
+
+  /**
+   * Handles member deletion
+   */
+  const handleDelete = useCallback((memberId: string) => {
+    toast({
+      title: "Delete Member",
+      description: TOAST_MESSAGES.DELETE_SUCCESS,
+      variant: "destructive",
+    });
+  }, []);
+
+  /**
+   * Handles member deactivation
+   */
+  const handleDeactivate = useCallback((memberId: string) => {
+    toast({
+      title: "Deactivate Member",
+      description: TOAST_MESSAGES.DEACTIVATE_SUCCESS,
+      variant: "destructive",
+    });
+  }, []);
+
+  /**
+   * Memoized sorted and filtered members list
+   */
+  const sortedAndFilteredMembers = useMemo(() => {
+    let result = [...members];
+    
+    if (searchQuery) {
+      result = result.filter((member) =>
+        member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        member.email.toLowerCase().includes(searchQuery.toLowerCase())
+      );
     }
+
+    if (sortConfig) {
+      result.sort((a, b) => {
+        const aValue = a[sortConfig.key];
+        const bValue = b[sortConfig.key];
+        
+        if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+
+    return result;
+  }, [members, searchQuery, sortConfig]);
+
+  if (!members.length) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-muted-foreground">No members found.</p>
+      </div>
+    );
   }
 
-  const handleImport = async () => {
-    if (!importEmail) {
-      toast({
-        title: "Error",
-        description: "Please enter an email address to import.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      // Simulate an API call to import a member
-      const newMember = {
-        first_name: "Imported",
-        last_name: "Member",
-        email: importEmail,
-        street: "Sample Street",
-        additional_address: "",
-        zip_code: "12345",
-        city: "Sample City",
-        phone: "",
-        status: "Active"
-      };
-
-      const { data, error } = await supabase
-        .from('address_book')
-        .insert([newMember])
-        .select();
-        
-      if (error) throw error;
-      
-      toast({
-        title: "Success",
-        description: `Member with email ${importEmail} imported successfully.`,
-      });
-      
-      setImportEmail("");
-      fetchMembers();
-    } catch (error) {
-      console.error('Error importing member:', error);
-      toast({
-        title: "Error",
-        description: "Failed to import member. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setNewMember(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleAddMember = async () => {
-    // Validate required fields
-    if (!newMember.first_name || !newMember.last_name || !newMember.email) {
-      toast({
-        title: "Error",
-        description: "Please fill in all required fields.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      const { data, error } = await supabase
-        .from('address_book')
-        .insert([newMember])
-        .select();
-        
-      if (error) throw error;
-      
-      toast({
-        title: "Success",
-        description: `Member ${newMember.first_name} ${newMember.last_name} added successfully.`,
-      });
-      
-      // Reset form and close sheet
-      setNewMember({
-        first_name: "",
-        last_name: "",
-        email: "",
-        street: "",
-        city: "",
-        zip_code: "",
-        phone: "",
-        status: "Active"
-      });
-      setShowAddSheet(false);
-      fetchMembers();
-    } catch (error) {
-      console.error('Error adding member:', error);
-      toast({
-        title: "Error",
-        description: "Failed to add member. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const filteredMembers = members.filter((member) => {
-    const searchLower = searchQuery.toLowerCase();
-    return (
-      member.first_name.toLowerCase().includes(searchLower) ||
-      member.last_name.toLowerCase().includes(searchLower) ||
-      member.email.toLowerCase().includes(searchLower)
-    );
-  });
-
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Members</h2>
-        <Button variant="outline" onClick={() => setShowAddSheet(true)}>Add New Member</Button>
+    <div className="space-y-4">
+      <div className="flex justify-end">
+        <MemberImport onFileUpload={handleFileUpload} />
       </div>
 
-      <div className="flex gap-2 mb-4">
-        <Input
-          placeholder="Email address to import"
-          value={importEmail}
-          onChange={(e) => setImportEmail(e.target.value)}
-          className="max-w-sm"
+      <div className="rounded-md border">
+        <MemberTable
+          members={sortedAndFilteredMembers}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onDeactivate={handleDeactivate}
+          sortConfig={sortConfig}
+          onSort={handleSort}
         />
-        <Button onClick={handleImport}>Import</Button>
       </div>
-
-      <div className="border rounded-md">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {loading ? (
-              <tr>
-                <td colSpan={4} className="px-6 py-4 text-center">Loading...</td>
-              </tr>
-            ) : filteredMembers.length === 0 ? (
-              <tr>
-                <td colSpan={4} className="px-6 py-4 text-center">No members found</td>
-              </tr>
-            ) : (
-              filteredMembers.map((member) => (
-                <tr key={member.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {member.first_name} {member.last_name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">{member.email}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{member.status}</td>
-                  <td className="px-6 py-4 whitespace-nowrap space-x-2">
-                    <Button variant="outline" size="sm">View</Button>
-                    <Button variant="outline" size="sm">Edit</Button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Add Member Sheet */}
-      <Sheet open={showAddSheet} onOpenChange={setShowAddSheet}>
-        <SheetContent className="sm:max-w-md">
-          <SheetHeader>
-            <SheetTitle>Add New Member</SheetTitle>
-            <SheetDescription>
-              Fill in the details to add a new member to the cooperative.
-            </SheetDescription>
-          </SheetHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label htmlFor="first_name">First Name *</Label>
-                <Input
-                  id="first_name"
-                  name="first_name"
-                  value={newMember.first_name}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="last_name">Last Name *</Label>
-                <Input
-                  id="last_name"
-                  name="last_name"
-                  value={newMember.last_name}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email *</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                value={newMember.email}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="street">Street Address</Label>
-              <Input
-                id="street"
-                name="street"
-                value={newMember.street}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label htmlFor="zip_code">ZIP Code</Label>
-                <Input
-                  id="zip_code"
-                  name="zip_code"
-                  value={newMember.zip_code}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="city">City</Label>
-                <Input
-                  id="city"
-                  name="city"
-                  value={newMember.city}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
-              <Input
-                id="phone"
-                name="phone"
-                value={newMember.phone}
-                onChange={handleInputChange}
-              />
-            </div>
-          </div>
-          <SheetFooter className="sm:justify-end">
-            <SheetClose asChild>
-              <Button variant="outline" className="mr-2">Cancel</Button>
-            </SheetClose>
-            <Button type="submit" onClick={handleAddMember}>Add Member</Button>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
     </div>
   );
-}
+};

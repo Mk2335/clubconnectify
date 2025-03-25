@@ -10,7 +10,6 @@ import StatsCard from "@/components/dashboard/StatsCard";
 import FinancialChart from "@/components/dashboard/FinancialChart";
 import EventsList from "@/components/dashboard/EventsList";
 import { useTranslation } from "@/utils/translations";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 const financialData = [
   { month: "Jan", income: 4000, expenses: 2400 },
@@ -24,30 +23,29 @@ const financialData = [
 const events = [
   {
     date: "2024-03-25",
-    title: "generalAssembly",
-    type: "meeting",
+    title: "General Assembly",
+    type: "Meeting",
   },
   {
     date: "2024-03-28",
-    title: "projectReview",
-    type: "meeting",
+    title: "Project Review",
+    type: "Meeting",
   },
   {
     date: "2024-04-01",
-    title: "newMemberOrientation",
-    type: "event",
+    title: "New Member Orientation",
+    type: "Event",
   },
 ];
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const { language } = useLanguage();
-  const t = useTranslation(language);
+  const t = useTranslation('de');
 
   const translatedEvents = events.map(event => ({
     ...event,
-    title: t(event.title),
-    type: t(event.type)
+    title: t(event.title.toLowerCase().replace(/\s+/g, '')),
+    type: t(event.type.toLowerCase())
   }));
 
   const handleSearch = (query: string) => {
@@ -75,7 +73,7 @@ const Index = () => {
           <StatsCard
             title={t("monthlyIncome")}
             value="€3,423"
-            subtitle={`+12.5% ${t("fromLastMonth")}`}
+            subtitle="+12.5% ${t('fromLastMonth')}"
             icon={TrendingUp}
             iconColor="text-green-500"
           />

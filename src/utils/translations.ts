@@ -33,9 +33,6 @@ export const translations: Translations = {
     darkMode: "Dark Mode",
     darkModeEnabled: "Dark mode is enabled",
     darkModeDisabled: "Dark mode is disabled",
-    browseDirectory: "Manage and view all cooperative members in one place.",
-    add: "Add",
-    members: "Members",
   },
   de: {
     totalMembers: "Gesamtmitglieder",
@@ -77,7 +74,7 @@ export const translations: Translations = {
     members: "Mitglieder",
     financialOverview: "Finanzübersicht",
     search: "Suchen...",
-    browseDirectory: "Verwalten und betrachten Sie alle Genossenschaftsmitglieder an einem Ort.",
+    browseDirectory: "Verzeichnis durchsuchen",
     network: "Netzwerk",
     collaborate: "Zusammenarbeiten",
     resources: "Ressourcen",

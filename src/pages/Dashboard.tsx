@@ -1,4 +1,3 @@
-
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import StatsCard from "@/components/dashboard/StatsCard";
@@ -11,11 +10,7 @@ import {
   ListCheck,
   ArrowUpRight,
   ArrowDownRight,
-  LogOut,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/components/ui/use-toast";
 
 const financialData = [
   { month: "Jan", income: 4000, expenses: 2400 },
@@ -63,41 +58,14 @@ const tasks = [
 ];
 
 const Dashboard = () => {
-  const { signOut } = useAuth();
-  const { toast } = useToast();
-
-  const handleLogout = async () => {
-    try {
-      await signOut();
-      toast({
-        title: "Logged out successfully",
-        description: "You have been logged out of your account",
-      });
-    } catch (error) {
-      toast({
-        title: "Error logging out",
-        description: "There was a problem logging out. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
         <AppSidebar />
         <main className="flex-1 p-8">
           <div className="max-w-7xl mx-auto space-y-8">
-            <div className="flex justify-between items-center">
-              <div>
-                <SidebarTrigger className="mb-4" />
-                <h1 className="text-3xl font-bold">Dashboard</h1>
-              </div>
-              <Button variant="outline" onClick={handleLogout} className="gap-2">
-                <LogOut className="h-4 w-4" />
-                Logout
-              </Button>
-            </div>
+            <SidebarTrigger className="mb-4" />
+            <h1 className="text-3xl font-bold">Dashboard</h1>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               <StatsCard
