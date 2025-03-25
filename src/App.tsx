@@ -1,3 +1,4 @@
+
 import { Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Members from "./pages/Members";
@@ -29,7 +30,7 @@ function App() {
     <ThemeProvider>
       <LanguageProvider>
         <Routes>
-          <Route path="/" element={<Index />} />
+          <Route path="/" element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/members" element={<Members />} />
           <Route path="/settings" element={<Settings />} />
@@ -50,7 +51,7 @@ function App() {
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/appointments" element={<Appointments />} />
           <Route path="/general-assembly" element={<GeneralAssembly />} />
-           <Route path="/integrations" element={<Integrations />} />
+          <Route path="/integrations" element={<Integrations />} />
         </Routes>
       </LanguageProvider>
     </ThemeProvider>
