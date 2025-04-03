@@ -10,6 +10,7 @@ interface StatsCardProps {
   icon: LucideIcon;
   iconColor?: string;
   interactive?: boolean;
+  onClick?: () => void;
 }
 
 const StatsCard = ({ 
@@ -18,15 +19,23 @@ const StatsCard = ({
   subtitle, 
   icon: Icon, 
   iconColor,
-  interactive = false
+  interactive = false,
+  onClick
 }: StatsCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   
+  const handleClick = () => {
+    if (interactive && onClick) {
+      onClick();
+    }
+  };
+  
   return (
     <Card 
-      className={`transition-all duration-200 ${interactive && isHovered ? 'shadow-md translate-y-[-2px]' : ''}`}
+      className={`transition-all duration-200 ${interactive ? 'cursor-pointer' : ''} ${interactive && isHovered ? 'shadow-md translate-y-[-2px]' : ''}`}
       onMouseEnter={() => interactive && setIsHovered(true)}
       onMouseLeave={() => interactive && setIsHovered(false)}
+      onClick={handleClick}
     >
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>

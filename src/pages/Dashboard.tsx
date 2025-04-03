@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import StatsCard from "@/components/dashboard/StatsCard";
 import FinancialChart from "@/components/dashboard/FinancialChart";
@@ -16,63 +16,44 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
-const financialData = [
-  { month: "Jan", income: 4000, expenses: 2400 },
-  { month: "Feb", income: 3000, expenses: 1398 },
-  { month: "Mar", income: 2000, expenses: 9800 },
-  { month: "Apr", income: 2780, expenses: 3908 },
-  { month: "May", income: 1890, expenses: 4800 },
-  { month: "Jun", income: 2390, expenses: 3800 },
-];
-
-const events = [
-  {
-    date: "2024-03-25",
-    title: "General Assembly",
-    type: "Meeting",
-  },
-  {
-    date: "2024-03-28",
-    title: "Project Review",
-    type: "Meeting",
-  },
-  {
-    date: "2024-04-01",
-    title: "New Member Orientation",
-    type: "Event",
-  },
-];
-
-const tasks = [
-  {
-    title: "Update member directory",
-    status: "In Progress" as const,
-    dueDate: "2024-03-30",
-  },
-  {
-    title: "Prepare financial report",
-    status: "Pending" as const,
-    dueDate: "2024-04-05",
-  },
-  {
-    title: "Review new applications",
-    status: "Completed" as const,
-    dueDate: "2024-03-20",
-  },
-];
+import { useDashboardData } from "@/hooks/useDashboardData";
+import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
   const [timeRange, setTimeRange] = useState("6m");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [layout, setLayout] = useState<"default" | "compact" | "expanded">("default");
+  const { toast } = useToast();
+  
+  const { 
+    financialData, 
+    events, 
+    tasks, 
+    memberStats, 
+    taskStats,
+    incomeStats,
+    expenseStats,
+    fetchDashboardData 
+  } = useDashboardData(timeRange);
 
-  // Function to simulate data refresh
-  const refreshData = () => {
+  // Function to refresh data
+  const refreshData = async () => {
     setIsRefreshing(true);
-    setTimeout(() => {
+    try {
+      await fetchDashboardData();
+      toast({
+        title: "Dashboard refreshed",
+        description: "All dashboard data has been updated.",
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to refresh data",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
       setIsRefreshing(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -105,33 +86,37 @@ const Dashboard = () => {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           <StatsCard
             title="Total Members"
-            value={45}
-            subtitle="+2 from last month"
+            value={memberStats.total}
+            subtitle={memberStats.change}
             icon={Users}
             interactive={true}
+            onClick={() => window.location.href = "/members"}
           />
           <StatsCard
             title="Active Tasks"
-            value={12}
-            subtitle="4 due this week"
+            value={taskStats.active}
+            subtitle={taskStats.due}
             icon={ListCheck}
             interactive={true}
+            onClick={() => window.location.href = "/tasks"}
           />
           <StatsCard
             title="Monthly Income"
-            value="€3,423"
-            subtitle="+12.5% from last month"
+            value={incomeStats.total}
+            subtitle={incomeStats.change}
             icon={ArrowUpRight}
             iconColor="text-green-500"
             interactive={true}
+            onClick={() => window.location.href = "/members/finances"}
           />
           <StatsCard
             title="Monthly Expenses"
-            value="€2,108"
-            subtitle="-4% from last month"
+            value={expenseStats.total}
+            subtitle={expenseStats.change}
             icon={ArrowDownRight}
             iconColor="text-red-500"
             interactive={true}
+            onClick={() => window.location.href = "/members/finances"}
           />
         </div>
 
