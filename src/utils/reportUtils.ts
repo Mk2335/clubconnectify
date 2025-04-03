@@ -1,7 +1,7 @@
 
+import { Member } from '@/types/member';
 import { jsPDF } from 'jspdf';
 import { downloadCSV } from './exportUtils';
-import { Member } from '@/types/member';
 import { CommunicationRecord } from '@/types/communication';
 
 interface ReportOptions {

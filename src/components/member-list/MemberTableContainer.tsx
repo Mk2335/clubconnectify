@@ -13,6 +13,7 @@ interface MemberTableContainerProps {
   selectedMembers: string[];
   toggleMemberSelection: (memberId: string) => void;
   toggleAllMembers: (selected: boolean) => void;
+  searchQuery?: string; // Add this prop
 }
 
 export const MemberTableContainer = ({
@@ -24,7 +25,8 @@ export const MemberTableContainer = ({
   handleSort,
   selectedMembers,
   toggleMemberSelection,
-  toggleAllMembers
+  toggleAllMembers,
+  searchQuery = '' // Add default value
 }: MemberTableContainerProps) => {
   // Ensure we have valid arrays to work with
   const membersList = Array.isArray(members) ? members : [];
@@ -47,6 +49,7 @@ export const MemberTableContainer = ({
         toggleMemberSelection={toggleMemberSelection}
         toggleAllMembers={toggleAllMembers}
         allSelected={allSelected}
+        searchQuery={searchQuery}
       />
     </div>
   );

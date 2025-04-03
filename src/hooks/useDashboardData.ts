@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -150,39 +149,33 @@ export const useDashboardData = (timeRange: string = "6m") => {
   const fetchEvents = async () => {
     // Try to fetch from Supabase
     try {
-      const { data, error } = await supabase
-        .from('events')
-        .select('*')
-        .order('date', { ascending: true })
-        .limit(10);
+      // Since there is no "events" table in Supabase yet, we'll use sample data
+      // In a real app, this would be fetching from an actual events table
       
-      if (error) throw error;
+      // Sample event data
+      const sampleEvents: Event[] = [
+        {
+          date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          title: "General Assembly",
+          type: "Meeting",
+          description: "Regular scheduled meeting for all team members."
+        },
+        {
+          date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          title: "Project Review",
+          type: "Meeting",
+          description: "Review of current projects and their status."
+        },
+        {
+          date: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          title: "New Member Orientation",
+          type: "Event",
+          description: "Special event for the organization."
+        }
+      ];
       
-      if (data && data.length > 0) {
-        setEvents(data);
-      } else {
-        // Fallback to sample data
-        setEvents([
-          {
-            date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-            title: "General Assembly",
-            type: "Meeting",
-            description: "Regular scheduled meeting for all team members."
-          },
-          {
-            date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-            title: "Project Review",
-            type: "Meeting",
-            description: "Review of current projects and their status."
-          },
-          {
-            date: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-            title: "New Member Orientation",
-            type: "Event",
-            description: "Special event for the organization."
-          }
-        ]);
-      }
+      setEvents(sampleEvents);
+      
     } catch (error) {
       console.error("Error fetching events:", error);
       // Fallback to sample data

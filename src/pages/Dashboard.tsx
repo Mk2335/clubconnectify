@@ -94,8 +94,8 @@ const Dashboard = () => {
           />
           <StatsCard
             title="Active Tasks"
-            value={taskStats.active}
-            subtitle={taskStats.due}
+            value={taskStats.total}
+            subtitle={taskStats.change}
             icon={ListCheck}
             interactive={true}
             onClick={() => window.location.href = "/tasks"}
