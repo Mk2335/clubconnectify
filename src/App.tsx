@@ -12,6 +12,11 @@ import Appointments from "./pages/Appointments";
 import MemberCommunication from "./pages/MemberCommunication";
 import MemberFinances from "./pages/MemberFinances";
 import MemberAIAutomation from "./pages/MemberAIAutomation";
+import MemberApplications from "./pages/MemberApplications";
+import MemberVoting from "./pages/MemberVoting";
+import MemberResources from "./pages/MemberResources";
+import MemberDirectory from "./pages/MemberDirectory";
+import MemberAnalytics from "./pages/MemberAnalytics";
 
 function App() {
   return (
@@ -29,6 +34,11 @@ function App() {
           <Route path="/members/communication" element={<MemberCommunication />} />
           <Route path="/members/finances" element={<MemberFinances />} />
           <Route path="/members/ai-automation" element={<MemberAIAutomation />} />
+          <Route path="/members/applications" element={<MemberApplications />} />
+          <Route path="/members/voting" element={<MemberVoting />} />
+          <Route path="/members/resources" element={<MemberResources />} />
+          <Route path="/members/directory" element={<MemberDirectory />} />
+          <Route path="/members/analytics" element={<MemberAnalytics />} />
         </Routes>
       </LanguageProvider>
     </ThemeProvider>
