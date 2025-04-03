@@ -1,3 +1,4 @@
+
 import { Filter, PlusCircle, Upload, Grid, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MemberImport } from "@/components/member/MemberImport";
@@ -6,6 +7,9 @@ import { MemberFilters } from "@/components/member/MemberFilters";
 import { ActiveFilterTags } from "@/components/member/ActiveFilterTags";
 import { FilterOptions } from "@/types/table";
 import { useState, useEffect } from "react";
+import { Member } from "@/types/member";
+import { AdvancedSearch } from "./AdvancedSearch";
+import { AnimatePresence } from "framer-motion";
 
 interface MemberSearchAndFilterProps {
   searchQuery: string;
@@ -18,6 +22,10 @@ interface MemberSearchAndFilterProps {
   onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onViewModeChange?: (mode: "grid" | "list") => void;
   viewMode?: "grid" | "list";
+  onSearchFieldsChange?: (fields: Array<keyof Member>) => void;
+  onCaseSensitiveChange?: (caseSensitive: boolean) => void;
+  searchFields?: Array<keyof Member>;
+  caseSensitive?: boolean;
 }
 
 export const MemberSearchAndFilter = ({
@@ -30,7 +38,11 @@ export const MemberSearchAndFilter = ({
   onAddMember,
   onFileUpload,
   onViewModeChange,
-  viewMode = "list"
+  viewMode = "list",
+  onSearchFieldsChange,
+  onCaseSensitiveChange,
+  searchFields = ['name', 'email', 'role'],
+  caseSensitive = false
 }: MemberSearchAndFilterProps) => {
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({
     status: statusFilter,
@@ -38,6 +50,7 @@ export const MemberSearchAndFilter = ({
     role: "all",
     paymentMethod: "all"
   });
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false);
 
   const activeFilterCount = Object.values(filterOptions).filter(value => value !== "all").length;
 
@@ -67,12 +80,18 @@ export const MemberSearchAndFilter = ({
     onTypeFilterChange("all");
   };
 
+  const toggleAdvancedSearch = () => {
+    setShowAdvancedSearch(!showAdvancedSearch);
+  };
+
   return (
     <div className="space-y-2">
       <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row justify-between items-start sm:items-center">
         <MemberSearchBar
           searchQuery={searchQuery}
           onSearchChange={onSearchChange}
+          showAdvancedSearch={showAdvancedSearch}
+          onAdvancedSearchToggle={onSearchFieldsChange ? toggleAdvancedSearch : undefined}
         />
         <div className="flex gap-2 w-full sm:w-auto">
           <MemberFilters
@@ -110,6 +129,18 @@ export const MemberSearchAndFilter = ({
           <MemberImport onFileUpload={onFileUpload} />
         </div>
       </div>
+      
+      <AnimatePresence>
+        {showAdvancedSearch && onSearchFieldsChange && onCaseSensitiveChange && (
+          <AdvancedSearch
+            selectedFields={searchFields}
+            caseSensitive={caseSensitive}
+            onFieldsChange={onSearchFieldsChange}
+            onCaseSensitiveChange={onCaseSensitiveChange}
+            onClose={toggleAdvancedSearch}
+          />
+        )}
+      </AnimatePresence>
       
       <ActiveFilterTags
         filterOptions={filterOptions}

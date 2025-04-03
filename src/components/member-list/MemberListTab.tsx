@@ -3,8 +3,9 @@ import { MemberSearchAndFilter } from "./MemberSearchAndFilter";
 import { MemberTableContainer } from "./MemberTableContainer";
 import { MemberBulkActions } from "@/components/member/MemberBulkActions";
 import { Member } from "@/types/member";
-import { FilterOptions, SortConfig } from "@/types/table";
+import { FilterOptions, SortConfig, SearchOptions } from "@/types/table";
 import { Card, CardContent } from "@/components/ui/card";
+import { HighlightedText } from "./SearchUtils";
 
 interface MemberListTabProps {
   members: Member[];
@@ -32,6 +33,11 @@ interface MemberListTabProps {
   onViewModeChange?: (mode: "grid" | "list") => void;
   filterOptions?: FilterOptions;
   onFilterChange?: (filters: FilterOptions) => void;
+  onSearchFieldsChange?: (fields: Array<keyof Member>) => void;
+  onCaseSensitiveChange?: (caseSensitive: boolean) => void;
+  searchFields?: Array<keyof Member>;
+  caseSensitive?: boolean;
+  searchOptions?: SearchOptions;
 }
 
 export const MemberListTab = ({
@@ -59,7 +65,12 @@ export const MemberListTab = ({
   viewMode = "list",
   onViewModeChange,
   filterOptions = { status: "all", type: "all", role: "all", paymentMethod: "all" },
-  onFilterChange = () => {}
+  onFilterChange = () => {},
+  onSearchFieldsChange,
+  onCaseSensitiveChange,
+  searchFields = ['name', 'email', 'role'],
+  caseSensitive = false,
+  searchOptions
 }: MemberListTabProps) => {
   // Make sure members is always an array
   const membersList = Array.isArray(members) ? members : [];
@@ -70,12 +81,24 @@ export const MemberListTab = ({
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {membersList.map(member => (
-          <Card key={member.id} className="overflow-hidden">
+          <Card key={member.id} className="overflow-hidden hover:shadow-md transition-shadow">
             <CardContent className="p-4">
               <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="font-medium">{member.name}</h3>
-                  <p className="text-sm text-muted-foreground">{member.email}</p>
+                <div className="flex-1">
+                  <h3 className="font-medium">
+                    {localSearchQuery ? (
+                      <HighlightedText text={member.name} searchQuery={localSearchQuery} />
+                    ) : (
+                      member.name
+                    )}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {localSearchQuery ? (
+                      <HighlightedText text={member.email} searchQuery={localSearchQuery} />
+                    ) : (
+                      member.email
+                    )}
+                  </p>
                   <div className="mt-2 flex items-center space-x-2">
                     <span className={`inline-block w-2 h-2 rounded-full ${
                       member.status === "Active" ? "bg-green-500" : 
@@ -83,6 +106,31 @@ export const MemberListTab = ({
                     }`} />
                     <span className="text-sm">{member.status}</span>
                   </div>
+                  
+                  {member.role && (
+                    <p className="text-sm mt-1">
+                      {localSearchQuery ? (
+                        <HighlightedText text={member.role} searchQuery={localSearchQuery} />
+                      ) : (
+                        member.role
+                      )}
+                    </p>
+                  )}
+                </div>
+                
+                <div className="flex flex-col gap-1">
+                  <button 
+                    onClick={() => onEdit(member.id)}
+                    className="text-xs text-primary hover:underline"
+                  >
+                    Edit
+                  </button>
+                  <button 
+                    onClick={() => onDelete(member.id)}
+                    className="text-xs text-destructive hover:underline"
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
             </CardContent>
@@ -116,6 +164,10 @@ export const MemberListTab = ({
         onFileUpload={handleFileUpload}
         viewMode={viewMode}
         onViewModeChange={onViewModeChange}
+        onSearchFieldsChange={onSearchFieldsChange}
+        onCaseSensitiveChange={onCaseSensitiveChange}
+        searchFields={searchFields}
+        caseSensitive={caseSensitive}
       />
 
       {viewMode === "grid" ? (
@@ -131,6 +183,7 @@ export const MemberListTab = ({
           selectedMembers={selectedMembers || []}
           toggleMemberSelection={toggleMemberSelection}
           toggleAllMembers={toggleAllMembers}
+          searchQuery={localSearchQuery}
         />
       )}
       

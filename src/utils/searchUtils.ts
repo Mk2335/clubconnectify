@@ -97,3 +97,60 @@ export const highlightSearchTerms = (text: string, searchQuery: string): React.R
       : part;
   });
 };
+
+/**
+ * Extract search context from text for showing preview
+ */
+export const extractSearchContext = (
+  text: string, 
+  searchQuery: string, 
+  contextLength: number = 50
+): string => {
+  if (!text || !searchQuery || searchQuery.trim() === '') {
+    return text;
+  }
+  
+  const lowerText = text.toLowerCase();
+  const lowerQuery = searchQuery.toLowerCase();
+  
+  // Find first occurrence of any search term
+  let firstIndex = lowerText.indexOf(lowerQuery);
+  
+  // If exact match not found, try individual terms
+  if (firstIndex === -1) {
+    const terms = searchQuery.split(' ').filter(Boolean);
+    for (const term of terms) {
+      const index = lowerText.indexOf(term.toLowerCase());
+      if (index !== -1) {
+        firstIndex = index;
+        break;
+      }
+    }
+  }
+  
+  // If still no match, just return beginning of text
+  if (firstIndex === -1) {
+    return text.length > contextLength 
+      ? text.substring(0, contextLength) + '...'
+      : text;
+  }
+  
+  // Calculate start and end points for context
+  const halfContext = Math.floor(contextLength / 2);
+  let start = Math.max(0, firstIndex - halfContext);
+  let end = Math.min(text.length, firstIndex + halfContext);
+  
+  // Adjust if we're near the beginning or end
+  if (start === 0) {
+    end = Math.min(text.length, contextLength);
+  } else if (end === text.length) {
+    start = Math.max(0, text.length - contextLength);
+  }
+  
+  // Add ellipsis if needed
+  let result = text.substring(start, end);
+  if (start > 0) result = '...' + result;
+  if (end < text.length) result = result + '...';
+  
+  return result;
+};

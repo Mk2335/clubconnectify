@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { FilterOptions } from "@/types/table";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface ActiveFilterTagsProps {
   filterOptions: FilterOptions;
@@ -23,66 +24,105 @@ export const ActiveFilterTags = ({
     onFilterChange({ ...filterOptions, [key]: value });
   };
 
+  const formatFilterValue = (key: string, value: string) => {
+    // Capitalize first letter
+    return value.charAt(0).toUpperCase() + value.slice(1);
+  };
+
   return (
-    <div className="flex flex-wrap gap-2 items-center text-sm mb-4">
+    <motion.div 
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-wrap gap-2 items-center text-sm mb-4"
+    >
       <span className="text-muted-foreground">Active filters:</span>
-      {filterOptions.status !== "all" && (
-        <Badge variant="outline" className="flex items-center gap-1 py-1 px-2">
-          Status: {filterOptions.status}
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-4 w-4 p-0 ml-1" 
-            onClick={() => updateFilter('status', 'all')}
+      <AnimatePresence>
+        {filterOptions.status !== "all" && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            key="status"
           >
-            <X className="h-3 w-3" />
-          </Button>
-        </Badge>
-      )}
-      {filterOptions.type !== "all" && (
-        <Badge variant="outline" className="flex items-center gap-1 py-1 px-2">
-          Type: {filterOptions.type}
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-4 w-4 p-0 ml-1" 
-            onClick={() => updateFilter('type', 'all')}
+            <Badge variant="outline" className="flex items-center gap-1 py-1 px-2">
+              Status: {formatFilterValue('status', filterOptions.status)}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-4 w-4 p-0 ml-1" 
+                onClick={() => updateFilter('status', 'all')}
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </Badge>
+          </motion.div>
+        )}
+        {filterOptions.type !== "all" && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            key="type"
           >
-            <X className="h-3 w-3" />
-          </Button>
-        </Badge>
-      )}
-      {filterOptions.role !== "all" && (
-        <Badge variant="outline" className="flex items-center gap-1 py-1 px-2">
-          Role: {filterOptions.role}
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-4 w-4 p-0 ml-1" 
-            onClick={() => updateFilter('role', 'all')}
+            <Badge variant="outline" className="flex items-center gap-1 py-1 px-2">
+              Type: {formatFilterValue('type', filterOptions.type)}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-4 w-4 p-0 ml-1" 
+                onClick={() => updateFilter('type', 'all')}
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </Badge>
+          </motion.div>
+        )}
+        {filterOptions.role !== "all" && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            key="role"
           >
-            <X className="h-3 w-3" />
-          </Button>
-        </Badge>
-      )}
-      {filterOptions.paymentMethod !== "all" && (
-        <Badge variant="outline" className="flex items-center gap-1 py-1 px-2">
-          Payment: {filterOptions.paymentMethod}
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-4 w-4 p-0 ml-1" 
-            onClick={() => updateFilter('paymentMethod', 'all')}
+            <Badge variant="outline" className="flex items-center gap-1 py-1 px-2">
+              Role: {filterOptions.role}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-4 w-4 p-0 ml-1" 
+                onClick={() => updateFilter('role', 'all')}
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </Badge>
+          </motion.div>
+        )}
+        {filterOptions.paymentMethod !== "all" && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            key="payment"
           >
-            <X className="h-3 w-3" />
-          </Button>
-        </Badge>
-      )}
+            <Badge variant="outline" className="flex items-center gap-1 py-1 px-2">
+              Payment: {filterOptions.paymentMethod}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-4 w-4 p-0 ml-1" 
+                onClick={() => updateFilter('paymentMethod', 'all')}
+              >
+                <X className="h-3 w-3" />
+              </Button>
+            </Badge>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {activeFilterCount > 1 && (
         <Button variant="ghost" size="sm" onClick={onResetFilters} className="text-xs h-7">
           Clear all
         </Button>
       )}
-    </div>
+    </motion.div>
   );
 };

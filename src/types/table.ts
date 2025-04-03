@@ -17,6 +17,7 @@ export interface MemberTableProps {
   toggleMemberSelection: (memberId: string) => void;
   toggleAllMembers: (selected: boolean) => void;
   allSelected: boolean;
+  searchQuery?: string;
 }
 
 export interface FilterOptions {

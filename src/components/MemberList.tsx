@@ -8,10 +8,11 @@ import { Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { MemberForm } from "./member/MemberForm";
 import { Button } from "./ui/button";
-import { SortConfig, FilterOptions } from "@/types/table";
+import { SortConfig, FilterOptions, SearchOptions } from "@/types/table";
 import { Member } from "@/types/member";
 import { toast } from "./ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { advancedSearch } from "@/utils/searchUtils";
 
 export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
   const { members, loading } = useRealtimeMembers();
@@ -30,6 +31,12 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
     role: "all",
     paymentMethod: "all"
   });
+  
+  const [searchOptions, setSearchOptions] = useState<SearchOptions>({
+    query: localSearchQuery,
+    fields: ['name', 'email', 'role'],
+    caseSensitive: false
+  });
 
   useEffect(() => {
     setFilterOptions(prev => ({
@@ -39,18 +46,37 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
     }));
   }, [statusFilter, typeFilter]);
 
+  useEffect(() => {
+    setSearchOptions(prev => ({
+      ...prev,
+      query: localSearchQuery
+    }));
+  }, [localSearchQuery]);
+
+  const handleSearchFieldsChange = (fields: Array<keyof Member>) => {
+    setSearchOptions(prev => ({
+      ...prev,
+      fields
+    }));
+  };
+
+  const handleCaseSensitiveChange = (caseSensitive: boolean) => {
+    setSearchOptions(prev => ({
+      ...prev,
+      caseSensitive
+    }));
+  };
+
   const sortedAndFilteredMembers = React.useMemo(() => {
     let result = [...members];
     
     if (localSearchQuery) {
-      const searchTerms = localSearchQuery.toLowerCase().split(' ').filter(Boolean);
-      result = result.filter((member) => {
-        return searchTerms.every(term => 
-          member.name?.toLowerCase().includes(term) ||
-          member.email?.toLowerCase().includes(term) ||
-          member.role?.toLowerCase().includes(term)
-        );
-      });
+      result = advancedSearch(
+        result, 
+        searchOptions.query, 
+        searchOptions.fields, 
+        searchOptions.caseSensitive
+      );
     }
     
     if (statusFilter !== "all") {
@@ -81,7 +107,7 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
     }
 
     return result;
-  }, [members, localSearchQuery, sortConfig, statusFilter, typeFilter, filterOptions]);
+  }, [members, localSearchQuery, sortConfig, statusFilter, typeFilter, filterOptions, searchOptions]);
 
   const handleAddMember = () => {
     setSelectedMember(null);
@@ -306,6 +332,11 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
             onViewModeChange={setViewMode}
             filterOptions={filterOptions}
             onFilterChange={handleFilterChange}
+            onSearchFieldsChange={handleSearchFieldsChange}
+            onCaseSensitiveChange={handleCaseSensitiveChange}
+            searchFields={searchOptions.fields}
+            caseSensitive={searchOptions.caseSensitive}
+            searchOptions={searchOptions}
           />
         </TabsContent>
 
