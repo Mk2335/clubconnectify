@@ -17,6 +17,17 @@ import { MemberActionsToolbar } from "./member/MemberActionsToolbar";
 import { MemberBulkActions } from "./member/MemberBulkActions";
 import { ActiveFilterTags } from "./member/ActiveFilterTags";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input"; // Added the missing import
+import { Filter } from "lucide-react";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { PlusCircle } from "lucide-react";
+import { MemberImport } from "./member/MemberImport";
 import { BrainCircuit } from "lucide-react";
 
 export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
