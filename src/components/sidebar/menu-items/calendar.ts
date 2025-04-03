@@ -1,17 +1,21 @@
+
 import { Calendar, List } from "lucide-react";
 import { MenuItem } from "./types";
-import { appointmentMenuItems } from "./appointments";
 
 export const calendarMenuItems: MenuItem = {
   icon: Calendar,
   label: "Calendar",
   href: "/calendar",
   subItems: [
-    appointmentMenuItems,
+    {
+      icon: Calendar,
+      label: "Appointments",
+      href: "/appointments",
+    },
     {
       icon: List,
       label: "Tasks",
-      href: "/calendar/tasks",
+      href: "/tasks",
     },
   ],
 };

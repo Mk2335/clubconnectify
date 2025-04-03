@@ -4,6 +4,6 @@ import { MenuItem } from "./types";
 
 export const settingsMenuItem: MenuItem = {
   icon: Settings,
-  label: "Einstellungen",
+  label: "Settings",
   href: "/settings",
 };

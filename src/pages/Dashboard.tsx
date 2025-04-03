@@ -1,10 +1,9 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
+
+import { AppLayout } from "@/components/layout/AppLayout";
 import StatsCard from "@/components/dashboard/StatsCard";
 import FinancialChart from "@/components/dashboard/FinancialChart";
 import EventsList from "@/components/dashboard/EventsList";
 import TasksList from "@/components/dashboard/TasksList";
-import QuickNotes from "@/components/dashboard/QuickNotes";
 import {
   Users,
   ListCheck,
@@ -59,56 +58,47 @@ const tasks = [
 
 const Dashboard = () => {
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <AppSidebar />
-        <main className="flex-1 p-8">
-          <div className="max-w-7xl mx-auto space-y-8">
-            <SidebarTrigger className="mb-4" />
-            <h1 className="text-3xl font-bold">Dashboard</h1>
+    <AppLayout title="Dashboard">
+      <div className="space-y-8">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <StatsCard
+            title="Total Members"
+            value={45}
+            subtitle="+2 from last month"
+            icon={Users}
+          />
+          <StatsCard
+            title="Active Tasks"
+            value={12}
+            subtitle="4 due this week"
+            icon={ListCheck}
+          />
+          <StatsCard
+            title="Monthly Income"
+            value="€3,423"
+            subtitle="+12.5% from last month"
+            icon={ArrowUpRight}
+            iconColor="text-green-500"
+          />
+          <StatsCard
+            title="Monthly Expenses"
+            value="€2,108"
+            subtitle="-4% from last month"
+            icon={ArrowDownRight}
+            iconColor="text-red-500"
+          />
+        </div>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              <StatsCard
-                title="Total Members"
-                value={45}
-                subtitle="+2 from last month"
-                icon={Users}
-              />
-              <StatsCard
-                title="Active Tasks"
-                value={12}
-                subtitle="4 due this week"
-                icon={ListCheck}
-              />
-              <StatsCard
-                title="Monthly Income"
-                value="€3,423"
-                subtitle="+12.5% from last month"
-                icon={ArrowUpRight}
-                iconColor="text-green-500"
-              />
-              <StatsCard
-                title="Monthly Expenses"
-                value="€2,108"
-                subtitle="-4% from last month"
-                icon={ArrowDownRight}
-                iconColor="text-red-500"
-              />
-            </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          <FinancialChart data={financialData} />
+          <EventsList events={events} />
+        </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
-              <FinancialChart data={financialData} />
-              <EventsList events={events} />
-            </div>
-
-            <div className="grid gap-6 md:grid-cols-2">
-              <TasksList tasks={tasks} />
-              <QuickNotes />
-            </div>
-          </div>
-        </main>
+        <div className="grid gap-6 md:grid-cols-2">
+          <TasksList tasks={tasks} />
+        </div>
       </div>
-    </SidebarProvider>
+    </AppLayout>
   );
 };
 
