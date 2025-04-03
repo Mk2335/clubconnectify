@@ -1,43 +1,44 @@
 
+import React, { useState } from 'react';
 import { MemberListProps } from "@/types/member";
 import { MemberCommunicationTabs } from "./communication/MemberCommunicationTabs";
 import { MemberListTab } from "./member-list/MemberListTab";
-import { useMemberList } from "./member-list/useMemberList";
+import { useRealtimeMembers } from "@/hooks/useRealtimeMembers";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Loader2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import { MemberForm } from "./member/MemberForm";
+import { Button } from "./ui/button";
 
-/**
- * Main component for managing and displaying member data
- * Handles member listing, importing, sorting, and filtering functionality
- */
 export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
-  const {
-    sortedAndFilteredMembers,
-    loading,
-    sortConfig,
-    localSearchQuery,
-    setLocalSearchQuery,
-    statusFilter, 
-    setStatusFilter,
-    typeFilter,
-    setTypeFilter,
-    selectedMembers,
-    activeTab,
-    setActiveTab,
-    members,
-    handleSort,
-    handleEdit,
-    handleDelete,
-    handleDeactivate,
-    handleAddMember,
-    toggleMemberSelection,
-    toggleAllMembers,
-    allSelected,
-    handleBulkEmail,
-    handleBulkDeactivate,
-    handleBulkDelete,
-    handleFileUpload
-  } = useMemberList();
+  const { members, loading } = useRealtimeMembers();
+  const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
+  const [selectedMember, setSelectedMember] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<"list" | "communication">("list");
+
+  // Derive filtered and sorted members (similar to original implementation)
+  const sortedAndFilteredMembers = React.useMemo(() => {
+    let result = [...members];
+    
+    if (searchQuery) {
+      result = result.filter((member) =>
+        member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        member.email.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    return result;
+  }, [members, searchQuery]);
+
+  const handleAddMember = () => {
+    setSelectedMember(null);
+    setIsAddMemberDialogOpen(true);
+  };
+
+  const handleEditMember = (member: any) => {
+    setSelectedMember(member);
+    setIsAddMemberDialogOpen(true);
+  };
 
   if (loading) {
     return (
@@ -49,8 +50,9 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
 
   if (!members.length) {
     return (
-      <div className="text-center py-8">
+      <div className="text-center py-8 space-y-4">
         <p className="text-muted-foreground">No members found.</p>
+        <Button onClick={handleAddMember}>Add First Member</Button>
       </div>
     );
   }
@@ -62,44 +64,45 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
         onValueChange={(value) => setActiveTab(value as "list" | "communication")} 
         className="w-full"
       >
-        <TabsList className="mb-4">
-          <TabsTrigger value="list">Member List</TabsTrigger>
-          <TabsTrigger value="communication">Communication</TabsTrigger>
-        </TabsList>
+        <div className="flex justify-between items-center mb-4">
+          <TabsList>
+            <TabsTrigger value="list">Member List</TabsTrigger>
+            <TabsTrigger value="communication">Communication</TabsTrigger>
+          </TabsList>
+          <Button onClick={handleAddMember}>Add Member</Button>
+        </div>
       
         <TabsContent value="list" className="space-y-4 mt-0">
           <MemberListTab 
             members={sortedAndFilteredMembers}
-            localSearchQuery={localSearchQuery}
-            setLocalSearchQuery={setLocalSearchQuery}
-            statusFilter={statusFilter}
-            setStatusFilter={setStatusFilter}
-            typeFilter={typeFilter}
-            setTypeFilter={setTypeFilter}
-            handleAddMember={handleAddMember}
-            handleFileUpload={handleFileUpload}
-            selectedMembers={selectedMembers}
-            allSelected={allSelected}
-            toggleAllMembers={toggleAllMembers}
-            handleBulkEmail={handleBulkEmail}
-            handleBulkDeactivate={handleBulkDeactivate}
-            handleBulkDelete={handleBulkDelete}
-            sortConfig={sortConfig}
-            handleSort={handleSort}
-            handleEdit={handleEdit}
-            handleDelete={handleDelete}
-            handleDeactivate={handleDeactivate}
-            toggleMemberSelection={toggleMemberSelection}
+            onEditMember={handleEditMember}
           />
         </TabsContent>
 
         <TabsContent value="communication" className="mt-0">
           <MemberCommunicationTabs 
             members={members}
-            selectedMembers={selectedMembers}
+            selectedMembers={[]}
           />
         </TabsContent>
       </Tabs>
+
+      <Dialog 
+        open={isAddMemberDialogOpen} 
+        onOpenChange={setIsAddMemberDialogOpen}
+      >
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedMember ? 'Edit Member' : 'Add New Member'}
+            </DialogTitle>
+          </DialogHeader>
+          <MemberForm 
+            initialData={selectedMember} 
+            onClose={() => setIsAddMemberDialogOpen(false)} 
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
