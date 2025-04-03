@@ -1,458 +1,382 @@
-import { useState } from "react";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+
+import React, { useState } from "react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { format } from "date-fns";
-import { 
-  Calendar as CalendarIcon, 
-  ChevronLeft, 
-  ChevronRight, 
-  Filter,
-  History,
-  Mail,
-  MessageSquare,
-  Phone,
-  Search,
-  X
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import { Member } from "@/types/member";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DateRange } from "react-day-picker";
-
-type CommunicationType = "email" | "phone" | "meeting" | "sms" | "other";
-
-interface Communication {
-  id: string;
-  memberId: string;
-  memberName: string;
-  type: CommunicationType;
-  subject: string;
-  date: Date;
-  status: "sent" | "received" | "failed" | "scheduled";
-  content?: string;
-}
-
-const ITEMS_PER_PAGE = 10;
-
-type TypeIcon = {
-  [key in CommunicationType]: JSX.Element;
-};
-
-const typeIcons: TypeIcon = {
-  email: <Mail className="h-4 w-4" />,
-  phone: <Phone className="h-4 w-4" />,
-  meeting: <MessageSquare className="h-4 w-4" />,
-  sms: <MessageSquare className="h-4 w-4" />,
-  other: <MessageSquare className="h-4 w-4" />
-};
-
-const statusColors: Record<string, string> = {
-  sent: "bg-green-100 text-green-800 hover:bg-green-200",
-  received: "bg-blue-100 text-blue-800 hover:bg-blue-200",
-  failed: "bg-red-100 text-red-800 hover:bg-red-200",
-  scheduled: "bg-amber-100 text-amber-800 hover:bg-amber-200"
-};
-
-const mockCommunications: Communication[] = [
-  {
-    id: "1",
-    memberId: "1",
-    memberName: "John Doe",
-    type: "email",
-    subject: "Membership Renewal",
-    date: new Date(2024, 2, 15),
-    status: "sent",
-    content: "Your membership is due for renewal in 30 days."
-  },
-  {
-    id: "2",
-    memberId: "2",
-    memberName: "Jane Smith",
-    type: "email",
-    subject: "Welcome to Our Organization",
-    date: new Date(2024, 1, 28),
-    status: "sent",
-    content: "We're excited to welcome you to our organization!"
-  },
-  {
-    id: "3",
-    memberId: "3",
-    memberName: "Acme Corporation",
-    type: "phone",
-    subject: "Payment Discussion",
-    date: new Date(2024, 2, 10),
-    status: "received",
-    content: "Call discussing options for payment methods."
-  },
-  {
-    id: "4",
-    memberId: "1",
-    memberName: "John Doe",
-    type: "email",
-    subject: "Upcoming Event Information",
-    date: new Date(2024, 3, 1),
-    status: "sent",
-    content: "Details about our upcoming annual meeting."
-  },
-  {
-    id: "5",
-    memberId: "4",
-    memberName: "Sarah Williams",
-    type: "email",
-    subject: "Membership Application Status",
-    date: new Date(2024, 3, 5),
-    status: "scheduled",
-    content: "Your application is being processed."
-  },
-  {
-    id: "6",
-    memberId: "5",
-    memberName: "Tech Innovators Ltd",
-    type: "phone",
-    subject: "Membership Benefits",
-    date: new Date(2024, 2, 20),
-    status: "received",
-    content: "Discussed available membership benefits and options."
-  },
-  {
-    id: "7",
-    memberId: "2",
-    memberName: "Jane Smith",
-    type: "email",
-    subject: "Payment Receipt",
-    date: new Date(2024, 2, 25),
-    status: "sent",
-    content: "Receipt for your recent membership payment."
-  }
-];
+import { Button } from "@/components/ui/button";
+import { Member } from "@/types/member";
+import { HighlightedText } from "../member-list/SearchUtils";
+import { Search, Filter, Calendar, Mail, ArrowDown, ArrowUp } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface CommunicationHistoryProps {
   members: Member[];
 }
 
+type Communication = {
+  id: string;
+  date: string;
+  type: "email" | "notification" | "sms";
+  subject: string;
+  recipient: string;
+  status: "delivered" | "read" | "failed" | "pending";
+};
+
 export function CommunicationHistory({ members }: CommunicationHistoryProps) {
-  const [page, setPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [typeFilter, setTypeFilter] = useState<string>("all");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [dateRange, setDateRange] = useState<DateRange>({
-    from: undefined,
-    to: undefined,
-  });
-  const [selectedMemberId, setSelectedMemberId] = useState<string>("all");
-  
-  const filteredCommunications = mockCommunications.filter((comm) => {
-    if (
-      searchTerm &&
-      !comm.subject.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      !comm.memberName.toLowerCase().includes(searchTerm.toLowerCase())
-    ) {
-      return false;
+  const [searchQuery, setSearchQuery] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [sortField, setSortField] = useState<keyof Communication>("date");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [activeTab, setActiveTab] = useState("list");
+
+  // Sample communication history data
+  const communicationHistory: Communication[] = [
+    {
+      id: "1",
+      date: "2024-04-01T10:30:00",
+      type: "email",
+      subject: "April Newsletter",
+      recipient: "All Members",
+      status: "delivered"
+    },
+    {
+      id: "2",
+      date: "2024-03-28T14:15:00",
+      type: "notification",
+      subject: "New Event Announcement",
+      recipient: "Active Members",
+      status: "read"
+    },
+    {
+      id: "3",
+      date: "2024-03-25T09:00:00",
+      type: "email",
+      subject: "Payment Reminder",
+      recipient: "John Doe",
+      status: "read"
+    },
+    {
+      id: "4",
+      date: "2024-03-20T11:45:00",
+      type: "sms",
+      subject: "Urgent Meeting",
+      recipient: "Board Members",
+      status: "delivered"
+    },
+    {
+      id: "5",
+      date: "2024-03-15T16:30:00",
+      type: "email",
+      subject: "Membership Renewal",
+      recipient: "Jane Smith",
+      status: "failed"
     }
-    
-    if (typeFilter !== "all" && comm.type !== typeFilter) {
-      return false;
+  ];
+
+  const handleSort = (field: keyof Communication) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
     }
-    
-    if (statusFilter !== "all" && comm.status !== statusFilter) {
-      return false;
-    }
-    
-    if (selectedMemberId !== "all" && comm.memberId !== selectedMemberId) {
-      return false;
-    }
-    
-    if (dateRange.from && dateRange.to) {
-      const communicationDate = new Date(comm.date);
-      if (
-        communicationDate < dateRange.from ||
-        communicationDate > dateRange.to
-      ) {
-        return false;
-      }
-    }
-    
-    return true;
-  });
-  
-  const totalItems = filteredCommunications.length;
-  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-  const startIndex = (page - 1) * ITEMS_PER_PAGE;
-  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
-  const currentItems = filteredCommunications.slice(startIndex, endIndex);
-  
-  const resetFilters = () => {
-    setSearchTerm("");
-    setTypeFilter("all");
-    setStatusFilter("all");
-    setDateRange({ from: undefined, to: undefined });
-    setSelectedMemberId("all");
-    setPage(1);
   };
-  
-  const isFiltering = 
-    searchTerm !== "" || 
-    typeFilter !== "all" || 
-    statusFilter !== "all" || 
-    selectedMemberId !== "all" || 
-    dateRange.from !== undefined || 
-    dateRange.to !== undefined;
-  
+
+  const filteredCommunications = communicationHistory
+    .filter(comm => {
+      if (typeFilter !== "all" && comm.type !== typeFilter) return false;
+      if (statusFilter !== "all" && comm.status !== statusFilter) return false;
+      if (searchQuery) {
+        return comm.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          comm.recipient.toLowerCase().includes(searchQuery.toLowerCase());
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      if (sortField === "date") {
+        return sortDirection === "asc" 
+          ? new Date(a.date).getTime() - new Date(b.date).getTime()
+          : new Date(b.date).getTime() - new Date(a.date).getTime();
+      }
+      
+      const aValue = String(a[sortField]);
+      const bValue = String(b[sortField]);
+      
+      return sortDirection === "asc"
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    });
+
+  const getStatusBadge = (status: Communication["status"]) => {
+    switch (status) {
+      case "delivered":
+        return <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">Delivered</Badge>;
+      case "read":
+        return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">Read</Badge>;
+      case "failed":
+        return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">Failed</Badge>;
+      case "pending":
+        return <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">Pending</Badge>;
+      default:
+        return null;
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(date);
+  };
+
+  const renderSortIcon = (field: keyof Communication) => {
+    if (sortField !== field) return null;
+    return sortDirection === "asc" ? <ArrowUp className="h-3 w-3 inline ml-1" /> : <ArrowDown className="h-3 w-3 inline ml-1" />;
+  };
+
+  const getCommunicationTypeIcon = (type: Communication["type"]) => {
+    switch (type) {
+      case "email":
+        return <Mail className="h-4 w-4 text-blue-500" />;
+      case "notification":
+        return <Bell className="h-4 w-4 text-amber-500" />;
+      case "sms":
+        return <MessageSquare className="h-4 w-4 text-green-500" />;
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex items-center gap-2">
-        <History className="h-5 w-5" />
+        <Calendar className="h-5 w-5" />
         <h2 className="text-xl font-semibold">Communication History</h2>
       </div>
-      
-      <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row justify-between items-start sm:items-center mb-6">
-        <div className="relative w-full sm:w-auto flex-1 max-w-sm">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search communications..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-8"
-          />
-        </div>
+
+      <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid grid-cols-2 w-[400px]">
+          <TabsTrigger value="list">List View</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        </TabsList>
         
-        <div className="flex flex-wrap gap-2 w-full sm:w-auto justify-end">
-          <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-[130px]">
-              <SelectValue placeholder="Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="email">Email</SelectItem>
-              <SelectItem value="phone">Phone</SelectItem>
-              <SelectItem value="meeting">Meeting</SelectItem>
-              <SelectItem value="sms">SMS</SelectItem>
-              <SelectItem value="other">Other</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[130px]">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="sent">Sent</SelectItem>
-              <SelectItem value="received">Received</SelectItem>
-              <SelectItem value="failed">Failed</SelectItem>
-              <SelectItem value="scheduled">Scheduled</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Select value={selectedMemberId} onValueChange={setSelectedMemberId}>
-            <SelectTrigger className="w-[130px]">
-              <SelectValue placeholder="Member" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Members</SelectItem>
-              {members.map((member) => (
-                <SelectItem key={member.id} value={member.id}>
-                  {member.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className={cn(
-                  "justify-start text-left font-normal w-[130px]",
-                  dateRange.from && "text-primary"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {dateRange.from ? (
-                  dateRange.to ? (
-                    <>
-                      {format(dateRange.from, "PP")} - {format(dateRange.to, "PP")}
-                    </>
-                  ) : (
-                    format(dateRange.from, "PPP")
-                  )
-                ) : (
-                  <span>Date Range</span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="end">
-              <Calendar
-                initialFocus
-                mode="range"
-                selected={dateRange}
-                onSelect={setDateRange}
-                numberOfMonths={2}
-                className={cn("p-3 pointer-events-auto")}
+        <TabsContent value="list" className="space-y-4">
+          <div className="flex flex-col md:flex-row gap-4 md:items-center justify-between">
+            <div className="relative w-full md:w-80">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
+              <Input 
+                placeholder="Search communications..." 
+                className="pl-10"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
-            </PopoverContent>
-          </Popover>
-          
-          {isFiltering && (
-            <Button variant="ghost" size="icon" onClick={resetFilters} title="Clear filters">
-              <X className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-      </div>
+            </div>
+            
+            <div className="flex flex-wrap gap-2">
+              <div className="flex items-center gap-1">
+                <Filter className="h-4 w-4" />
+                <Select value={typeFilter} onValueChange={setTypeFilter}>
+                  <SelectTrigger className="w-[140px]">
+                    <SelectValue placeholder="Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    <SelectItem value="email">Email</SelectItem>
+                    <SelectItem value="notification">Notification</SelectItem>
+                    <SelectItem value="sms">SMS</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="flex items-center gap-1">
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-[140px]">
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Statuses</SelectItem>
+                    <SelectItem value="delivered">Delivered</SelectItem>
+                    <SelectItem value="read">Read</SelectItem>
+                    <SelectItem value="failed">Failed</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
 
-      {isFiltering && (
-        <div className="flex flex-wrap gap-2 mb-4">
-          {searchTerm && (
-            <Badge variant="outline" className="flex items-center gap-1">
-              Search: {searchTerm}
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-4 w-4 ml-1 p-0" 
-                onClick={() => setSearchTerm("")}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
-          )}
-          
-          {typeFilter !== "all" && (
-            <Badge variant="outline" className="flex items-center gap-1">
-              Type: {typeFilter}
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-4 w-4 ml-1 p-0" 
-                onClick={() => setTypeFilter("all")}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
-          )}
-          
-          {statusFilter !== "all" && (
-            <Badge variant="outline" className="flex items-center gap-1">
-              Status: {statusFilter}
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-4 w-4 ml-1 p-0" 
-                onClick={() => setStatusFilter("all")}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
-          )}
-          
-          {selectedMemberId !== "all" && (
-            <Badge variant="outline" className="flex items-center gap-1">
-              Member: {members.find(m => m.id === selectedMemberId)?.name || selectedMemberId}
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-4 w-4 ml-1 p-0" 
-                onClick={() => setSelectedMemberId("all")}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
-          )}
-          
-          {dateRange.from && dateRange.to && (
-            <Badge variant="outline" className="flex items-center gap-1">
-              Dates: {format(dateRange.from, "PP")} - {format(dateRange.to, "PP")}
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-4 w-4 ml-1 p-0" 
-                onClick={() => setDateRange({ from: undefined, to: undefined })}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
-          )}
-        </div>
-      )}
-
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[120px]">Date</TableHead>
-              <TableHead className="w-[200px]">Member</TableHead>
-              <TableHead className="w-[100px]">Type</TableHead>
-              <TableHead>Subject</TableHead>
-              <TableHead className="w-[100px]">Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {currentItems.length > 0 ? (
-              currentItems.map((comm) => (
-                <TableRow key={comm.id}>
-                  <TableCell className="font-mono">
-                    {format(new Date(comm.date), "yyyy-MM-dd")}
-                  </TableCell>
-                  <TableCell>{comm.memberName}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      {typeIcons[comm.type]}
-                      <span className="capitalize">{comm.type}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>{comm.subject}</TableCell>
-                  <TableCell>
-                    <Badge className={statusColors[comm.status]}>
-                      {comm.status}
-                    </Badge>
-                  </TableCell>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[180px] cursor-pointer" onClick={() => handleSort("date")}>
+                    Date {renderSortIcon("date")}
+                  </TableHead>
+                  <TableHead className="w-[100px] cursor-pointer" onClick={() => handleSort("type")}>
+                    Type {renderSortIcon("type")}
+                  </TableHead>
+                  <TableHead className="cursor-pointer" onClick={() => handleSort("subject")}>
+                    Subject {renderSortIcon("subject")}
+                  </TableHead>
+                  <TableHead className="cursor-pointer" onClick={() => handleSort("recipient")}>
+                    Recipient {renderSortIcon("recipient")}
+                  </TableHead>
+                  <TableHead className="cursor-pointer" onClick={() => handleSort("status")}>
+                    Status {renderSortIcon("status")}
+                  </TableHead>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center">
-                  No communications found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center sm:justify-end space-x-2 py-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPage(Math.max(1, page - 1))}
-            disabled={page === 1}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <span className="text-sm text-muted-foreground">
-            Page {page} of {totalPages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPage(Math.min(totalPages, page + 1))}
-            disabled={page === totalPages}
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
-      )}
+              </TableHeader>
+              <TableBody>
+                {filteredCommunications.length > 0 ? (
+                  filteredCommunications.map((comm) => (
+                    <TableRow key={comm.id} className="hover:bg-gray-50">
+                      <TableCell>{formatDate(comm.date)}</TableCell>
+                      <TableCell className="flex items-center gap-2">
+                        {getCommunicationTypeIcon(comm.type)}
+                        <span className="capitalize">{comm.type}</span>
+                      </TableCell>
+                      <TableCell>
+                        {searchQuery ? (
+                          <HighlightedText text={comm.subject} searchQuery={searchQuery} />
+                        ) : (
+                          comm.subject
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {searchQuery ? (
+                          <HighlightedText text={comm.recipient} searchQuery={searchQuery} />
+                        ) : (
+                          comm.recipient
+                        )}
+                      </TableCell>
+                      <TableCell>{getStatusBadge(comm.status)}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} className="h-24 text-center">
+                      No communications match your search criteria
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="analytics">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Communication Types</CardTitle>
+                <CardDescription>Distribution of communication channels</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col items-center p-6">
+                <div className="h-40 w-40 rounded-full border-8 border-primary/30 flex items-center justify-center relative">
+                  <div className="absolute inset-0 rounded-full border-8 border-t-primary border-r-primary border-transparent rotate-45"></div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold">60%</div>
+                    <div className="text-sm text-muted-foreground">Emails</div>
+                  </div>
+                </div>
+                <div className="w-full flex justify-around mt-6">
+                  <div className="text-center">
+                    <div className="text-sm font-medium">30%</div>
+                    <div className="text-xs text-muted-foreground">Notifications</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-sm font-medium">10%</div>
+                    <div className="text-xs text-muted-foreground">SMS</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Delivery Status</CardTitle>
+                <CardDescription>Success rate of communications</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="text-sm font-medium">Delivered</div>
+                      <div className="text-sm text-muted-foreground">65%</div>
+                    </div>
+                    <div className="h-2 bg-muted rounded overflow-hidden">
+                      <div className="h-full bg-green-500 w-[65%]"></div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="text-sm font-medium">Read</div>
+                      <div className="text-sm text-muted-foreground">25%</div>
+                    </div>
+                    <div className="h-2 bg-muted rounded overflow-hidden">
+                      <div className="h-full bg-blue-500 w-[25%]"></div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="text-sm font-medium">Failed</div>
+                      <div className="text-sm text-muted-foreground">7%</div>
+                    </div>
+                    <div className="h-2 bg-muted rounded overflow-hidden">
+                      <div className="h-full bg-red-500 w-[7%]"></div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="text-sm font-medium">Pending</div>
+                      <div className="text-sm text-muted-foreground">3%</div>
+                    </div>
+                    <div className="h-2 bg-muted rounded overflow-hidden">
+                      <div className="h-full bg-amber-500 w-[3%]"></div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Recent Activity</CardTitle>
+                <CardDescription>Last 7 days</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {filteredCommunications.slice(0, 3).map(comm => (
+                    <div key={comm.id} className="flex items-start gap-2 pb-2 border-b last:border-b-0">
+                      {getCommunicationTypeIcon(comm.type)}
+                      <div>
+                        <div className="font-medium text-sm">{comm.subject}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {comm.recipient} • {formatDate(comm.date)}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <Button variant="link" className="text-xs px-0">View all communications</Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
+
+// Need to import these icons
+import { Bell, MessageSquare } from "lucide-react";
