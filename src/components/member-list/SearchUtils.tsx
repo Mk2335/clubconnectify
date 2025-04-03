@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { highlightSearchTerms } from "@/utils/searchUtils";
 
 interface HighlightedTextProps {
