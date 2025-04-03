@@ -35,6 +35,7 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
   const [members, setMembers] = useState<Member[]>([
     {
       id: "1",
@@ -101,6 +102,71 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
       }
     }
   ]);
+
+  /**
+   * Toggle selection of a member
+   */
+  const toggleMemberSelection = useCallback((memberId: string) => {
+    setSelectedMembers(prev => {
+      if (prev.includes(memberId)) {
+        return prev.filter(id => id !== memberId);
+      } else {
+        return [...prev, memberId];
+      }
+    });
+  }, []);
+
+  /**
+   * Toggle selection of all members
+   */
+  const toggleAllMembers = useCallback((selected: boolean) => {
+    if (selected) {
+      const allMemberIds = sortedAndFilteredMembers.map(member => member.id);
+      setSelectedMembers(allMemberIds);
+    } else {
+      setSelectedMembers([]);
+    }
+  }, []);
+
+  /**
+   * Check if all members are selected
+   */
+  const allSelected = useMemo(() => {
+    return sortedAndFilteredMembers.length > 0 && 
+      sortedAndFilteredMembers.every(member => selectedMembers.includes(member.id));
+  }, [selectedMembers]);
+
+  /**
+   * Handle bulk email action
+   */
+  const handleBulkEmail = useCallback(() => {
+    toast({
+      title: "Email Members",
+      description: `Email would be sent to ${selectedMembers.length} members.`,
+    });
+  }, [selectedMembers]);
+
+  /**
+   * Handle bulk deactivation
+   */
+  const handleBulkDeactivate = useCallback(() => {
+    toast({
+      title: "Deactivate Members",
+      description: `${selectedMembers.length} members would be deactivated.`,
+      variant: "destructive",
+    });
+  }, [selectedMembers]);
+
+  /**
+   * Handle bulk deletion
+   */
+  const handleBulkDelete = useCallback(() => {
+    toast({
+      title: "Delete Members",
+      description: `${selectedMembers.length} members would be deleted.`,
+      variant: "destructive",
+    });
+  }, [selectedMembers]);
 
   /**
    * Handles CSV file upload and member data import
@@ -254,6 +320,16 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
 
   return (
     <div className="space-y-4">
+      {selectedMembers.length > 0 && (
+        <MemberBulkActions
+          selectedCount={selectedMembers.length}
+          allSelected={allSelected}
+          onToggleAll={toggleAllMembers}
+          onEmail={handleBulkEmail}
+          onDeactivate={handleBulkDeactivate}
+          onDelete={handleBulkDelete}
+        />
+      )}
       <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row justify-between items-start sm:items-center">
         <div className="w-full sm:w-auto flex-1 max-w-md">
           <Input
@@ -304,6 +380,10 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
           onDeactivate={handleDeactivate}
           sortConfig={sortConfig}
           onSort={handleSort}
+          selectedMembers={selectedMembers}
+          toggleMemberSelection={toggleMemberSelection}
+          toggleAllMembers={toggleAllMembers}
+          allSelected={allSelected}
         />
       </div>
     </div>
