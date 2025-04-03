@@ -8,14 +8,16 @@ import { useCallback, useMemo, useState } from "react";
 import { Member, MemberListProps } from "@/types/member";
 import { toast } from "@/components/ui/use-toast";
 import { MemberTable } from "./member/MemberTable";
-import { MemberImport } from "./member/MemberImport";
-import { SortConfig } from "@/types/table";
+import { SortConfig, FilterOptions } from "@/types/table";
 import { validateMemberData } from "@/utils/memberUtils";
 import { MEMBER_STATUS, TOAST_MESSAGES } from "@/constants/memberConstants";
+import { MemberSearchBar } from "./member/MemberSearchBar";
+import { MemberFilters } from "./member/MemberFilters";
+import { MemberActionsToolbar } from "./member/MemberActionsToolbar";
+import { MemberBulkActions } from "./member/MemberBulkActions";
+import { ActiveFilterTags } from "./member/ActiveFilterTags";
 import { Button } from "./ui/button";
-import { PlusCircle, Filter } from "lucide-react";
-import { Input } from "./ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { BrainCircuit } from "lucide-react";
 
 export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);

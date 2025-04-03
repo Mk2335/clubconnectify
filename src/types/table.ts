@@ -13,4 +13,15 @@ export interface MemberTableProps {
   onDeactivate: (id: string) => void;
   sortConfig: SortConfig | null;
   onSort: (key: keyof Member) => void;
+  selectedMembers: string[];
+  toggleMemberSelection: (id: string) => void;
+  toggleAllMembers: (selected: boolean) => void;
+  allSelected: boolean;
+}
+
+export interface FilterOptions {
+  status: string;
+  type: string;
+  role: string;
+  paymentMethod: string;
 }

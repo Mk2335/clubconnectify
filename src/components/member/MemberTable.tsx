@@ -6,13 +6,14 @@
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash, UserX, ArrowUpDown, Building2, User } from "lucide-react";
+import { Edit, Trash, UserX, ArrowUpDown, Building2, User, Check } from "lucide-react";
 import { Member } from "@/types/member";
 import { MemberTableProps } from "@/types/table";
 import { formatDate, getStatusBadgeClass, getPaymentMethodBadgeClass, getRoleBadgeClass } from "@/utils/memberUtils";
 import { TABLE_HEADERS } from "@/constants/memberConstants";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 
 /**
  * MemberTable component displays member data in a sortable table format
@@ -22,6 +23,10 @@ import { Badge } from "@/components/ui/badge";
  * @param onDeactivate - Callback function for deactivating a member
  * @param sortConfig - Current sort configuration
  * @param onSort - Callback function for handling sort changes
+ * @param selectedMembers - Array of selected member IDs
+ * @param toggleMemberSelection - Function to toggle selection of a member
+ * @param toggleAllMembers - Function to toggle selection of all members
+ * @param allSelected - Boolean indicating if all members are selected
  */
 export const MemberTable = ({ 
   members, 
@@ -29,13 +34,17 @@ export const MemberTable = ({
   onDelete, 
   onDeactivate, 
   sortConfig, 
-  onSort 
+  onSort,
+  selectedMembers,
+  toggleMemberSelection,
+  toggleAllMembers,
+  allSelected
 }: MemberTableProps) => {
   // Early return if no members are found
   if (members.length === 0) {
     return (
       <TableRow>
-        <TableCell colSpan={7} className="text-center h-24 text-muted-foreground">
+        <TableCell colSpan={9} className="text-center h-24 text-muted-foreground">
           No members found matching your search.
         </TableCell>
       </TableRow>
@@ -70,10 +79,22 @@ export const MemberTable = ({
     );
   };
 
+  /**
+   * Check if a member is selected
+   */
+  const isMemberSelected = (id: string) => selectedMembers.includes(id);
+
   return (
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead className="w-[50px]">
+            <Checkbox 
+              checked={allSelected}
+              onCheckedChange={(checked) => toggleAllMembers(!!checked)}
+              aria-label="Select all members"
+            />
+          </TableHead>
           <TableHead className="w-[50px]"></TableHead>
           {renderSortableHeader('name', TABLE_HEADERS.NAME)}
           <TableHead>{TABLE_HEADERS.ROLE}</TableHead>
@@ -86,7 +107,17 @@ export const MemberTable = ({
       </TableHeader>
       <TableBody>
         {members.map((member) => (
-          <TableRow key={member.id} className="hover:bg-muted/50 transition-colors">
+          <TableRow 
+            key={member.id} 
+            className={`hover:bg-muted/50 transition-colors ${isMemberSelected(member.id) ? 'bg-muted' : ''}`}
+          >
+            <TableCell>
+              <Checkbox 
+                checked={isMemberSelected(member.id)} 
+                onCheckedChange={() => toggleMemberSelection(member.id)}
+                aria-label={`Select ${member.name}`}
+              />
+            </TableCell>
             <TableCell>
               <div className="flex items-center">
                 {renderMemberAvatar(member)}
