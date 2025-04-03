@@ -15,6 +15,8 @@ interface AdvancedSearchProps {
   selectedFields?: Array<keyof Member>;
   caseSensitive?: boolean;
   onClose?: () => void;
+  searchQuery?: string;
+  onSearchChange?: (query: string) => void;
 }
 
 export const AdvancedSearch = ({
@@ -23,21 +25,24 @@ export const AdvancedSearch = ({
   selectedFields = ['name', 'email', 'role'],
   caseSensitive = false,
   onClose = () => {},
+  searchQuery = "",
+  onSearchChange = () => {},
 }: AdvancedSearchProps) => {
   const [localFields, setLocalFields] = useState<Array<keyof Member>>(selectedFields);
   const [localCaseSensitive, setLocalCaseSensitive] = useState<boolean>(caseSensitive);
   
   useEffect(() => {
-    setLocalFields(selectedFields);
+    setLocalFields(selectedFields || ['name', 'email', 'role']);
     setLocalCaseSensitive(caseSensitive);
   }, [selectedFields, caseSensitive]);
 
   const toggleField = (field: keyof Member) => {
     setLocalFields(prev => {
-      if (prev.includes(field)) {
-        return prev.filter(f => f !== field);
+      const updatedFields = [...prev];
+      if (updatedFields.includes(field)) {
+        return updatedFields.filter(f => f !== field);
       } else {
-        return [...prev, field];
+        return [...updatedFields, field];
       }
     });
   };

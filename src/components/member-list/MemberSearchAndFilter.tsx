@@ -12,6 +12,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Member } from "@/types/member";
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { X } from "lucide-react";
 import { AdvancedSearch } from "./AdvancedSearch";
 
 interface MemberSearchAndFilterProps {
@@ -49,19 +55,37 @@ export const MemberSearchAndFilter = ({
   onCaseSensitiveChange,
   onExport
 }: MemberSearchAndFilterProps) => {
+  const [showAdvanced, setShowAdvanced] = useState(false);
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row gap-2 justify-between">
         <div className="flex flex-col sm:flex-row gap-2 flex-1 sm:max-w-md">
           <div className="relative flex-1">
-            <AdvancedSearch
-              searchQuery={searchQuery}
-              onSearchChange={onSearchChange}
-              searchFields={searchFields}
-              caseSensitive={caseSensitive}
-              onSearchFieldsChange={onSearchFieldsChange}
-              onCaseSensitiveChange={onCaseSensitiveChange}
+            <Input
+              placeholder="Search members..."
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+              className="pl-8"
             />
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 p-0 h-4 w-4"
+              onClick={() => setShowAdvanced(!showAdvanced)}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                <path fillRule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clipRule="evenodd" />
+              </svg>
+            </Button>
+            <Button
+              variant="link"
+              size="sm"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 p-0 text-xs"
+              onClick={() => setShowAdvanced(!showAdvanced)}
+            >
+              {showAdvanced ? "Hide" : "Advanced"}
+            </Button>
           </div>
         </div>
 
@@ -128,6 +152,18 @@ export const MemberSearchAndFilter = ({
           />
         </div>
       </div>
+
+      {showAdvanced && (
+        <AdvancedSearch
+          selectedFields={searchFields}
+          caseSensitive={caseSensitive}
+          onFieldsChange={onSearchFieldsChange}
+          onCaseSensitiveChange={onCaseSensitiveChange}
+          onClose={() => setShowAdvanced(false)}
+          searchQuery={searchQuery}
+          onSearchChange={onSearchChange}
+        />
+      )}
     </div>
   );
 };
