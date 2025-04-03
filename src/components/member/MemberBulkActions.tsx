@@ -1,7 +1,13 @@
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Mail, Trash2, UserX } from "lucide-react";
+import { Mail, Trash2, UserX, Download, MoreHorizontal } from "lucide-react";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 
 interface MemberBulkActionsProps {
   selectedCount: number;
@@ -10,6 +16,7 @@ interface MemberBulkActionsProps {
   onEmail: () => void;
   onDeactivate: () => void;
   onDelete: () => void;
+  onExport?: () => void;
 }
 
 export const MemberBulkActions = ({
@@ -18,7 +25,8 @@ export const MemberBulkActions = ({
   onToggleAll,
   onEmail,
   onDeactivate,
-  onDelete
+  onDelete,
+  onExport
 }: MemberBulkActionsProps) => {
   if (selectedCount === 0) return null;
 
@@ -41,6 +49,7 @@ export const MemberBulkActions = ({
           <Mail className="h-4 w-4" />
           <span className="hidden md:inline">Email</span>
         </Button>
+        
         <Button 
           variant="outline" 
           size="sm" 
@@ -50,6 +59,19 @@ export const MemberBulkActions = ({
           <UserX className="h-4 w-4" />
           <span className="hidden md:inline">Deactivate</span>
         </Button>
+        
+        {onExport && (
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={onExport}
+            className="flex items-center gap-1"
+          >
+            <Download className="h-4 w-4" />
+            <span className="hidden md:inline">Export</span>
+          </Button>
+        )}
+        
         <Button 
           variant="outline" 
           size="sm" 
@@ -59,6 +81,34 @@ export const MemberBulkActions = ({
           <Trash2 className="h-4 w-4" />
           <span className="hidden md:inline">Delete</span>
         </Button>
+        
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="icon" className="h-8 w-8 md:hidden">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={onEmail}>
+              <Mail className="mr-2 h-4 w-4" />
+              <span>Email</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={onDeactivate}>
+              <UserX className="mr-2 h-4 w-4" />
+              <span>Deactivate</span>
+            </DropdownMenuItem>
+            {onExport && (
+              <DropdownMenuItem onClick={onExport}>
+                <Download className="mr-2 h-4 w-4" />
+                <span>Export</span>
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuItem className="text-red-600" onClick={onDelete}>
+              <Trash2 className="mr-2 h-4 w-4" />
+              <span>Delete</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );

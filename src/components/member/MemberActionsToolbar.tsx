@@ -12,7 +12,7 @@ import { MemberImport } from "./MemberImport";
 interface MemberActionsToolbarProps {
   onAddMember: () => void;
   onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onExport: () => void;
+  onExport?: () => void;
 }
 
 export const MemberActionsToolbar = ({
@@ -41,10 +41,12 @@ export const MemberActionsToolbar = ({
               <span>Import Members</span>
             </DropdownMenuItem>
           </MemberImport>
-          <DropdownMenuItem onClick={onExport}>
-            <Download className="mr-2 h-4 w-4" />
-            <span>Export Members</span>
-          </DropdownMenuItem>
+          {onExport && (
+            <DropdownMenuItem onClick={onExport}>
+              <Download className="mr-2 h-4 w-4" />
+              <span>Export Members</span>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

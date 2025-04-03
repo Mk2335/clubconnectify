@@ -13,6 +13,7 @@ import { Member } from "@/types/member";
 import { toast } from "./ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { advancedSearch } from "@/utils/searchUtils";
+import { exportMembers } from "@/utils/exportUtils";
 
 export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
   const { members, loading } = useRealtimeMembers();
@@ -37,6 +38,8 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
     fields: ['name', 'email', 'role'],
     caseSensitive: false
   });
+
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setFilterOptions(prev => ({
@@ -212,8 +215,19 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
     setTypeFilter(newFilters.type);
   };
 
+  const handleBulkExport = () => {
+    exportMembers(members, true, selectedMembers);
+    
+    toast({
+      title: "Export Successful",
+      description: `${selectedMembers.length} members have been exported.`
+    });
+  };
+
   const handleBulkDeactivate = async () => {
     try {
+      setIsLoading(true);
+      
       for (const memberId of selectedMembers) {
         const { error } = await supabase
           .from('members')
@@ -236,11 +250,15 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
         description: "Failed to deactivate members",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleBulkDelete = async () => {
     try {
+      setIsLoading(true);
+      
       for (const memberId of selectedMembers) {
         const { error } = await supabase
           .from('members')
@@ -263,6 +281,8 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
         description: "Failed to delete members",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -270,6 +290,17 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
     toast({
       title: "File Upload",
       description: "File upload functionality will be implemented soon."
+    });
+  };
+
+  const handleExportMembers = () => {
+    exportMembers(sortedAndFilteredMembers, selectedMembers.length > 0, selectedMembers);
+    
+    toast({
+      title: "Export Successful",
+      description: `${selectedMembers.length > 0 
+        ? `${selectedMembers.length} selected members have been exported.` 
+        : "All members have been exported."}`
     });
   };
 
@@ -319,6 +350,7 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
             handleBulkEmail={handleBulkEmail}
             handleBulkDeactivate={handleBulkDeactivate}
             handleBulkDelete={handleBulkDelete}
+            handleBulkExport={handleBulkExport}
             localSearchQuery={localSearchQuery}
             setLocalSearchQuery={setLocalSearchQuery}
             statusFilter={statusFilter}
@@ -327,6 +359,7 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
             setTypeFilter={setTypeFilter}
             handleAddMember={handleAddMember}
             handleFileUpload={handleFileUpload}
+            handleExportMembers={handleExportMembers}
             allSelected={allSelected}
             viewMode={viewMode}
             onViewModeChange={setViewMode}
@@ -337,6 +370,7 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
             searchFields={searchOptions.fields}
             caseSensitive={searchOptions.caseSensitive}
             searchOptions={searchOptions}
+            isLoading={isLoading}
           />
         </TabsContent>
 

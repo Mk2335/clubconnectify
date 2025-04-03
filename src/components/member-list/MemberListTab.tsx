@@ -20,6 +20,7 @@ interface MemberListTabProps {
   handleBulkEmail?: () => void;
   handleBulkDeactivate?: () => void;
   handleBulkDelete?: () => void;
+  handleBulkExport?: () => void;
   localSearchQuery?: string;
   setLocalSearchQuery?: (query: string) => void;
   statusFilter?: string;
@@ -28,6 +29,7 @@ interface MemberListTabProps {
   setTypeFilter?: (type: string) => void;
   handleAddMember?: () => void;
   handleFileUpload?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleExportMembers?: () => void;
   allSelected?: boolean;
   viewMode?: "grid" | "list";
   onViewModeChange?: (mode: "grid" | "list") => void;
@@ -38,6 +40,7 @@ interface MemberListTabProps {
   searchFields?: Array<keyof Member>;
   caseSensitive?: boolean;
   searchOptions?: SearchOptions;
+  isLoading?: boolean;
 }
 
 export const MemberListTab = ({
@@ -53,6 +56,7 @@ export const MemberListTab = ({
   handleBulkEmail = () => {},
   handleBulkDeactivate = () => {},
   handleBulkDelete = () => {},
+  handleBulkExport = () => {},
   localSearchQuery = "",
   setLocalSearchQuery = () => {},
   statusFilter = "all",
@@ -61,6 +65,7 @@ export const MemberListTab = ({
   setTypeFilter = () => {},
   handleAddMember = () => {},
   handleFileUpload = () => {},
+  handleExportMembers = () => {},
   allSelected = false,
   viewMode = "list",
   onViewModeChange,
@@ -70,7 +75,8 @@ export const MemberListTab = ({
   onCaseSensitiveChange,
   searchFields = ['name', 'email', 'role'],
   caseSensitive = false,
-  searchOptions
+  searchOptions,
+  isLoading = false
 }: MemberListTabProps) => {
   // Make sure members is always an array
   const membersList = Array.isArray(members) ? members : [];
@@ -150,6 +156,7 @@ export const MemberListTab = ({
           onEmail={handleBulkEmail}
           onDeactivate={handleBulkDeactivate}
           onDelete={handleBulkDelete}
+          onExport={handleBulkExport}
         />
       )}
       
@@ -168,9 +175,14 @@ export const MemberListTab = ({
         onCaseSensitiveChange={onCaseSensitiveChange}
         searchFields={searchFields}
         caseSensitive={caseSensitive}
+        onExport={handleExportMembers}
       />
 
-      {viewMode === "grid" ? (
+      {isLoading ? (
+        <div className="flex justify-center py-8">
+          <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full" />
+        </div>
+      ) : viewMode === "grid" ? (
         renderMemberGrid()
       ) : (
         <MemberTableContainer 
@@ -187,7 +199,7 @@ export const MemberListTab = ({
         />
       )}
       
-      {membersList.length === 0 && (
+      {membersList.length === 0 && !isLoading && (
         <div className="text-center py-8">
           <p className="text-muted-foreground">No members match your search criteria</p>
         </div>
