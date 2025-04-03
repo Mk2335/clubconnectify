@@ -17,7 +17,7 @@ import { MemberBulkActions } from "./member/MemberBulkActions";
 import { ActiveFilterTags } from "./member/ActiveFilterTags";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { Filter } from "lucide-react";
+import { Filter, PlusCircle } from "lucide-react";
 import { 
   Select,
   SelectContent,
@@ -25,11 +25,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { PlusCircle } from "lucide-react";
 import { MemberImport } from "./member/MemberImport";
-import { BrainCircuit } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { MemberCommunicationTabs } from "./communication/MemberCommunicationTabs";
 
 export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
+  const [activeTab, setActiveTab] = useState<"list" | "communication">("list");
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -103,6 +104,46 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
   ]);
 
   /**
+   * Memoized sorted and filtered members list
+   * IMPORTANT: This must be defined before any functions that use it
+   */
+  const sortedAndFilteredMembers = useMemo(() => {
+    let result = [...members];
+    
+    // Apply search filter
+    if (localSearchQuery) {
+      result = result.filter((member) =>
+        member.name.toLowerCase().includes(localSearchQuery.toLowerCase()) ||
+        member.email.toLowerCase().includes(localSearchQuery.toLowerCase())
+      );
+    }
+    
+    // Apply status filter
+    if (statusFilter !== "all") {
+      result = result.filter((member) => member.status === statusFilter);
+    }
+    
+    // Apply type filter
+    if (typeFilter !== "all") {
+      result = result.filter((member) => member.type === typeFilter);
+    }
+
+    // Apply sorting
+    if (sortConfig) {
+      result.sort((a, b) => {
+        const aValue = a[sortConfig.key];
+        const bValue = b[sortConfig.key];
+        
+        if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+
+    return result;
+  }, [members, localSearchQuery, sortConfig, statusFilter, typeFilter]);
+
+  /**
    * Handles sorting of member data
    */
   const handleSort = useCallback((key: keyof Member) => {
@@ -160,46 +201,6 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
   }, []);
 
   /**
-   * Memoized sorted and filtered members list
-   * IMPORTANT: This must be defined before any functions that use it
-   */
-  const sortedAndFilteredMembers = useMemo(() => {
-    let result = [...members];
-    
-    // Apply search filter
-    if (localSearchQuery) {
-      result = result.filter((member) =>
-        member.name.toLowerCase().includes(localSearchQuery.toLowerCase()) ||
-        member.email.toLowerCase().includes(localSearchQuery.toLowerCase())
-      );
-    }
-    
-    // Apply status filter
-    if (statusFilter !== "all") {
-      result = result.filter((member) => member.status === statusFilter);
-    }
-    
-    // Apply type filter
-    if (typeFilter !== "all") {
-      result = result.filter((member) => member.type === typeFilter);
-    }
-
-    // Apply sorting
-    if (sortConfig) {
-      result.sort((a, b) => {
-        const aValue = a[sortConfig.key];
-        const bValue = b[sortConfig.key];
-        
-        if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
-        if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
-        return 0;
-      });
-    }
-
-    return result;
-  }, [members, localSearchQuery, sortConfig, statusFilter, typeFilter]);
-
-  /**
    * Toggle selection of a member
    */
   const toggleMemberSelection = useCallback((memberId: string) => {
@@ -236,11 +237,8 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
    * Handle bulk email action
    */
   const handleBulkEmail = useCallback(() => {
-    toast({
-      title: "Email Members",
-      description: `Email would be sent to ${selectedMembers.length} members.`,
-    });
-  }, [selectedMembers]);
+    setActiveTab("communication");
+  }, []);
 
   /**
    * Handle bulk deactivation
@@ -320,72 +318,93 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
 
   return (
     <div className="space-y-4">
-      {selectedMembers.length > 0 && (
-        <MemberBulkActions
-          selectedCount={selectedMembers.length}
-          allSelected={allSelected}
-          onToggleAll={toggleAllMembers}
-          onEmail={handleBulkEmail}
-          onDeactivate={handleBulkDeactivate}
-          onDelete={handleBulkDelete}
-        />
-      )}
-      <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row justify-between items-start sm:items-center">
-        <div className="w-full sm:w-auto flex-1 max-w-md">
-          <Input
-            placeholder="Search by name or email..."
-            value={localSearchQuery}
-            onChange={(e) => setLocalSearchQuery(e.target.value)}
-            className="w-full"
-          />
-        </div>
-        <div className="flex gap-2 w-full sm:w-auto">
-          <div className="flex items-center gap-2 flex-1 sm:flex-auto">
-            <Filter className="h-4 w-4 text-muted-foreground" />
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full sm:w-[140px]">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="Active">Active</SelectItem>
-                <SelectItem value="Inactive">Inactive</SelectItem>
-                <SelectItem value="Pending">Pending</SelectItem>
-              </SelectContent>
-            </Select>
+      <Tabs 
+        value={activeTab} 
+        onValueChange={(value) => setActiveTab(value as "list" | "communication")} 
+        className="w-full"
+      >
+        <TabsList className="mb-4">
+          <TabsTrigger value="list">Member List</TabsTrigger>
+          <TabsTrigger value="communication">Communication</TabsTrigger>
+        </TabsList>
+      
+        <TabsContent value="list" className="space-y-4 mt-0">
+          {selectedMembers.length > 0 && (
+            <MemberBulkActions
+              selectedCount={selectedMembers.length}
+              allSelected={allSelected}
+              onToggleAll={toggleAllMembers}
+              onEmail={handleBulkEmail}
+              onDeactivate={handleBulkDeactivate}
+              onDelete={handleBulkDelete}
+            />
+          )}
+          
+          <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row justify-between items-start sm:items-center">
+            <div className="w-full sm:w-auto flex-1 max-w-md">
+              <Input
+                placeholder="Search by name or email..."
+                value={localSearchQuery}
+                onChange={(e) => setLocalSearchQuery(e.target.value)}
+                className="w-full"
+              />
+            </div>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <div className="flex items-center gap-2 flex-1 sm:flex-auto">
+                <Filter className="h-4 w-4 text-muted-foreground" />
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-full sm:w-[140px]">
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Statuses</SelectItem>
+                    <SelectItem value="Active">Active</SelectItem>
+                    <SelectItem value="Inactive">Inactive</SelectItem>
+                    <SelectItem value="Pending">Pending</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <Select value={typeFilter} onValueChange={setTypeFilter}>
+                <SelectTrigger className="w-full sm:w-[140px]">
+                  <SelectValue placeholder="Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="Individual">Individual</SelectItem>
+                  <SelectItem value="Company">Company</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button variant="outline" onClick={handleAddMember}>
+                <PlusCircle className="h-4 w-4 mr-2" /> 
+                Add Member
+              </Button>
+              <MemberImport onFileUpload={handleFileUpload} />
+            </div>
           </div>
-          <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-full sm:w-[140px]">
-              <SelectValue placeholder="Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="Individual">Individual</SelectItem>
-              <SelectItem value="Company">Company</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button variant="outline" onClick={handleAddMember}>
-            <PlusCircle className="h-4 w-4 mr-2" /> 
-            Add Member
-          </Button>
-          <MemberImport onFileUpload={handleFileUpload} />
-        </div>
-      </div>
 
-      <div className="rounded-md border">
-        <MemberTable
-          members={sortedAndFilteredMembers}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          onDeactivate={handleDeactivate}
-          sortConfig={sortConfig}
-          onSort={handleSort}
-          selectedMembers={selectedMembers}
-          toggleMemberSelection={toggleMemberSelection}
-          toggleAllMembers={toggleAllMembers}
-          allSelected={allSelected}
-        />
-      </div>
+          <div className="rounded-md border">
+            <MemberTable
+              members={sortedAndFilteredMembers}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onDeactivate={handleDeactivate}
+              sortConfig={sortConfig}
+              onSort={handleSort}
+              selectedMembers={selectedMembers}
+              toggleMemberSelection={toggleMemberSelection}
+              toggleAllMembers={toggleAllMembers}
+              allSelected={allSelected}
+            />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="communication" className="mt-0">
+          <MemberCommunicationTabs 
+            members={members}
+            selectedMembers={selectedMembers}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
