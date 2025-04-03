@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { 
   Table, 
@@ -29,6 +28,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Member } from "@/types/member";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DateRange } from "react-day-picker";
 
 type CommunicationType = "email" | "phone" | "meeting" | "sms" | "other";
 
@@ -146,18 +146,13 @@ export function CommunicationHistory({ members }: CommunicationHistoryProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [dateRange, setDateRange] = useState<{
-    from: Date | undefined;
-    to: Date | undefined;
-  }>({
+  const [dateRange, setDateRange] = useState<DateRange>({
     from: undefined,
     to: undefined,
   });
   const [selectedMemberId, setSelectedMemberId] = useState<string>("all");
   
-  // Filter communications based on search and filters
   const filteredCommunications = mockCommunications.filter((comm) => {
-    // Search filter
     if (
       searchTerm &&
       !comm.subject.toLowerCase().includes(searchTerm.toLowerCase()) &&
@@ -166,22 +161,18 @@ export function CommunicationHistory({ members }: CommunicationHistoryProps) {
       return false;
     }
     
-    // Type filter
     if (typeFilter !== "all" && comm.type !== typeFilter) {
       return false;
     }
     
-    // Status filter
     if (statusFilter !== "all" && comm.status !== statusFilter) {
       return false;
     }
     
-    // Member filter
     if (selectedMemberId !== "all" && comm.memberId !== selectedMemberId) {
       return false;
     }
     
-    // Date range filter
     if (dateRange.from && dateRange.to) {
       const communicationDate = new Date(comm.date);
       if (
@@ -195,7 +186,6 @@ export function CommunicationHistory({ members }: CommunicationHistoryProps) {
     return true;
   });
   
-  // Calculate pagination
   const totalItems = filteredCommunications.length;
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
   const startIndex = (page - 1) * ITEMS_PER_PAGE;
@@ -309,6 +299,7 @@ export function CommunicationHistory({ members }: CommunicationHistoryProps) {
                 selected={dateRange}
                 onSelect={setDateRange}
                 numberOfMonths={2}
+                className={cn("p-3 pointer-events-auto")}
               />
             </PopoverContent>
           </Popover>

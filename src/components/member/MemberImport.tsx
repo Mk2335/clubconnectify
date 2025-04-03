@@ -1,3 +1,4 @@
+
 /**
  * Component for handling member data import via CSV
  * Provides file upload functionality with validation and user feedback
@@ -13,15 +14,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { TOAST_MESSAGES } from "@/constants/memberConstants";
 
 interface MemberImportProps {
   onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  children?: ReactNode;
 }
 
-export const MemberImport = ({ onFileUpload }: MemberImportProps) => {
+export const MemberImport = ({ onFileUpload, children }: MemberImportProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,10 +54,12 @@ export const MemberImport = ({ onFileUpload }: MemberImportProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="gap-2">
-          <Upload className="h-4 w-4" />
-          Import Members
-        </Button>
+        {children || (
+          <Button variant="outline" className="gap-2">
+            <Upload className="h-4 w-4" />
+            Import Members
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
