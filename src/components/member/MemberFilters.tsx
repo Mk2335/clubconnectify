@@ -1,11 +1,14 @@
-
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Filter } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Filter, X } from "lucide-react";
 import { FilterOptions } from "@/types/table";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { MEMBER_STATUS, MEMBER_TYPE, PAYMENT_METHOD } from "@/constants/memberConstants";
 
 interface MemberFiltersProps {
   filterOptions: FilterOptions;
@@ -22,6 +25,10 @@ export const MemberFilters = ({
 }: MemberFiltersProps) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [localFilters, setLocalFilters] = useState<FilterOptions>(filterOptions);
+
+  useEffect(() => {
+    setLocalFilters(filterOptions);
+  }, [filterOptions]);
 
   const handleFilterChange = (key: keyof FilterOptions, value: string) => {
     setLocalFilters(prev => ({ ...prev, [key]: value }));
@@ -50,24 +57,39 @@ export const MemberFilters = ({
       </PopoverTrigger>
       <PopoverContent className="w-80">
         <div className="space-y-4">
-          <h4 className="font-medium">Filter Options</h4>
+          <div className="flex items-center justify-between">
+            <h4 className="font-medium">Filter Options</h4>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={onResetFilters}
+              className="h-8 px-2 text-xs"
+            >
+              Reset all
+            </Button>
+          </div>
+          
+          <Separator />
           
           <div className="space-y-2">
             <label className="text-sm font-medium">Status</label>
-            <Select 
-              value={localFilters.status} 
-              onValueChange={(value) => handleFilterChange('status', value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="All Statuses" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="Active">Active</SelectItem>
-                <SelectItem value="Inactive">Inactive</SelectItem>
-                <SelectItem value="Pending">Pending</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="grid grid-cols-2 gap-2">
+              {Object.values(MEMBER_STATUS).map((status) => (
+                <div key={status} className="flex items-center space-x-2">
+                  <Checkbox 
+                    id={`status-${status}`}
+                    checked={localFilters.status === status}
+                    onCheckedChange={() => handleFilterChange('status', localFilters.status === status ? 'all' : status)}
+                  />
+                  <Label 
+                    htmlFor={`status-${status}`}
+                    className="text-sm cursor-pointer"
+                  >
+                    {status}
+                  </Label>
+                </div>
+              ))}
+            </div>
           </div>
           
           <div className="space-y-2">
@@ -81,8 +103,9 @@ export const MemberFilters = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="Individual">Individual</SelectItem>
-                <SelectItem value="Company">Company</SelectItem>
+                {Object.values(MEMBER_TYPE).map((type) => (
+                  <SelectItem key={type} value={type}>{type}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -101,6 +124,8 @@ export const MemberFilters = ({
                 <SelectItem value="AM">Active Member (AM)</SelectItem>
                 <SelectItem value="ERW">Adult Member (ERW)</SelectItem>
                 <SelectItem value="S">Supporting Member (S)</SelectItem>
+                <SelectItem value="Board">Board Member</SelectItem>
+                <SelectItem value="Admin">Administrator</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -116,26 +141,19 @@ export const MemberFilters = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Payment Methods</SelectItem>
-                <SelectItem value="Bank Transfer">Bank Transfer</SelectItem>
-                <SelectItem value="Direct Debit">Direct Debit</SelectItem>
-                <SelectItem value="Other">Other</SelectItem>
+                {Object.values(PAYMENT_METHOD).map((method) => (
+                  <SelectItem key={method} value={method}>{method}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
           
-          <div className="flex justify-between">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={onResetFilters}
-            >
-              Reset Filters
-            </Button>
+          <div className="flex justify-end pt-2">
             <Button 
               size="sm" 
               onClick={handleApply}
             >
-              Apply
+              Apply Filters
             </Button>
           </div>
         </div>

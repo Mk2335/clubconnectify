@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MemberListProps } from "@/types/member";
 import { MemberCommunicationTabs } from "./communication/MemberCommunicationTabs";
 import { MemberListTab } from "./member-list/MemberListTab";
@@ -9,7 +8,7 @@ import { Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { MemberForm } from "./member/MemberForm";
 import { Button } from "./ui/button";
-import { SortConfig } from "@/types/table";
+import { SortConfig, FilterOptions } from "@/types/table";
 import { Member } from "@/types/member";
 import { toast } from "./ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,34 +23,56 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("list");
+  const [filterOptions, setFilterOptions] = useState<FilterOptions>({
+    status: "all",
+    type: "all",
+    role: "all",
+    paymentMethod: "all"
+  });
 
-  // Derive filtered and sorted members
+  useEffect(() => {
+    setFilterOptions(prev => ({
+      ...prev,
+      status: statusFilter,
+      type: typeFilter
+    }));
+  }, [statusFilter, typeFilter]);
+
   const sortedAndFilteredMembers = React.useMemo(() => {
     let result = [...members];
     
-    // Apply search filter
     if (localSearchQuery) {
-      result = result.filter((member) =>
-        member.name.toLowerCase().includes(localSearchQuery.toLowerCase()) ||
-        member.email.toLowerCase().includes(localSearchQuery.toLowerCase())
-      );
+      const searchTerms = localSearchQuery.toLowerCase().split(' ').filter(Boolean);
+      result = result.filter((member) => {
+        return searchTerms.every(term => 
+          member.name?.toLowerCase().includes(term) ||
+          member.email?.toLowerCase().includes(term) ||
+          member.role?.toLowerCase().includes(term)
+        );
+      });
     }
     
-    // Apply status filter
     if (statusFilter !== "all") {
       result = result.filter((member) => member.status === statusFilter);
     }
     
-    // Apply type filter
     if (typeFilter !== "all") {
       result = result.filter((member) => member.type === typeFilter);
     }
+    
+    if (filterOptions.role !== "all") {
+      result = result.filter((member) => member.role === filterOptions.role);
+    }
+    
+    if (filterOptions.paymentMethod !== "all") {
+      result = result.filter((member) => member.paymentMethod === filterOptions.paymentMethod);
+    }
 
-    // Apply sorting
     if (sortConfig) {
       result.sort((a, b) => {
-        const aValue = a[sortConfig.key as keyof Member];
-        const bValue = b[sortConfig.key as keyof Member];
+        const aValue = a[sortConfig.key];
+        const bValue = b[sortConfig.key];
         
         if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
         if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
@@ -60,7 +81,7 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
     }
 
     return result;
-  }, [members, localSearchQuery, sortConfig, statusFilter, typeFilter]);
+  }, [members, localSearchQuery, sortConfig, statusFilter, typeFilter, filterOptions]);
 
   const handleAddMember = () => {
     setSelectedMember(null);
@@ -159,6 +180,12 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
     setActiveTab("communication");
   };
 
+  const handleFilterChange = (newFilters: FilterOptions) => {
+    setFilterOptions(newFilters);
+    setStatusFilter(newFilters.status);
+    setTypeFilter(newFilters.type);
+  };
+
   const handleBulkDeactivate = async () => {
     try {
       for (const memberId of selectedMembers) {
@@ -214,7 +241,6 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // We'll implement this later
     toast({
       title: "File Upload",
       description: "File upload functionality will be implemented soon."
@@ -276,6 +302,10 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
             handleAddMember={handleAddMember}
             handleFileUpload={handleFileUpload}
             allSelected={allSelected}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            filterOptions={filterOptions}
+            onFilterChange={handleFilterChange}
           />
         </TabsContent>
 

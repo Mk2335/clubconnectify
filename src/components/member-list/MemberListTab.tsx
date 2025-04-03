@@ -3,7 +3,8 @@ import { MemberSearchAndFilter } from "./MemberSearchAndFilter";
 import { MemberTableContainer } from "./MemberTableContainer";
 import { MemberBulkActions } from "@/components/member/MemberBulkActions";
 import { Member } from "@/types/member";
-import { SortConfig } from "@/types/table";
+import { FilterOptions, SortConfig } from "@/types/table";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface MemberListTabProps {
   members: Member[];
@@ -27,6 +28,10 @@ interface MemberListTabProps {
   handleAddMember?: () => void;
   handleFileUpload?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   allSelected?: boolean;
+  viewMode?: "grid" | "list";
+  onViewModeChange?: (mode: "grid" | "list") => void;
+  filterOptions?: FilterOptions;
+  onFilterChange?: (filters: FilterOptions) => void;
 }
 
 export const MemberListTab = ({
@@ -50,10 +55,42 @@ export const MemberListTab = ({
   setTypeFilter = () => {},
   handleAddMember = () => {},
   handleFileUpload = () => {},
-  allSelected = false
+  allSelected = false,
+  viewMode = "list",
+  onViewModeChange,
+  filterOptions = { status: "all", type: "all", role: "all", paymentMethod: "all" },
+  onFilterChange = () => {}
 }: MemberListTabProps) => {
   // Make sure members is always an array
   const membersList = Array.isArray(members) ? members : [];
+
+  const renderMemberGrid = () => {
+    if (viewMode !== "grid") return null;
+    
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {membersList.map(member => (
+          <Card key={member.id} className="overflow-hidden">
+            <CardContent className="p-4">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h3 className="font-medium">{member.name}</h3>
+                  <p className="text-sm text-muted-foreground">{member.email}</p>
+                  <div className="mt-2 flex items-center space-x-2">
+                    <span className={`inline-block w-2 h-2 rounded-full ${
+                      member.status === "Active" ? "bg-green-500" : 
+                      member.status === "Pending" ? "bg-amber-500" : "bg-gray-300"
+                    }`} />
+                    <span className="text-sm">{member.status}</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-4">
@@ -77,19 +114,31 @@ export const MemberListTab = ({
         onTypeFilterChange={setTypeFilter}
         onAddMember={handleAddMember}
         onFileUpload={handleFileUpload}
+        viewMode={viewMode}
+        onViewModeChange={onViewModeChange}
       />
 
-      <MemberTableContainer 
-        members={membersList}
-        handleEdit={onEdit}
-        handleDelete={onDelete}
-        handleDeactivate={onDeactivate}
-        sortConfig={sortConfig}
-        handleSort={handleSort}
-        selectedMembers={selectedMembers || []}
-        toggleMemberSelection={toggleMemberSelection}
-        toggleAllMembers={toggleAllMembers}
-      />
+      {viewMode === "grid" ? (
+        renderMemberGrid()
+      ) : (
+        <MemberTableContainer 
+          members={membersList}
+          handleEdit={onEdit}
+          handleDelete={onDelete}
+          handleDeactivate={onDeactivate}
+          sortConfig={sortConfig}
+          handleSort={handleSort}
+          selectedMembers={selectedMembers || []}
+          toggleMemberSelection={toggleMemberSelection}
+          toggleAllMembers={toggleAllMembers}
+        />
+      )}
+      
+      {membersList.length === 0 && (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">No members match your search criteria</p>
+        </div>
+      )}
     </div>
   );
 };

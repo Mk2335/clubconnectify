@@ -18,3 +18,17 @@ export interface MemberTableProps {
   toggleAllMembers: (selected: boolean) => void;
   allSelected: boolean;
 }
+
+export interface FilterOptions {
+  status: string;
+  type: string;
+  role: string;
+  paymentMethod: string;
+  [key: string]: string;
+}
+
+export interface SearchOptions {
+  query: string;
+  fields: Array<keyof Member>;
+  caseSensitive: boolean;
+}
