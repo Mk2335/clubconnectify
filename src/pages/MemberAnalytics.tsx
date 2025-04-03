@@ -1,8 +1,7 @@
-
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { BarChart, LineChart, PieChart, ResponsiveContainer, XAxis, YAxis, Bar, Tooltip as RechartsTooltip, Legend, Cell, Line } from "recharts";
+import { BarChart, LineChart, PieChart, ResponsiveContainer, XAxis, YAxis, Bar, Tooltip as RechartsTooltip, Legend, Cell, Line, Pie } from "recharts";
 
 // Sample data for analytics
 const memberGrowthData = [
