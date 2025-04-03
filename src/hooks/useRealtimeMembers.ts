@@ -22,22 +22,22 @@ export const useRealtimeMembers = () => {
         if (error) throw error;
 
         // Transform data to match Member type
-        const transformedMembers: Member[] = data.map((item: any) => ({
+        const transformedMembers: Member[] = data ? data.map((item: any) => ({
           id: item.id,
           name: item.name,
           email: item.email,
           status: item.status,
           joinDate: item.join_date,
           profilePicture: item.profile_picture || "",
-          role: item.role,
+          role: item.role || "",
           type: item.type,
-          paymentMethod: item.payment_method,
+          paymentMethod: item.payment_method || "Other",
           companyDetails: item.company_details ? {
-            companyName: item.company_details.company_name,
+            companyName: item.company_details.company_name || "",
             registrationNumber: item.company_details.registration_number || "",
             contactPerson: item.company_details.contact_person || ""
           } : undefined
-        }));
+        })) : [];
 
         setMembers(transformedMembers);
         setLoading(false);
@@ -58,6 +58,7 @@ export const useRealtimeMembers = () => {
           table: 'members' 
         },
         (payload) => {
+          console.log('Realtime update:', payload);
           switch (payload.eventType) {
             case 'INSERT':
               // Add new member

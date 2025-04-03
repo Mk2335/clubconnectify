@@ -1,82 +1,74 @@
 
-/**
- * Utility functions for member management
- */
-
 import { Member } from "@/types/member";
-import { MEMBER_ROLES } from "@/constants/memberConstants";
 
 /**
- * Formats a date string to a localized date format
- * @param dateString - ISO date string
- * @returns Formatted date string
+ * Format a date string to a localized format
  */
 export const formatDate = (dateString: string): string => {
-  return new Date(dateString).toLocaleDateString();
-};
-
-/**
- * Gets the CSS class for member status badge
- * @param status - Member status
- * @returns CSS class string
- */
-export const getStatusBadgeClass = (status: Member["status"]): string => {
-  const baseClasses = "px-2 py-1 rounded-full text-xs font-medium";
-  switch (status) {
-    case "Active":
-      return `${baseClasses} text-green-600 bg-green-50`;
-    case "Inactive":
-      return `${baseClasses} text-red-600 bg-red-50`;
-    case "Pending":
-      return `${baseClasses} text-yellow-600 bg-yellow-50`;
-    default:
-      return baseClasses;
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  } catch (e) {
+    return dateString;
   }
 };
 
 /**
- * Gets the CSS class for payment method badge
- * @param method - Payment method
- * @returns CSS class string
+ * Get CSS class for member status badge
+ */
+export const getStatusBadgeClass = (status: string): string => {
+  switch (status) {
+    case 'Active':
+      return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800';
+    case 'Inactive':
+      return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800';
+    case 'Pending':
+      return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800';
+    default:
+      return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800';
+  }
+};
+
+/**
+ * Get CSS class for payment method badge
  */
 export const getPaymentMethodBadgeClass = (method: string): string => {
-  const baseClasses = "text-xs font-medium";
   switch (method) {
-    case "Bank Transfer":
-      return `${baseClasses} text-blue-600 border-blue-200`;
-    case "Direct Debit":
-      return `${baseClasses} text-purple-600 border-purple-200`;
+    case 'Bank Transfer':
+      return 'bg-blue-50 text-blue-700 ring-blue-600/20';
+    case 'Direct Debit':
+      return 'bg-green-50 text-green-700 ring-green-600/20';
     default:
-      return `${baseClasses} text-gray-600 border-gray-200`;
+      return 'bg-gray-50 text-gray-700 ring-gray-600/20';
   }
 };
 
 /**
- * Gets the CSS class for role badge
- * @param role - Member role
- * @returns CSS class string
+ * Get CSS class for role badge
  */
 export const getRoleBadgeClass = (role: string): string => {
-  const baseClasses = "text-xs font-medium";
-  const roleObj = MEMBER_ROLES.find(r => r.code === role);
-  
-  switch (roleObj?.color) {
-    case "blue":
-      return `${baseClasses} text-blue-600 border-blue-200`;
-    case "green":
-      return `${baseClasses} text-green-600 border-green-200`;
-    case "purple":
-      return `${baseClasses} text-purple-600 border-purple-200`;
+  switch (role.toLowerCase()) {
+    case 'admin':
+    case 'administrator':
+      return 'bg-purple-50 text-purple-700 ring-purple-600/20';
+    case 'board member':
+    case 'board':
+      return 'bg-amber-50 text-amber-700 ring-amber-600/20';
+    case 'moderator':
+      return 'bg-blue-50 text-blue-700 ring-blue-600/20';
     default:
-      return `${baseClasses} text-gray-600 border-gray-200`;
+      return 'bg-gray-50 text-gray-700 ring-gray-600/20';
   }
 };
 
 /**
- * Validates member data from CSV import
- * @param data - Raw member data
- * @returns Validated member object
+ * Validate member data
  */
-export const validateMemberData = (data: Partial<Member>): boolean => {
-  return !!(data.name && data.email);
+export const validateMemberData = (member: Member): boolean => {
+  if (!member.name || !member.email) {
+    return false;
+  }
+  // Basic email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(member.email);
 };

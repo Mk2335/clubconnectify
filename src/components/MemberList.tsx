@@ -162,10 +162,12 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
   const handleBulkDeactivate = async () => {
     try {
       for (const memberId of selectedMembers) {
-        await supabase
+        const { error } = await supabase
           .from('members')
           .update({ status: "Inactive" })
           .eq('id', memberId);
+        
+        if (error) throw error;
       }
       
       toast({
@@ -187,10 +189,12 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
   const handleBulkDelete = async () => {
     try {
       for (const memberId of selectedMembers) {
-        await supabase
+        const { error } = await supabase
           .from('members')
           .delete()
           .eq('id', memberId);
+        
+        if (error) throw error;
       }
       
       toast({
@@ -210,6 +214,7 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // We'll implement this later
     toast({
       title: "File Upload",
       description: "File upload functionality will be implemented soon."
@@ -224,7 +229,7 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
     );
   }
 
-  if (!members.length) {
+  if (!members || members.length === 0) {
     return (
       <div className="text-center py-8 space-y-4">
         <p className="text-muted-foreground">No members found.</p>

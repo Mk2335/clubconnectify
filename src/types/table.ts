@@ -3,25 +3,18 @@ import { Member } from "./member";
 
 export interface SortConfig {
   key: keyof Member;
-  direction: 'asc' | 'desc';
+  direction: "asc" | "desc";
 }
 
 export interface MemberTableProps {
   members: Member[];
-  onEdit: (id: string) => void;
-  onDelete: (id: string) => void;
-  onDeactivate: (id: string) => void;
+  onEdit: (memberId: string) => void;
+  onDelete: (memberId: string) => void;
+  onDeactivate: (memberId: string) => void;
   sortConfig: SortConfig | null;
   onSort: (key: keyof Member) => void;
   selectedMembers: string[];
-  toggleMemberSelection: (id: string) => void;
+  toggleMemberSelection: (memberId: string) => void;
   toggleAllMembers: (selected: boolean) => void;
   allSelected: boolean;
-}
-
-export interface FilterOptions {
-  status: string;
-  type: string;
-  role: string;
-  paymentMethod: string;
 }

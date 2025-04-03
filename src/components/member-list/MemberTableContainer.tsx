@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { Member } from "@/types/member";
 import { MemberTable } from "@/components/member/MemberTable";
 import { SortConfig } from "@/types/table";
@@ -27,20 +26,24 @@ export const MemberTableContainer = ({
   toggleMemberSelection,
   toggleAllMembers
 }: MemberTableContainerProps) => {
+  // Ensure we have valid arrays to work with
+  const membersList = Array.isArray(members) ? members : [];
+  const selectedMembersList = Array.isArray(selectedMembers) ? selectedMembers : [];
+  
   // Check if all members are selected
-  const allSelected = members.length > 0 && 
-    members.every(member => selectedMembers.includes(member.id));
+  const allSelected = membersList.length > 0 && 
+    membersList.every(member => selectedMembersList.includes(member.id));
 
   return (
     <div className="rounded-md border">
       <MemberTable
-        members={members}
+        members={membersList}
         onEdit={handleEdit}
         onDelete={handleDelete}
         onDeactivate={handleDeactivate}
         sortConfig={sortConfig}
         onSort={handleSort}
-        selectedMembers={selectedMembers}
+        selectedMembers={selectedMembersList}
         toggleMemberSelection={toggleMemberSelection}
         toggleAllMembers={toggleAllMembers}
         allSelected={allSelected}

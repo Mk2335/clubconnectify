@@ -30,7 +30,7 @@ interface MemberListTabProps {
 }
 
 export const MemberListTab = ({
-  members,
+  members = [],
   onEdit = () => {},
   onDelete = () => {},
   onDeactivate = () => {},
@@ -52,9 +52,12 @@ export const MemberListTab = ({
   handleFileUpload = () => {},
   allSelected = false
 }: MemberListTabProps) => {
+  // Make sure members is always an array
+  const membersList = Array.isArray(members) ? members : [];
+
   return (
     <div className="space-y-4">
-      {selectedMembers.length > 0 && (
+      {selectedMembers && selectedMembers.length > 0 && (
         <MemberBulkActions
           selectedCount={selectedMembers.length}
           allSelected={allSelected}
@@ -77,13 +80,13 @@ export const MemberListTab = ({
       />
 
       <MemberTableContainer 
-        members={members}
+        members={membersList}
         handleEdit={onEdit}
         handleDelete={onDelete}
         handleDeactivate={onDeactivate}
         sortConfig={sortConfig}
         handleSort={handleSort}
-        selectedMembers={selectedMembers}
+        selectedMembers={selectedMembers || []}
         toggleMemberSelection={toggleMemberSelection}
         toggleAllMembers={toggleAllMembers}
       />
