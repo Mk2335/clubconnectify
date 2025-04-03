@@ -9,7 +9,86 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      company_details: {
+        Row: {
+          company_name: string
+          contact_person: string | null
+          created_at: string
+          id: string
+          member_id: string
+          registration_number: string | null
+          updated_at: string
+        }
+        Insert: {
+          company_name: string
+          contact_person?: string | null
+          created_at?: string
+          id?: string
+          member_id: string
+          registration_number?: string | null
+          updated_at?: string
+        }
+        Update: {
+          company_name?: string
+          contact_person?: string | null
+          created_at?: string
+          id?: string
+          member_id?: string
+          registration_number?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_details_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: true
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      members: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          join_date: string
+          name: string
+          payment_method: string | null
+          profile_picture: string | null
+          role: string | null
+          status: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          join_date?: string
+          name: string
+          payment_method?: string | null
+          profile_picture?: string | null
+          role?: string | null
+          status: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          join_date?: string
+          name?: string
+          payment_method?: string | null
+          profile_picture?: string | null
+          role?: string | null
+          status?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

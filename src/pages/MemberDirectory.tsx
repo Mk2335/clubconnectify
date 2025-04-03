@@ -6,76 +6,75 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Grid3X3, ListFilter, List, MapPin } from "lucide-react";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
+import { useState, useEffect } from "react";
 import { Member } from "@/types/member";
-import { useState } from "react";
-
-const members: Member[] = [
-  {
-    id: "1",
-    name: "Alice Johnson",
-    email: "alice@example.com",
-    status: "Active",
-    joinDate: "2023-05-10",
-    type: "Individual",
-    role: "Board Member"
-  },
-  {
-    id: "2",
-    name: "Bob Smith",
-    email: "bob@example.com",
-    status: "Active",
-    joinDate: "2023-06-15",
-    type: "Individual",
-    role: "Regular Member"
-  },
-  {
-    id: "3",
-    name: "Eco Solutions Ltd",
-    email: "contact@ecosolutions.com",
-    status: "Active",
-    joinDate: "2023-07-20",
-    type: "Company",
-    companyDetails: {
-      companyName: "Eco Solutions Ltd",
-      registrationNumber: "ECO123456",
-      contactPerson: "Carol Davis"
-    },
-    role: "Corporate Member"
-  },
-  {
-    id: "4",
-    name: "Dave Wilson",
-    email: "dave@example.com",
-    status: "Inactive",
-    joinDate: "2023-03-05",
-    type: "Individual",
-    role: "Regular Member"
-  },
-  {
-    id: "5",
-    name: "Community Gardens Inc",
-    email: "info@communitygardens.org",
-    status: "Active",
-    joinDate: "2023-09-12",
-    type: "Company",
-    companyDetails: {
-      companyName: "Community Gardens Inc",
-      registrationNumber: "CG789012",
-      contactPerson: "Elena Flores"
-    },
-    role: "Corporate Member"
-  }
-];
+import { supabase } from "@/integrations/supabase/client";
+import { Loader2 } from "lucide-react";
 
 const MemberDirectory = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [members, setMembers] = useState<Member[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    const fetchMembers = async () => {
+      setLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('members')
+          .select(`
+            *,
+            company_details(*)
+          `);
+
+        if (error) {
+          throw error;
+        }
+
+        // Transform data to match our Member type
+        const transformedMembers: Member[] = data.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          email: item.email,
+          status: item.status,
+          joinDate: item.join_date,
+          profilePicture: item.profile_picture || "",
+          role: item.role,
+          type: item.type,
+          companyDetails: item.company_details ? {
+            companyName: item.company_details.company_name,
+            registrationNumber: item.company_details.registration_number || "",
+            contactPerson: item.company_details.contact_person || ""
+          } : undefined
+        }));
+
+        setMembers(transformedMembers);
+      } catch (error) {
+        console.error('Error fetching members:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMembers();
+  }, []);
   
   const filteredMembers = members.filter(member => 
     member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     member.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
     member.role?.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  if (loading) {
+    return (
+      <AppLayout title="Member Directory">
+        <div className="flex justify-center py-8">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </AppLayout>
+    );
+  }
 
   return (
     <AppLayout title="Member Directory">

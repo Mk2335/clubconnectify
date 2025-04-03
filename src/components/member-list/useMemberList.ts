@@ -1,19 +1,72 @@
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { Member } from "@/types/member";
 import { SortConfig } from "@/types/table";
 import { MEMBER_STATUS, TOAST_MESSAGES } from "@/constants/memberConstants";
 import { toast } from "@/components/ui/use-toast";
 import { validateMemberData } from "@/utils/memberUtils";
+import { supabase } from "@/integrations/supabase/client";
 
-export const useMemberList = (initialMembers: Member[]) => {
-  const [members, setMembers] = useState<Member[]>(initialMembers);
+export const useMemberList = (initialMembers: Member[] = []) => {
+  const [members, setMembers] = useState<Member[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
   const [localSearchQuery, setLocalSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<"list" | "communication">("list");
+
+  // Fetch members from Supabase
+  const fetchMembers = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('members')
+        .select(`
+          *,
+          company_details(*)
+        `);
+
+      if (error) {
+        throw error;
+      }
+
+      // Transform data to match our Member type
+      const transformedMembers: Member[] = data.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        email: item.email,
+        status: item.status,
+        joinDate: item.join_date,
+        profilePicture: item.profile_picture || "",
+        role: item.role,
+        paymentMethod: item.payment_method,
+        type: item.type,
+        companyDetails: item.company_details ? {
+          companyName: item.company_details.company_name,
+          registrationNumber: item.company_details.registration_number || "",
+          contactPerson: item.company_details.contact_person || ""
+        } : undefined
+      }));
+
+      setMembers(transformedMembers);
+    } catch (error) {
+      console.error('Error fetching members:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch members",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Initial fetch
+  useEffect(() => {
+    fetchMembers();
+  }, []);
 
   /**
    * Memoized sorted and filtered members list
@@ -72,7 +125,9 @@ export const useMemberList = (initialMembers: Member[]) => {
   /**
    * Handles member editing
    */
-  const handleEdit = useCallback((memberId: string) => {
+  const handleEdit = useCallback(async (memberId: string) => {
+    // In a real app, this would open a modal for editing
+    // For now, we'll just show a toast
     toast({
       title: "Edit Member",
       description: TOAST_MESSAGES.EDIT_SUCCESS,
@@ -82,29 +137,70 @@ export const useMemberList = (initialMembers: Member[]) => {
   /**
    * Handles member deletion
    */
-  const handleDelete = useCallback((memberId: string) => {
-    toast({
-      title: "Delete Member",
-      description: TOAST_MESSAGES.DELETE_SUCCESS,
-      variant: "destructive",
-    });
+  const handleDelete = useCallback(async (memberId: string) => {
+    try {
+      const { error } = await supabase
+        .from('members')
+        .delete()
+        .eq('id', memberId);
+      
+      if (error) throw error;
+
+      // Update local state
+      setMembers(prev => prev.filter(member => member.id !== memberId));
+      
+      toast({
+        title: "Delete Member",
+        description: TOAST_MESSAGES.DELETE_SUCCESS,
+      });
+    } catch (error) {
+      console.error('Error deleting member:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete member",
+        variant: "destructive",
+      });
+    }
   }, []);
 
   /**
    * Handles member deactivation
    */
-  const handleDeactivate = useCallback((memberId: string) => {
-    toast({
-      title: "Deactivate Member",
-      description: TOAST_MESSAGES.DEACTIVATE_SUCCESS,
-      variant: "destructive",
-    });
+  const handleDeactivate = useCallback(async (memberId: string) => {
+    try {
+      const { error } = await supabase
+        .from('members')
+        .update({ status: MEMBER_STATUS.INACTIVE })
+        .eq('id', memberId);
+      
+      if (error) throw error;
+
+      // Update local state
+      setMembers(prev => prev.map(member => 
+        member.id === memberId 
+          ? { ...member, status: MEMBER_STATUS.INACTIVE } 
+          : member
+      ));
+      
+      toast({
+        title: "Deactivate Member",
+        description: TOAST_MESSAGES.DEACTIVATE_SUCCESS,
+      });
+    } catch (error) {
+      console.error('Error deactivating member:', error);
+      toast({
+        title: "Error",
+        description: "Failed to deactivate member",
+        variant: "destructive",
+      });
+    }
   }, []);
 
   /**
    * Handles adding a new member
    */
   const handleAddMember = useCallback(() => {
+    // In a real app, this would open a modal for adding a new member
     toast({
       title: "Add Member",
       description: "The form to add a new member would open here.",
@@ -154,56 +250,122 @@ export const useMemberList = (initialMembers: Member[]) => {
   /**
    * Handle bulk deactivation
    */
-  const handleBulkDeactivate = useCallback(() => {
-    toast({
-      title: "Deactivate Members",
-      description: `${selectedMembers.length} members would be deactivated.`,
-      variant: "destructive",
-    });
+  const handleBulkDeactivate = useCallback(async () => {
+    try {
+      // Update each member in Supabase
+      for (const memberId of selectedMembers) {
+        const { error } = await supabase
+          .from('members')
+          .update({ status: MEMBER_STATUS.INACTIVE })
+          .eq('id', memberId);
+        
+        if (error) throw error;
+      }
+
+      // Update local state
+      setMembers(prev => prev.map(member => 
+        selectedMembers.includes(member.id) 
+          ? { ...member, status: MEMBER_STATUS.INACTIVE } 
+          : member
+      ));
+      
+      toast({
+        title: "Deactivate Members",
+        description: `${selectedMembers.length} members have been deactivated.`,
+      });
+      
+      // Clear selection
+      setSelectedMembers([]);
+    } catch (error) {
+      console.error('Error deactivating members:', error);
+      toast({
+        title: "Error",
+        description: "Failed to deactivate members",
+        variant: "destructive",
+      });
+    }
   }, [selectedMembers]);
 
   /**
    * Handle bulk deletion
    */
-  const handleBulkDelete = useCallback(() => {
-    toast({
-      title: "Delete Members",
-      description: `${selectedMembers.length} members would be deleted.`,
-      variant: "destructive",
-    });
+  const handleBulkDelete = useCallback(async () => {
+    try {
+      // Delete each member in Supabase
+      for (const memberId of selectedMembers) {
+        const { error } = await supabase
+          .from('members')
+          .delete()
+          .eq('id', memberId);
+        
+        if (error) throw error;
+      }
+
+      // Update local state
+      setMembers(prev => prev.filter(member => !selectedMembers.includes(member.id)));
+      
+      toast({
+        title: "Delete Members",
+        description: `${selectedMembers.length} members have been deleted.`,
+      });
+      
+      // Clear selection
+      setSelectedMembers([]);
+    } catch (error) {
+      console.error('Error deleting members:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete members",
+        variant: "destructive",
+      });
+    }
   }, [selectedMembers]);
 
   /**
    * Handles CSV file upload and member data import
    */
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
         const csv = e.target?.result as string;
         const lines = csv.split('\n');
         const headers = lines[0].split(',');
         
-        const newMembers = lines.slice(1)
-          .map((line, index) => {
-            const values = line.split(',');
-            const memberData: Member = {
-              id: (members.length + index + 1).toString(),
-              name: values[0]?.trim() || '',
-              email: values[1]?.trim() || '',
-              status: MEMBER_STATUS.ACTIVE as Member['status'],
-              joinDate: new Date().toISOString().split('T')[0],
-              type: "Individual"
-            };
+        // Parse CSV and create members
+        for (let i = 1; i < lines.length; i++) {
+          const values = lines[i].split(',');
+          if (!values[0]?.trim()) continue; // Skip empty lines
+          
+          const memberData: Partial<Member> = {
+            name: values[0]?.trim() || '',
+            email: values[1]?.trim() || '',
+            status: MEMBER_STATUS.ACTIVE as Member['status'],
+            type: "Individual"
+          };
 
-            return validateMemberData(memberData) ? memberData : null;
-          })
-          .filter((member): member is Member => member !== null);
+          if (!validateMemberData(memberData as Member)) continue;
 
-        setMembers(prev => [...prev, ...newMembers]);
+          // Insert into Supabase
+          const { data, error } = await supabase
+            .from('members')
+            .insert({
+              name: memberData.name,
+              email: memberData.email,
+              status: memberData.status,
+              type: memberData.type
+            })
+            .select();
+          
+          if (error) throw error;
+        }
+
+        // Refresh member list
+        fetchMembers();
+        
         toast({
           title: "Import Successful",
           description: TOAST_MESSAGES.IMPORT_SUCCESS,
@@ -222,6 +384,7 @@ export const useMemberList = (initialMembers: Member[]) => {
 
   return {
     members,
+    loading,
     sortedAndFilteredMembers,
     sortConfig,
     setSortConfig,
@@ -246,6 +409,7 @@ export const useMemberList = (initialMembers: Member[]) => {
     handleBulkEmail,
     handleBulkDeactivate,
     handleBulkDelete,
-    handleFileUpload
+    handleFileUpload,
+    fetchMembers
   };
 };

@@ -3,8 +3,8 @@ import { MemberListProps } from "@/types/member";
 import { MemberCommunicationTabs } from "./communication/MemberCommunicationTabs";
 import { MemberListTab } from "./member-list/MemberListTab";
 import { useMemberList } from "./member-list/useMemberList";
-import { initialMembers } from "./member-list/MemberListData";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Loader2 } from "lucide-react";
 
 /**
  * Main component for managing and displaying member data
@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
   const {
     sortedAndFilteredMembers,
+    loading,
     sortConfig,
     localSearchQuery,
     setLocalSearchQuery,
@@ -36,7 +37,15 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
     handleBulkDeactivate,
     handleBulkDelete,
     handleFileUpload
-  } = useMemberList(initialMembers);
+  } = useMemberList();
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-8">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   if (!members.length) {
     return (
