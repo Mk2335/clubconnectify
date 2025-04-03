@@ -19,10 +19,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Member } from "@/types/member";
-import { Mail, Search, Eye, History, AlertCircle, CheckCircle, Clock } from "lucide-react";
+import { Mail, Search, Eye, History, AlertCircle, CheckCircle, Clock, Download, Printer, Share2, FileText } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { CommunicationRecord } from "@/types/communication";
 import { useToast } from "@/components/ui/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
 
 interface CommunicationHistoryProps {
   members: Member[];
@@ -33,7 +41,10 @@ export function CommunicationHistory({ members }: CommunicationHistoryProps) {
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [viewingContent, setViewingContent] = useState<string | null>(null);
+  const [viewingRecord, setViewingRecord] = useState<CommunicationRecord | null>(null);
+  const [exportLoading, setExportLoading] = useState(false);
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     fetchCommunicationHistory();
@@ -129,21 +140,172 @@ export function CommunicationHistory({ members }: CommunicationHistoryProps) {
     }
   };
 
+  const handleViewMessage = (record: CommunicationRecord) => {
+    setViewingContent(record.content);
+    setViewingRecord(record);
+  };
+
+  const handleExportCSV = async () => {
+    setExportLoading(true);
+    try {
+      // Format the data for CSV
+      const csvData = history.map(record => ({
+        id: record.id,
+        type: record.type,
+        subject: record.subject,
+        recipients: record.recipients.join(", "),
+        date: new Date(record.sentAt).toLocaleString(),
+        status: record.status
+      }));
+      
+      // Use the utility function to download
+      await downloadCSV(csvData, `communication_history_${new Date().toISOString().split('T')[0]}.csv`);
+      
+      toast({
+        title: "Export Successful",
+        description: "Communication history exported as CSV.",
+      });
+    } catch (error) {
+      console.error("Export error:", error);
+      toast({
+        title: "Export Failed",
+        description: "Could not export communication history.",
+        variant: "destructive",
+      });
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
+  const downloadCSV = (data: any[], filename: string) => {
+    import('@/utils/exportUtils').then(module => {
+      module.downloadCSV(data, filename);
+    });
+  };
+
+  const handlePrintRecord = () => {
+    if (!viewingContent) return;
+    
+    // Create a printable version
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      toast({
+        title: "Print Failed",
+        description: "Could not open print window. Please check your popup settings.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const record = viewingRecord;
+    if (!record) return;
+    
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>${record.subject}</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            .header { margin-bottom: 20px; }
+            .content { border-top: 1px solid #eee; padding-top: 20px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h2>${record.subject}</h2>
+            <p>Date: ${new Date(record.sentAt).toLocaleString()}</p>
+            <p>Recipients: ${record.recipients.join(", ")}</p>
+            <p>Status: ${record.status}</p>
+          </div>
+          <div class="content">
+            ${record.content}
+          </div>
+        </body>
+      </html>
+    `);
+    
+    printWindow.document.close();
+    printWindow.focus();
+    
+    // Print after a short delay to ensure content is loaded
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 500);
+  };
+
+  const handleShareRecord = () => {
+    if (!viewingRecord) return;
+    
+    // Using the Web Share API if available
+    if (navigator.share) {
+      navigator.share({
+        title: viewingRecord.subject,
+        text: `Communication: ${viewingRecord.subject}`,
+        url: window.location.href
+      }).catch(error => {
+        console.error('Share error:', error);
+      });
+    } else {
+      // Fallback - copy to clipboard
+      navigator.clipboard.writeText(`
+Subject: ${viewingRecord.subject}
+Sent: ${new Date(viewingRecord.sentAt).toLocaleString()}
+Recipients: ${viewingRecord.recipients.join(", ")}
+Status: ${viewingRecord.status}
+      `).then(() => {
+        toast({
+          title: "Copied to Clipboard",
+          description: "Message details copied to clipboard.",
+        });
+      }).catch(err => {
+        console.error('Copy failed:', err);
+      });
+    }
+  };
+
+  const handleGenerateReport = () => {
+    // This would be expanded in a real implementation
+    toast({
+      title: "Report Generation",
+      description: "Custom report generation will be available soon.",
+    });
+  };
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-2">
           <History className="h-5 w-5" />
           <h2 className="text-xl font-semibold">Communication History</h2>
         </div>
-        <div className="relative w-64">
-          <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search communications..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-8"
-          />
+        <div className="flex flex-wrap gap-2">
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Search communications..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-8"
+            />
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon" className="h-10 w-10">
+                <FileText className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={handleExportCSV} disabled={exportLoading}>
+                <Download className="h-4 w-4 mr-2" />
+                Export as CSV
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleGenerateReport}>
+                <FileText className="h-4 w-4 mr-2" />
+                Generate Report
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
@@ -166,10 +328,10 @@ export function CommunicationHistory({ members }: CommunicationHistoryProps) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Type</TableHead>
+                  <TableHead className={isMobile ? "hidden" : ""}>Type</TableHead>
                   <TableHead>Subject</TableHead>
                   <TableHead>Recipients</TableHead>
-                  <TableHead>Date</TableHead>
+                  <TableHead className={isMobile ? "hidden" : ""}>Date</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="w-[80px]">Actions</TableHead>
                 </TableRow>
@@ -177,7 +339,7 @@ export function CommunicationHistory({ members }: CommunicationHistoryProps) {
               <TableBody>
                 {filteredHistory.map((record) => (
                   <TableRow key={record.id}>
-                    <TableCell>
+                    <TableCell className={isMobile ? "hidden" : ""}>
                       <div className="flex items-center gap-2">
                         {record.type === "email" ? (
                           <Mail className="h-4 w-4" />
@@ -189,13 +351,13 @@ export function CommunicationHistory({ members }: CommunicationHistoryProps) {
                     </TableCell>
                     <TableCell className="font-medium">{record.subject}</TableCell>
                     <TableCell>{formatRecipients(record.recipients)}</TableCell>
-                    <TableCell>{new Date(record.sentAt).toLocaleString()}</TableCell>
+                    <TableCell className={isMobile ? "hidden" : ""}>{new Date(record.sentAt).toLocaleString()}</TableCell>
                     <TableCell>{getStatusBadge(record.status)}</TableCell>
                     <TableCell>
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => setViewingContent(record.content)}
+                        onClick={() => handleViewMessage(record)}
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
@@ -208,10 +370,33 @@ export function CommunicationHistory({ members }: CommunicationHistoryProps) {
         </Card>
       )}
 
-      <Dialog open={!!viewingContent} onOpenChange={() => setViewingContent(null)}>
+      <Dialog open={!!viewingContent} onOpenChange={() => {
+        setViewingContent(null);
+        setViewingRecord(null);
+      }}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle>Message Content</DialogTitle>
+            <div className="flex items-center gap-1 mt-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex items-center gap-1"
+                onClick={handlePrintRecord}
+              >
+                <Printer className="h-4 w-4" />
+                <span className={isMobile ? "sr-only" : ""}>Print</span>
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex items-center gap-1"
+                onClick={handleShareRecord}
+              >
+                <Share2 className="h-4 w-4" />
+                <span className={isMobile ? "sr-only" : ""}>Share</span>
+              </Button>
+            </div>
           </DialogHeader>
           <div className="border rounded-md p-4 bg-slate-50">
             <div dangerouslySetInnerHTML={{ __html: viewingContent || "" }} />
