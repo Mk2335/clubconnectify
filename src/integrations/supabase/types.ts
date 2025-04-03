@@ -9,6 +9,50 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      communication_history: {
+        Row: {
+          content: string
+          id: string
+          recipients: string[]
+          sent_at: string
+          sent_by: string
+          status: string
+          subject: string
+          template_id: string | null
+          type: string
+        }
+        Insert: {
+          content: string
+          id?: string
+          recipients: string[]
+          sent_at?: string
+          sent_by: string
+          status: string
+          subject: string
+          template_id?: string | null
+          type: string
+        }
+        Update: {
+          content?: string
+          id?: string
+          recipients?: string[]
+          sent_at?: string
+          sent_by?: string
+          status?: string
+          subject?: string
+          template_id?: string | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "communication_history_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "email_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_details: {
         Row: {
           company_name: string
@@ -46,6 +90,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      email_templates: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          name: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          name: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          name?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       members: {
         Row: {

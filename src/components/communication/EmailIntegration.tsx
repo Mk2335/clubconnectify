@@ -9,7 +9,8 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormDescription
+  FormDescription,
+  FormMessage
 } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -105,8 +106,7 @@ export function EmailIntegration({ selectedMembers = [] }: { selectedMembers?: s
         try {
           const { data: membersData, error } = await supabase
             .from('members')
-            .select('email')
-            .eq('status', 'Active');
+            .select('email');
           
           if (error) throw error;
           

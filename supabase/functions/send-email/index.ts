@@ -28,13 +28,15 @@ serve(async (req) => {
     const { recipients, subject, content, templateId }: EmailPayload = await req.json();
 
     // In a real implementation, you would use an email service like SendGrid, Resend, etc.
-    // For this example, we'll simulate email sending by storing in the database
+    // For this example, we'll simulate email sending and store in the database
     
     const timestamp = new Date().toISOString();
+    
+    // Get the current user if available
     const user = await supabase.auth.getUser();
     const userId = user.data.user?.id || "system";
 
-    // Store the communication record
+    // Store the communication record in our new table
     const { data, error } = await supabase
       .from('communication_history')
       .insert({
