@@ -1,3 +1,4 @@
+
 /**
  * Main component for managing and displaying member data
  * Handles member listing, importing, sorting, and filtering functionality
@@ -11,9 +12,16 @@ import { MemberImport } from "./member/MemberImport";
 import { SortConfig } from "@/types/table";
 import { validateMemberData } from "@/utils/memberUtils";
 import { MEMBER_STATUS, TOAST_MESSAGES } from "@/constants/memberConstants";
+import { Button } from "./ui/button";
+import { PlusCircle, Filter } from "lucide-react";
+import { Input } from "./ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
 export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [typeFilter, setTypeFilter] = useState<string>("all");
   const [members, setMembers] = useState<Member[]>([
     {
       id: "1",
@@ -21,6 +29,10 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
       email: "john@example.com",
       status: MEMBER_STATUS.ACTIVE,
       joinDate: "2024-01-15",
+      profilePicture: "",
+      role: "AM",
+      paymentMethod: "Bank Transfer",
+      type: "Individual"
     },
     {
       id: "2",
@@ -28,7 +40,53 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
       email: "jane@example.com",
       status: MEMBER_STATUS.ACTIVE,
       joinDate: "2024-02-01",
+      profilePicture: "",
+      role: "ERW",
+      paymentMethod: "Direct Debit",
+      type: "Individual"
     },
+    {
+      id: "3",
+      name: "Acme Corporation",
+      email: "info@acme.com",
+      status: MEMBER_STATUS.ACTIVE,
+      joinDate: "2024-03-05",
+      profilePicture: "",
+      role: "S",
+      paymentMethod: "Bank Transfer",
+      type: "Company",
+      companyDetails: {
+        companyName: "Acme Corporation",
+        registrationNumber: "AC12345",
+        contactPerson: "Robert Johnson"
+      }
+    },
+    {
+      id: "4",
+      name: "Sarah Williams",
+      email: "sarah@example.com",
+      status: MEMBER_STATUS.PENDING,
+      joinDate: "2024-04-01",
+      profilePicture: "",
+      paymentMethod: "Other",
+      type: "Individual"
+    },
+    {
+      id: "5",
+      name: "Tech Innovators Ltd",
+      email: "contact@techinnovators.com",
+      status: MEMBER_STATUS.INACTIVE,
+      joinDate: "2023-11-15",
+      profilePicture: "",
+      role: "AM",
+      paymentMethod: "Direct Debit",
+      type: "Company",
+      companyDetails: {
+        companyName: "Tech Innovators Ltd",
+        registrationNumber: "TI98765",
+        contactPerson: "Emma Chen"
+      }
+    }
   ]);
 
   /**
@@ -125,18 +183,40 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
   }, []);
 
   /**
+   * Handles adding a new member
+   */
+  const handleAddMember = useCallback(() => {
+    toast({
+      title: "Add Member",
+      description: "The form to add a new member would open here.",
+    });
+  }, []);
+
+  /**
    * Memoized sorted and filtered members list
    */
   const sortedAndFilteredMembers = useMemo(() => {
     let result = [...members];
     
-    if (searchQuery) {
+    // Apply search filter
+    if (localSearchQuery) {
       result = result.filter((member) =>
-        member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        member.email.toLowerCase().includes(searchQuery.toLowerCase())
+        member.name.toLowerCase().includes(localSearchQuery.toLowerCase()) ||
+        member.email.toLowerCase().includes(localSearchQuery.toLowerCase())
       );
     }
+    
+    // Apply status filter
+    if (statusFilter !== "all") {
+      result = result.filter((member) => member.status === statusFilter);
+    }
+    
+    // Apply type filter
+    if (typeFilter !== "all") {
+      result = result.filter((member) => member.type === typeFilter);
+    }
 
+    // Apply sorting
     if (sortConfig) {
       result.sort((a, b) => {
         const aValue = a[sortConfig.key];
@@ -149,7 +229,7 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
     }
 
     return result;
-  }, [members, searchQuery, sortConfig]);
+  }, [members, localSearchQuery, sortConfig, statusFilter, typeFilter]);
 
   if (!members.length) {
     return (
@@ -161,8 +241,46 @@ export const MemberList = ({ searchQuery = "" }: MemberListProps) => {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
-        <MemberImport onFileUpload={handleFileUpload} />
+      <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row justify-between items-start sm:items-center">
+        <div className="w-full sm:w-auto flex-1 max-w-md">
+          <Input
+            placeholder="Search by name or email..."
+            value={localSearchQuery}
+            onChange={(e) => setLocalSearchQuery(e.target.value)}
+            className="w-full"
+          />
+        </div>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-2 flex-1 sm:flex-auto">
+            <Filter className="h-4 w-4 text-muted-foreground" />
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-full sm:w-[140px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Statuses</SelectItem>
+                <SelectItem value="Active">Active</SelectItem>
+                <SelectItem value="Inactive">Inactive</SelectItem>
+                <SelectItem value="Pending">Pending</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <SelectTrigger className="w-full sm:w-[140px]">
+              <SelectValue placeholder="Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="Individual">Individual</SelectItem>
+              <SelectItem value="Company">Company</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button variant="outline" onClick={handleAddMember}>
+            <PlusCircle className="h-4 w-4 mr-2" /> 
+            Add Member
+          </Button>
+          <MemberImport onFileUpload={handleFileUpload} />
+        </div>
       </div>
 
       <div className="rounded-md border">
