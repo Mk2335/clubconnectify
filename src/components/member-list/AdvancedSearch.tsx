@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -10,19 +10,19 @@ import { Member } from "@/types/member";
 import { motion } from "framer-motion";
 
 interface AdvancedSearchProps {
-  onFieldsChange: (fields: Array<keyof Member>) => void;
-  onCaseSensitiveChange: (caseSensitive: boolean) => void;
-  selectedFields: Array<keyof Member>;
-  caseSensitive: boolean;
-  onClose: () => void;
+  onFieldsChange?: (fields: Array<keyof Member>) => void;
+  onCaseSensitiveChange?: (caseSensitive: boolean) => void;
+  selectedFields?: Array<keyof Member>;
+  caseSensitive?: boolean;
+  onClose?: () => void;
 }
 
 export const AdvancedSearch = ({
-  onFieldsChange,
-  onCaseSensitiveChange,
-  selectedFields,
-  caseSensitive,
-  onClose
+  onFieldsChange = () => {},
+  onCaseSensitiveChange = () => {},
+  selectedFields = ['name', 'email', 'role'],
+  caseSensitive = false,
+  onClose = () => {},
 }: AdvancedSearchProps) => {
   const [localFields, setLocalFields] = useState<Array<keyof Member>>(selectedFields);
   const [localCaseSensitive, setLocalCaseSensitive] = useState<boolean>(caseSensitive);
