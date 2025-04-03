@@ -9,6 +9,8 @@ import AddressBook from "./pages/AddressBook";
 import Calendar from "./pages/Calendar";
 import Tasks from "./pages/Tasks";
 import Appointments from "./pages/Appointments";
+import MemberCommunication from "./pages/MemberCommunication";
+import MemberFinances from "./pages/MemberFinances";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/appointments" element={<Appointments />} />
+          <Route path="/members/communication" element={<MemberCommunication />} />
+          <Route path="/members/finances" element={<MemberFinances />} />
         </Routes>
       </LanguageProvider>
     </ThemeProvider>
