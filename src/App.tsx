@@ -11,6 +11,7 @@ import Tasks from "./pages/Tasks";
 import Appointments from "./pages/Appointments";
 import MemberCommunication from "./pages/MemberCommunication";
 import MemberFinances from "./pages/MemberFinances";
+import MemberAIAutomation from "./pages/MemberAIAutomation";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/appointments" element={<Appointments />} />
           <Route path="/members/communication" element={<MemberCommunication />} />
           <Route path="/members/finances" element={<MemberFinances />} />
+          <Route path="/members/ai-automation" element={<MemberAIAutomation />} />
         </Routes>
       </LanguageProvider>
     </ThemeProvider>

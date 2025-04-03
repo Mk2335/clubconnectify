@@ -1,5 +1,5 @@
 
-import { Users, Book, Mail, CreditCard } from "lucide-react";
+import { Users, Book, Mail, CreditCard, Wand2 } from "lucide-react";
 import { MenuItem } from "./types";
 
 export const membersMenuItems: MenuItem = {
@@ -21,6 +21,11 @@ export const membersMenuItems: MenuItem = {
       icon: CreditCard,
       label: "Finances",
       href: "/members/finances",
+    },
+    {
+      icon: Wand2,
+      label: "AI Automation",
+      href: "/members/ai-automation",
     }
   ],
 };
